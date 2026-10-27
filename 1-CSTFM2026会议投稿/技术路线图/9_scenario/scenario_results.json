@@ -1,0 +1,249 @@
+{
+  "incident": {
+    "location": {
+      "lon": 116.49401419705991,
+      "lat": 39.73559923848592
+    },
+    "name": "六环太平桥特种车辆事故",
+    "type": "危险气体运输车交通事故",
+    "gas_type": "氯气",
+    "leak_rate_kg_per_min": 5,
+    "leak_duration_min": 60,
+    "wind_speed_m_s": 3.0,
+    "wind_direction_deg": 225,
+    "temperature_c": 15,
+    "humidity_pct": 60
+  },
+  "plume_params": {
+    "leak_rate_kg_per_min": 5,
+    "wind_speed_m_s": 3.0,
+    "wind_direction_deg": 225,
+    "release_height_m": 2.0,
+    "stability_class": "D"
+  },
+  "gas_thresholds": {
+    "IDLH": 29.0,
+    "ERPG3": 20.0,
+    "ERPG2": 3.0,
+    "ERPG1": 1.0,
+    "detection": 0.5
+  },
+  "zone_thresholds": {
+    "core_danger": 20.0,
+    "warning": 3.0,
+    "influence": 1.0
+  },
+  "affected_population": {
+    "core_danger": {
+      "total": 0.0,
+      "blocks": 4
+    },
+    "warning": {
+      "total": 0.0,
+      "blocks": 7
+    },
+    "influence": {
+      "total": 0.0,
+      "blocks": 11
+    },
+    "closure_500m": {
+      "total": 0.0,
+      "blocks": 15
+    },
+    "closure_1km": {
+      "total": 632.0,
+      "blocks": 38
+    },
+    "congestion_3km": {
+      "total": 156340.0,
+      "blocks": 183
+    },
+    "influence_5km": {
+      "total": 488211.0,
+      "blocks": 610
+    }
+  },
+  "facility_impacts": {
+    "hospitals": {
+      "closure_500m": {
+        "count": 0,
+        "names": []
+      },
+      "closure_1km": {
+        "count": 0,
+        "names": []
+      },
+      "congestion_3km": {
+        "count": 6,
+        "names": [
+          "北京中医药大学东方医院南院区",
+          "东方医院南院区该医院",
+          "南海家园第二社区卫生客户服务站",
+          "南海家园第一乡村卫生服务站",
+          "大兴区南海原居第一社区卫生服站",
+          "博客雅苑一个社区卫生服务站"
+        ]
+      },
+      "influence_5km": {
+        "count": 27,
+        "names": [
+          "观音寺店卫生院北区",
+          "北京中医药大学东方医院南院区",
+          "东方医院南院区该医院",
+          "南海家园第二社区卫生客户服务站",
+          "南海家园第一乡村卫生服务站",
+          "大兴区南海原居第一社区卫生服站",
+          "北京市大兴区亦庄镇社区卫生服务",
+          "青云店镇南红门社区卫生服务站",
+          "邻里卫生服务站",
+          "北京振国医院"
+        ]
+      }
+    },
+    "fire_stations": {
+      "closure_500m": {
+        "count": 0,
+        "names": []
+      },
+      "closure_1km": {
+        "count": 0,
+        "names": []
+      },
+      "congestion_3km": {
+        "count": 1,
+        "names": [
+          "北京市大兴区青云店镇曹村消防工作室"
+        ]
+      },
+      "influence_5km": {
+        "count": 1,
+        "names": [
+          "北京市大兴区青云店镇曹村消防工作室"
+        ]
+      }
+    },
+    "shelters": {
+      "closure_500m": {
+        "count": 0,
+        "names": []
+      },
+      "closure_1km": {
+        "count": 0,
+        "names": []
+      },
+      "congestion_3km": {
+        "count": 11,
+        "names": [
+          "热血美式足球青少年俱乐部(亦庄金茂悦校区)",
+          "恒艺俱乐部",
+          "悦冉瑜伽馆",
+          "中体腾辉游泳健身",
+          "金茂悦健身公园",
+          "亦伽一简健身",
+          "锦尚棒球",
+          "金域东郡X86 PARK",
+          "瀛海镇职工活动中心",
+          "体育公园足球场"
+        ]
+      },
+      "influence_5km": {
+        "count": 71,
+        "names": [
+          "球馆",
+          "光猪圈健身(亦动健身店)",
+          "松柏武道馆",
+          "北京电子科技职业学院-篮球场",
+          "JT国际足球俱乐部",
+          "北京电子职业学院亦庄校区-游泳馆",
+          "国奥金冠运动中心",
+          "热血美式足球青少年俱乐部(亦庄金茂悦校区)",
+          "恒艺俱乐部",
+          "悦冉瑜伽馆"
+        ]
+      }
+    },
+    "subway_stations": {
+      "closure_500m": {
+        "count": 0,
+        "names": []
+      },
+      "closure_1km": {
+        "count": 0,
+        "names": []
+      },
+      "congestion_3km": {
+        "count": 0,
+        "names": []
+      },
+      "influence_5km": {
+        "count": 0,
+        "names": []
+      }
+    }
+  },
+  "road_impacts": {
+    "closure_500m": {
+      "road_count": 31,
+      "total_km": 60.02598766739923,
+      "by_class": {
+        "motorway": 11.105288118801315,
+        "motorway_link": 0.9677492586637189,
+        "primary": 24.21646949558062,
+        "residential": 1.1253365646730604,
+        "secondary": 12.998953719208062,
+        "tertiary": 8.226027182102724,
+        "unclassified": 1.3861633283697157
+      }
+    },
+    "closure_1km": {
+      "road_count": 53,
+      "total_km": 96.733360925511,
+      "by_class": {
+        "motorway": 11.105288118801315,
+        "motorway_link": 0.9677492586637189,
+        "primary": 42.42483772929815,
+        "primary_link": 0.033149994482752514,
+        "residential": 7.975395623802536,
+        "secondary": 17.29107360272021,
+        "service": 2.8746303321041364,
+        "tertiary": 12.675072937268466,
+        "unclassified": 1.3861633283697157
+      }
+    },
+    "congestion_3km": {
+      "road_count": 255,
+      "total_km": 228.84853570826183,
+      "by_class": {
+        "motorway": 13.825749080582195,
+        "motorway_link": 2.7470331849091143,
+        "primary": 52.750142704787976,
+        "primary_link": 0.033149994482752514,
+        "residential": 31.36688480773255,
+        "secondary": 34.39715499512959,
+        "secondary_link": 3.7888520702134776,
+        "service": 13.52866456642288,
+        "tertiary": 55.67104445231936,
+        "unclassified": 20.739859851681924
+      }
+    },
+    "influence_5km": {
+      "road_count": 709,
+      "total_km": 505.2820900664694,
+      "by_class": {
+        "motorway": 31.02803733815544,
+        "motorway_link": 11.924802678278969,
+        "primary": 70.33667899314504,
+        "primary_link": 0.033149994482752514,
+        "residential": 66.9937271548679,
+        "secondary": 91.70103021865292,
+        "secondary_link": 3.9632547414088792,
+        "service": 44.44069634336261,
+        "tertiary": 135.54968641655185,
+        "tertiary_link": 0.10900586976257307,
+        "trunk": 15.776997542686779,
+        "unclassified": 33.42502277511366
+      }
+    }
+  },
+  "max_concentration_mg_m3": 199.9952463412597
+}

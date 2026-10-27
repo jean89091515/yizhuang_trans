@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1680" width="1400" height="1680" font-family="'Times New Roman', Georgia, serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1.5" dy="1.5" stdDeviation="2" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowDown" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <path d="M0,0 L4,6 L8,0" fill="#555"/>
+    </marker>
+    <marker id="arrowRight" markerWidth="6" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8" fill="#555"/>
+    </marker>
+    <marker id="arrowLeft" markerWidth="6" markerHeight="8" refX="0" refY="4" orient="auto">
+      <path d="M6,0 L0,4 L6,8" fill="#555"/>
+    </marker>
+    <marker id="arrowDownRed" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <path d="M0,0 L4,6 L8,0" fill="#C62828"/>
+    </marker>
+    <marker id="arrowDownBlue" markerWidth="8" markerHeight="6" refX="4" refY="6" orient="auto">
+      <path d="M0,0 L4,6 L8,0" fill="#1565C0"/>
+    </marker>
+    <marker id="arrowRightGreen" markerWidth="6" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L6,4 L0,8" fill="#2E7D32"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="1680" fill="white"/>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 1: Data Foundation -->
+  <!-- ============================================================ -->
+  
+  <rect x="30" y="20" width="1340" height="320" rx="8" fill="#FAFAFA" stroke="#BDBDBD" stroke-width="1.2" stroke-dasharray="6,3"/>
+  <text x="50" y="50" font-size="18" font-weight="bold" fill="#333">1. Data Foundation &amp; Preprocessing</text>
+
+  <!-- Study Area -->
+  <rect x="55" y="78" width="175" height="115" rx="6" fill="white" stroke="#1565C0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="55" y="78" width="175" height="26" rx="6" fill="#1565C0"/>
+  <text x="142" y="96" text-anchor="middle" font-size="11.5" fill="white" font-weight="bold">Study Area Definition</text>
+  <text x="70" y="122" font-size="10" fill="#333">• Yizhuang regulatory boundary</text>
+  <text x="70" y="138" font-size="10" fill="#333">• 15 km buffer zone</text>
+  <text x="70" y="154" font-size="10" fill="#333">• Incident point annotation</text>
+  <text x="70" y="170" font-size="10" fill="#333">• ~707 km² study area</text>
+  <text x="70" y="183" font-size="9" fill="#1565C0" font-style="italic">Step 0</text>
+
+  <line x1="230" y1="138" x2="260" y2="138" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- Road Network -->
+  <rect x="268" y="78" width="175" height="115" rx="6" fill="white" stroke="#E65100" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="268" y="78" width="175" height="26" rx="6" fill="#E65100"/>
+  <text x="355" y="96" text-anchor="middle" font-size="11.5" fill="white" font-weight="bold">Road Network</text>
+  <text x="283" y="122" font-size="10" fill="#333">• OSM road clipping</text>
+  <text x="283" y="138" font-size="10" fill="#333">• Class / speed / capacity</text>
+  <text x="283" y="154" font-size="10" fill="#333">• NetworkX topology graph</text>
+  <text x="283" y="170" font-size="10" fill="#333">• 26,699 road segments</text>
+  <text x="283" y="183" font-size="9" fill="#E65100" font-style="italic">Step 2</text>
+
+  <line x1="443" y1="138" x2="473" y2="138" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- POI -->
+  <rect x="481" y="78" width="175" height="115" rx="6" fill="white" stroke="#2E7D32" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="481" y="78" width="175" height="26" rx="6" fill="#2E7D32"/>
+  <text x="568" y="96" text-anchor="middle" font-size="11.5" fill="white" font-weight="bold">POI Filtering</text>
+  <text x="496" y="122" font-size="10" fill="#333">• Hospitals / fire stations</text>
+  <text x="496" y="138" font-size="10" fill="#333">• Shelters / subway stations</text>
+  <text x="496" y="154" font-size="10" fill="#333">• Vulnerability-sensitive</text>
+  <text x="496" y="170" font-size="10" fill="#333">  facilities (schools, etc.)</text>
+  <text x="496" y="183" font-size="9" fill="#2E7D32" font-style="italic">Step 3</text>
+
+  <line x1="656" y1="138" x2="686" y2="138" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- Population -->
+  <rect x="694" y="78" width="175" height="115" rx="6" fill="white" stroke="#6A1B9A" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="694" y="78" width="175" height="26" rx="6" fill="#6A1B9A"/>
+  <text x="781" y="96" text-anchor="middle" font-size="11.5" fill="white" font-weight="bold">Population Data</text>
+  <text x="709" y="122" font-size="10" fill="#333">• Block-level (Baidu LBS)</text>
+  <text x="709" y="138" font-size="10" fill="#333">• Census age structure</text>
+  <text x="709" y="154" font-size="10" fill="#333">• Vulnerable group ratios</text>
+  <text x="709" y="170" font-size="10" fill="#333">• Spatial join to blocks</text>
+  <text x="709" y="183" font-size="9" fill="#6A1B9A" font-style="italic">Step 4</text>
+
+  <line x1="869" y1="138" x2="899" y2="138" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- OD & Travel Time -->
+  <rect x="907" y="78" width="195" height="115" rx="6" fill="white" stroke="#00695C" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="907" y="78" width="195" height="26" rx="6" fill="#00695C"/>
+  <text x="1004" y="96" text-anchor="middle" font-size="11.5" fill="white" font-weight="bold">OD / Commute / Travel</text>
+  <text x="922" y="122" font-size="10" fill="#333">• BD09→WGS84 transform</text>
+  <text x="922" y="138" font-size="10" fill="#333">• OD data clipping</text>
+  <text x="922" y="154" font-size="10" fill="#333">• Dijkstra travel-time matrix</text>
+  <text x="922" y="170" font-size="10" fill="#333">• Subway network topology</text>
+  <text x="922" y="183" font-size="9" fill="#00695C" font-style="italic">Step 5, 6, 7</text>
+
+  <!-- Integration bar -->
+  <rect x="55" y="210" width="1047" height="36" rx="6" fill="#263238" filter="url(#shadow)"/>
+  <text x="578" y="233" text-anchor="middle" font-size="13" fill="white" font-weight="bold">Data Integration &amp; Consistency Check → Scenario Parameter File (Step 8)</text>
+
+  <!-- Data source labels -->
+  <rect x="55" y="260" width="150" height="55" rx="5" fill="#E3F2FD" stroke="#90CAF9" stroke-width="1"/>
+  <text x="130" y="280" text-anchor="middle" font-size="10" fill="#1565C0" font-weight="bold">Data Sources</text>
+  <text x="130" y="296" text-anchor="middle" font-size="9" fill="#555">OSM | Baidu LBS | Census</text>
+  <text x="130" y="308" text-anchor="middle" font-size="9" fill="#555">POI | Regulatory Boundary</text>
+
+  <rect x="220" y="260" width="150" height="55" rx="5" fill="#FFF3E0" stroke="#FFCC80" stroke-width="1"/>
+  <text x="295" y="280" text-anchor="middle" font-size="10" fill="#E65100" font-weight="bold">Key Tools</text>
+  <text x="295" y="296" text-anchor="middle" font-size="9" fill="#555">GeoPandas | NetworkX</text>
+  <text x="295" y="308" text-anchor="middle" font-size="9" fill="#555">Dijkstra | KDTree</text>
+
+  <rect x="385" y="260" width="155" height="55" rx="5" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="1"/>
+  <text x="462" y="280" text-anchor="middle" font-size="10" fill="#2E7D32" font-weight="bold">Outputs</text>
+  <text x="462" y="296" text-anchor="middle" font-size="9" fill="#555">Road graph | Facility SHP</text>
+  <text x="462" y="308" text-anchor="middle" font-size="9" fill="#555">Population grid | OD matrix</text>
+
+  <!-- Phase 1 to Phase 2 -->
+  <line x1="700" y1="335" x2="700" y2="370" stroke="#555" stroke-width="1.8" marker-end="url(#arrowDown)"/>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 2: Scenario Construction -->
+  <!-- ============================================================ -->
+  
+  <rect x="30" y="378" width="1340" height="250" rx="8" fill="#FFF8E1" stroke="#F9A825" stroke-width="1.2" stroke-dasharray="6,3"/>
+  <text x="50" y="408" font-size="18" font-weight="bold" fill="#333">2. Incident Scenario Construction</text>
+  <text x="50" y="426" font-size="11" fill="#888">Gaussian Plume Dispersion &amp; Hazard Zone Delineation (Step 9)</text>
+
+  <!-- Gaussian Plume -->
+  <rect x="55" y="445" width="250" height="130" rx="6" fill="white" stroke="#D32F2F" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="55" y="445" width="250" height="26" rx="6" fill="#D32F2F"/>
+  <text x="180" y="463" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Gaussian Plume Model</text>
+  <text x="70" y="490" font-size="10" fill="#333">• Chlorine leak: Q = 5,000 mg/s</text>
+  <text x="70" y="508" font-size="10" fill="#333">• Wind: u = 3 m/s, dir = 225°</text>
+  <text x="70" y="526" font-size="10" fill="#333">• Atmospheric stability: Class D</text>
+  <text x="70" y="544" font-size="10" fill="#333">• C(x,y) = Q/(2πuσ_yσ_z)·exp(...)</text>
+  <text x="70" y="562" font-size="9" fill="#D32F2F" font-style="italic">Concentration field → ERPG thresholds</text>
+
+  <line x1="305" y1="510" x2="345" y2="510" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- Hazard Zones -->
+  <rect x="353" y="445" width="260" height="130" rx="6" fill="white" stroke="#E65100" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="353" y="445" width="260" height="26" rx="6" fill="#E65100"/>
+  <text x="483" y="463" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Hazard Zone Delineation</text>
+  
+  <circle cx="410" cy="520" r="38" fill="#FFCDD2" stroke="#E53935" stroke-width="1" opacity="0.4"/>
+  <circle cx="410" cy="520" r="26" fill="#EF9A9A" stroke="#E53935" stroke-width="1" opacity="0.5"/>
+  <circle cx="410" cy="520" r="14" fill="#E53935" stroke="#C62828" stroke-width="1" opacity="0.6"/>
+  <text x="410" y="524" text-anchor="middle" font-size="7" fill="white" font-weight="bold">1km</text>
+  
+  <text x="465" y="490" font-size="9.5" fill="#333">500 m road closure zone</text>
+  <text x="465" y="506" font-size="9.5" fill="#333">1 km core closure (96.7 km roads)</text>
+  <text x="465" y="522" font-size="9.5" fill="#333">3 km congestion zone (BPR)</text>
+  <text x="465" y="538" font-size="9.5" fill="#333">5 km impact zone</text>
+  <text x="465" y="562" font-size="9" fill="#E65100" font-style="italic">ERPG-1/2/3 classification</text>
+
+  <line x1="613" y1="510" x2="653" y2="510" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+
+  <!-- Impact Assessment -->
+  <rect x="661" y="445" width="250" height="130" rx="6" fill="white" stroke="#1565C0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="661" y="445" width="250" height="26" rx="6" fill="#1565C0"/>
+  <text x="786" y="463" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Impact Assessment</text>
+  <text x="676" y="490" font-size="10" fill="#333">• Affected pop.: ~234,502</text>
+  <text x="676" y="508" font-size="10" fill="#333">• Road closure rate: 19.1%</text>
+  <text x="676" y="526" font-size="10" fill="#333">• Affected facility statistics</text>
+  <text x="676" y="544" font-size="10" fill="#333">• Wind sensitivity (4 dirs)</text>
+  <text x="676" y="562" font-size="9" fill="#1565C0" font-style="italic">Time-varying, by population type</text>
+
+  <!-- Wind box -->
+  <rect x="940" y="445" width="200" height="130" rx="6" fill="white" stroke="#795548" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="940" y="445" width="200" height="26" rx="6" fill="#795548"/>
+  <text x="1040" y="463" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Wind Sensitivity</text>
+  <text x="955" y="492" font-size="10" fill="#333">• SW 225° (baseline)</text>
+  <text x="955" y="510" font-size="10" fill="#333">• N 0° / E 90°</text>
+  <text x="955" y="528" font-size="10" fill="#333">• SW 225° strong (8 m/s)</text>
+  <text x="955" y="550" font-size="9.5" fill="#795548">→ Directional sensitivity</text>
+  <text x="955" y="565" font-size="9.5" fill="#795548">→ Real-time met. needed</text>
+
+  <!-- Phase 2 to Phase 3 -->
+  <line x1="450" y1="628" x2="450" y2="670" stroke="#C62828" stroke-width="2" marker-end="url(#arrowDownRed)"/>
+  <line x1="950" y1="628" x2="950" y2="670" stroke="#1565C0" stroke-width="2" marker-end="url(#arrowDownBlue)"/>
+
+  <rect x="565" y="638" width="270" height="30" rx="15" fill="#FFF9C4" stroke="#F9A825" stroke-width="1.2"/>
+  <text x="700" y="658" text-anchor="middle" font-size="11" fill="#E65100" font-weight="bold">Resource Competition · Time Coupling · Spatial Interaction</text>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 3: Dual Optimization -->
+  <!-- ============================================================ -->
+
+  <!-- LEFT: Supply -->
+  <rect x="30" y="678" width="640" height="440" rx="8" fill="#FFEBEE" stroke="#C62828" stroke-width="1.5"/>
+  <text x="50" y="708" font-size="18" font-weight="bold" fill="#C62828">3a. Emergency Supply Delivery</text>
+  <text x="50" y="726" font-size="11" fill="#888">Truck–Drone Cooperative Optimization (Step 10)</text>
+  <text x="565" y="710" font-size="14" fill="#C62828">← Centripetal</text>
+
+  <!-- Logistics Network -->
+  <rect x="55" y="742" width="280" height="100" rx="6" fill="white" stroke="#D32F2F" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="195" y="762" text-anchor="middle" font-size="11.5" fill="#D32F2F" font-weight="bold">Three-Tier Logistics Network</text>
+  <text x="70" y="782" font-size="10" fill="#333">Supply (H): 8 fire stations + 2 depots</text>
+  <text x="70" y="798" font-size="10" fill="#333">Relay (R): Drone launch pads</text>
+  <text x="70" y="814" font-size="10" fill="#333">Demand (D): Emergency nodes in 5 km</text>
+  <text x="70" y="830" font-size="9" fill="#999">4 supply categories, differentiated TW</text>
+
+  <!-- Delivery Modes -->
+  <rect x="355" y="742" width="290" height="100" rx="6" fill="white" stroke="#E53935" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="500" y="762" text-anchor="middle" font-size="11.5" fill="#E53935" font-weight="bold">Truck–Drone Cooperation</text>
+  <text x="370" y="782" font-size="10" fill="#333">Direct: Truck → Demand point</text>
+  <text x="370" y="798" font-size="10" fill="#333">Relay: Truck → Relay → Drone</text>
+  <text x="370" y="814" font-size="10" fill="#333">BPR congestion: α=0.15, β=4.0</text>
+  <text x="370" y="830" font-size="9" fill="#999">Network Dijkstra travel time</text>
+
+  <line x1="350" y1="842" x2="350" y2="862" stroke="#C62828" stroke-width="1.2" marker-end="url(#arrowDownRed)"/>
+
+  <!-- Solving -->
+  <rect x="120" y="868" width="470" height="68" rx="6" fill="white" stroke="#B71C1C" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="355" y="888" text-anchor="middle" font-size="11.5" fill="#B71C1C" font-weight="bold">Two-Phase: Greedy Construction + 2-opt Local Search</text>
+  <text x="135" y="908" font-size="10" fill="#333">Obj: min Z = w₁·Makespan + w₂·Σpenalty + w₃·Σunmet</text>
+  <text x="135" y="924" font-size="10" fill="#333">Priority sort → Vehicle-route eval → Local improve → Feasibility</text>
+
+  <line x1="350" y1="936" x2="350" y2="956" stroke="#C62828" stroke-width="1.2" marker-end="url(#arrowDownRed)"/>
+
+  <!-- Results -->
+  <rect x="55" y="962" width="590" height="75" rx="6" fill="#FFCDD2" stroke="#C62828" stroke-width="1.5"/>
+  <text x="350" y="984" text-anchor="middle" font-size="12" fill="#B71C1C" font-weight="bold">Key Results</text>
+  <text x="70" y="1002" font-size="10.5" fill="#333">✓ 40 tasks 100% completed | Makespan: 44.8 → 37.5 min (↓16.3%)</text>
+  <text x="70" y="1020" font-size="10.5" fill="#333">✓ Life-rescue within 30 min | 39 direct + 1 relay | Drone-only infeasible</text>
+  <text x="70" y="1035" font-size="9" fill="#C62828" font-style="italic">Drone sensitivity analysis: 0–40 drones</text>
+
+  <!-- RIGHT: Evacuation -->
+  <rect x="730" y="678" width="640" height="440" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="750" y="708" font-size="18" font-weight="bold" fill="#1565C0">3b. Multi-Type Evacuation</text>
+  <text x="750" y="726" font-size="11" fill="#888">Priority-Based Scheduling Optimization (Step 11)</text>
+  <text x="1265" y="710" font-size="14" fill="#1565C0">Centrifugal →</text>
+
+  <!-- Population Classification -->
+  <rect x="755" y="742" width="280" height="100" rx="6" fill="white" stroke="#1976D2" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="895" y="762" text-anchor="middle" font-size="11.5" fill="#1976D2" font-weight="bold">Three Population Classes</text>
+  <rect x="770" y="772" width="12" height="12" rx="2" fill="#B71C1C"/>
+  <text x="788" y="783" font-size="10" fill="#333">k=1 Critical (ω=10) → Hospital</text>
+  <rect x="770" y="792" width="12" height="12" rx="2" fill="#FF6F00"/>
+  <text x="788" y="803" font-size="10" fill="#333">k=2 Vulnerable (ω=5) → Hosp./Shelter</text>
+  <rect x="770" y="812" width="12" height="12" rx="2" fill="#1976D2"/>
+  <text x="788" y="823" font-size="10" fill="#333">k=3 General (ω=1) → Shelter</text>
+  <text x="770" y="836" font-size="9" fill="#999">Baidu LBS + Census age ratios</text>
+
+  <!-- Vehicle Fleet -->
+  <rect x="1055" y="742" width="290" height="100" rx="6" fill="white" stroke="#0D47A1" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="1200" y="762" text-anchor="middle" font-size="11.5" fill="#0D47A1" font-weight="bold">Multi-Modal Fleet</text>
+  <text x="1070" y="782" font-size="10" fill="#333">Ambulance (15) | Bus (20)</text>
+  <text x="1070" y="798" font-size="10" fill="#333">Helicopter (3) | Subway (Yizhuang)</text>
+  <text x="1070" y="814" font-size="10" fill="#333">Private car (commute ratio-based)</text>
+  <text x="1070" y="830" font-size="9" fill="#999">Network Dijkstra travel time</text>
+
+  <line x1="1050" y1="842" x2="1050" y2="862" stroke="#1565C0" stroke-width="1.2" marker-end="url(#arrowDownBlue)"/>
+
+  <!-- Solving -->
+  <rect x="820" y="868" width="470" height="68" rx="6" fill="white" stroke="#0D47A1" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="1055" y="888" text-anchor="middle" font-size="11.5" fill="#0D47A1" font-weight="bold">Time-Stepped Scheduling (Δt = 5 min, T = 180 min)</text>
+  <text x="835" y="908" font-size="10" fill="#333">min Z = Z₁(weighted time) + Z₂(dynamic risk) + Z₃(unmet penalty)</text>
+  <text x="835" y="924" font-size="10" fill="#333">Priority dispatch → Risk interpolation → Vehicle assign → Capacity check</text>
+
+  <line x1="1050" y1="936" x2="1050" y2="956" stroke="#1565C0" stroke-width="1.2" marker-end="url(#arrowDownBlue)"/>
+
+  <!-- Results -->
+  <rect x="755" y="962" width="590" height="75" rx="6" fill="#BBDEFB" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="1050" y="984" text-anchor="middle" font-size="12" fill="#0D47A1" font-weight="bold">Key Results</text>
+  <text x="770" y="1002" font-size="10.5" fill="#333">✓ Baseline: 21,312 evacuees (9.1%) | Subway contributes 69%</text>
+  <text x="770" y="1020" font-size="10.5" fill="#333">✓ No-subway drops to 2.8% | Helicopter reduces critical-patient risk</text>
+  <text x="770" y="1035" font-size="9" fill="#1565C0" font-style="italic">Scenarios: Baseline / No-subway / No-helicopter / Double-ambulance</text>
+
+  <!-- Coupling arrows -->
+  <line x1="670" y1="800" x2="730" y2="800" stroke="#FF6F00" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowRight)"/>
+  <line x1="730" y1="830" x2="670" y2="830" stroke="#FF6F00" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowLeft)"/>
+  <text x="700" y="870" text-anchor="middle" font-size="9" fill="#FF6F00" font-weight="bold" transform="rotate(-90,700,870)">Coupling</text>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 4: Resilience Assessment -->
+  <!-- ============================================================ -->
+  
+  <line x1="350" y1="1118" x2="350" y2="1148" stroke="#C62828" stroke-width="1.5" marker-end="url(#arrowDownRed)"/>
+  <line x1="1050" y1="1118" x2="1050" y2="1148" stroke="#1565C0" stroke-width="1.5" marker-end="url(#arrowDownBlue)"/>
+
+  <rect x="30" y="1155" width="1340" height="230" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="50" y="1185" font-size="18" font-weight="bold" fill="#2E7D32">4. Resilience Assessment &amp; Comprehensive Analysis</text>
+  <text x="50" y="1205" font-size="11" fill="#888">Three-Dimensional Resilience Framework (Step 12)</text>
+
+  <!-- Three dimensions -->
+  <rect x="55" y="1222" width="380" height="100" rx="6" fill="white" stroke="#388E3C" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="245" y="1244" text-anchor="middle" font-size="12" fill="#2E7D32" font-weight="bold">Three-Dimensional Framework</text>
+
+  <polygon points="155,1280 195,1260 195,1300" fill="#C8E6C9" stroke="#2E7D32" stroke-width="1" opacity="0.6"/>
+  <circle cx="175" cy="1280" r="25" fill="none" stroke="#A5D6A7" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <circle cx="175" cy="1280" r="15" fill="none" stroke="#A5D6A7" stroke-width="0.8" stroke-dasharray="3,2"/>
+  <text x="175" y="1250" text-anchor="middle" font-size="8" fill="#2E7D32">Structural</text>
+  <text x="140" y="1300" text-anchor="middle" font-size="8" fill="#2E7D32">Functional</text>
+  <text x="210" y="1300" text-anchor="middle" font-size="8" fill="#2E7D32">Adaptive</text>
+
+  <text x="230" y="1268" font-size="10" fill="#333">Structural: 19.1% road closure rate</text>
+  <text x="230" y="1286" font-size="10" fill="#333">Functional: Supply 100% | Evac. 9.1%</text>
+  <text x="230" y="1304" font-size="10" fill="#333">Adaptive: Drone improvement 16.3%</text>
+
+  <!-- Key finding -->
+  <rect x="460" y="1222" width="430" height="100" rx="6" fill="white" stroke="#1B5E20" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="675" y="1244" text-anchor="middle" font-size="12" fill="#1B5E20" font-weight="bold">Core Finding: Asymmetric Resilience</text>
+  <text x="475" y="1268" font-size="10.5" fill="#333">• Supply: High resilience (100%, within 30 min)</text>
+  <text x="475" y="1286" font-size="10.5" fill="#333">• Evacuation: Vulnerability (9.1%, capacity gap)</text>
+  <text x="475" y="1304" font-size="10.5" fill="#333">• Root cause: Task scale disparity (40 vs 234.5k)</text>
+
+  <!-- Policy -->
+  <rect x="915" y="1222" width="430" height="100" rx="6" fill="white" stroke="#33691E" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="1130" y="1244" text-anchor="middle" font-size="12" fill="#33691E" font-weight="bold">Policy Recommendations</text>
+  <text x="930" y="1268" font-size="10" fill="#333">① Subway emergency protocol (69% capacity)</text>
+  <text x="930" y="1286" font-size="10" fill="#333">② Tiered evac.: core mandatory + shelter-in-place</text>
+  <text x="930" y="1304" font-size="10" fill="#333">③ Drone infrastructure  ④ Real-time met. integration</text>
+
+  <!-- Dual strategy -->
+  <rect x="55" y="1340" width="1290" height="30" rx="6" fill="#2E7D32"/>
+  <text x="700" y="1361" text-anchor="middle" font-size="12.5" fill="white" font-weight="bold">Dual Strategy: Mandatory evacuation within 1 km core + Shelter-in-place with PPE at 1–3 km → Manageable demand level</text>
+
+  <!-- ============================================================ -->
+  <!-- Caption -->
+  <!-- ============================================================ -->
+  <text x="700" y="1420" text-anchor="middle" font-size="13" fill="#333" font-weight="bold">Fig. X  Technical Roadmap</text>
+  <text x="700" y="1440" text-anchor="middle" font-size="11" fill="#555" font-style="italic">Coordinated Emergency Supply Delivery and Multi-Type Personnel Evacuation Optimization</text>
+  <text x="700" y="1458" text-anchor="middle" font-size="11" fill="#555" font-style="italic">for Hazardous Material Incidents on Urban Expressways — A Case Study of Beijing 6th Ring Road</text>
+
+  <!-- ============================================================ -->
+  <!-- Legend -->
+  <!-- ============================================================ -->
+  <rect x="200" y="1488" width="1000" height="68" rx="6" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <text x="220" y="1508" font-size="10" fill="#555" font-weight="bold">Legend:</text>
+  
+  <rect x="280" y="1498" width="14" height="14" rx="3" fill="#1565C0"/>
+  <text x="300" y="1509" font-size="9.5" fill="#555">Data Processing</text>
+  
+  <rect x="400" y="1498" width="14" height="14" rx="3" fill="#F9A825"/>
+  <text x="420" y="1509" font-size="9.5" fill="#555">Scenario</text>
+  
+  <rect x="490" y="1498" width="14" height="14" rx="3" fill="#C62828"/>
+  <text x="510" y="1509" font-size="9.5" fill="#555">Supply (Centripetal)</text>
+  
+  <rect x="640" y="1498" width="14" height="14" rx="3" fill="#1565C0"/>
+  <text x="660" y="1509" font-size="9.5" fill="#555">Evacuation (Centrifugal)</text>
+  
+  <rect x="810" y="1498" width="14" height="14" rx="3" fill="#2E7D32"/>
+  <text x="830" y="1509" font-size="9.5" fill="#555">Resilience</text>
+
+  <line x1="280" y1="1536" x2="320" y2="1536" stroke="#555" stroke-width="1.2" marker-end="url(#arrowRight)"/>
+  <text x="330" y="1540" font-size="9.5" fill="#555">Process flow</text>
+  
+  <line x1="430" y1="1536" x2="470" y2="1536" stroke="#FF6F00" stroke-width="1.2" stroke-dasharray="5,3"/>
+  <text x="480" y="1540" font-size="9.5" fill="#555">Coupling relation</text>
+  
+  <rect x="590" y="1528" width="40" height="16" rx="3" fill="none" stroke="#BDBDBD" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="640" y="1540" font-size="9.5" fill="#555">Phase boundary</text>
+
+  <text x="770" y="1540" font-size="9.5" fill="#555">Step 0–12: Code module identifiers</text>
+
+</svg>

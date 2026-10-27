@@ -1,0 +1,450 @@
+<svg width="100%" viewBox="0 0 1860 690" xmlns="http://www.w3.org/2000/svg" style="background:white">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#9E9E9E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.06"/>
+  </filter>
+</defs>
+
+<!-- ========== PHASE BACKGROUNDS ========== -->
+<!-- Phase I background -->
+<rect x="15" y="55" width="370" height="410" rx="12" fill="#F5F9FF" stroke="#BBDEFB" stroke-width="0.5"/>
+<!-- Phase II background -->
+<rect x="395" y="55" width="280" height="425" rx="12" fill="#FFF8F0" stroke="#FFE0B2" stroke-width="0.5"/>
+<!-- Phase III background -->
+<rect x="685" y="55" width="600" height="495" rx="12" fill="#F0FFF4" stroke="#C8E6C9" stroke-width="0.5"/>
+<!-- Phase IV background -->
+<rect x="1295" y="55" width="270" height="425" rx="12" fill="#FFF3F0" stroke="#FFCDD2" stroke-width="0.5"/>
+<!-- Phase V background -->
+<rect x="1575" y="55" width="270" height="425" rx="12" fill="#F5F0FF" stroke="#D1C4E9" stroke-width="0.5"/>
+
+<!-- ========== PHASE HEADERS ========== -->
+<text x="200" y="30" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="13" font-weight="bold" fill="#1565C0">第一阶段</text>
+<text x="200" y="48" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="11" fill="#42A5F5">多源数据融合</text>
+
+<text x="535" y="30" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="13" font-weight="bold" fill="#E65100">第二阶段</text>
+<text x="535" y="48" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="11" fill="#FF9800">事故场景构建</text>
+
+<text x="985" y="30" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="13" font-weight="bold" fill="#2E7D32">第三阶段</text>
+<text x="985" y="48" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="11" fill="#4CAF50">协同优化求解</text>
+
+<text x="1430" y="30" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="13" font-weight="bold" fill="#C62828">第四阶段</text>
+<text x="1430" y="48" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="11" fill="#EF5350">韧性评估</text>
+
+<text x="1710" y="30" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="13" font-weight="bold" fill="#4527A0">第五阶段</text>
+<text x="1710" y="48" text-anchor="middle" font-family="SimHei, 'Noto Sans SC', sans-serif" font-size="11" fill="#7E57C2">结论与建议</text>
+
+<!-- ========== PHASE I: DATA SOURCES ========== -->
+<!-- Data source cards -->
+<!-- 1. OSM Road Network -->
+<g filter="url(#shadow)">
+  <rect x="30" y="75" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="30" y="75" width="160" height="18" rx="6" fill="#1565C0"/>
+  <rect x="30" y="87" width="160" height="6" fill="#1565C0"/>
+  <text x="110" y="88" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">OSM路网数据</text>
+  <text x="110" y="107" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">道路等级 · 限速 · 通行方向</text>
+  <text x="110" y="121" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">26,699路段 / 11,232 km</text>
+</g>
+
+<!-- 2. POI Data -->
+<g filter="url(#shadow)">
+  <rect x="210" y="75" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="210" y="75" width="160" height="18" rx="6" fill="#1976D2"/>
+  <rect x="210" y="87" width="160" height="6" fill="#1976D2"/>
+  <text x="290" y="88" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">百度POI数据库</text>
+  <text x="290" y="107" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">医院 · 消防站 · 避难所 · 地铁站</text>
+  <text x="290" y="121" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">25,276个兴趣点</text>
+</g>
+
+<!-- 3. Census Data -->
+<g filter="url(#shadow)">
+  <rect x="30" y="145" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="30" y="145" width="160" height="18" rx="6" fill="#1E88E5"/>
+  <rect x="30" y="157" width="160" height="6" fill="#1E88E5"/>
+  <text x="110" y="158" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">七普人口数据</text>
+  <text x="110" y="177" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">分年龄·性别人口 (区县级)</text>
+  <text x="110" y="191" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">老人15% · 儿童12%</text>
+</g>
+
+<!-- 4. Mobile Signaling -->
+<g filter="url(#shadow)">
+  <rect x="210" y="145" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="210" y="145" width="160" height="18" rx="6" fill="#2196F3"/>
+  <rect x="210" y="157" width="160" height="6" fill="#2196F3"/>
+  <text x="290" y="158" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">百度手机信令</text>
+  <text x="290" y="177" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">OD流量 · 通勤模式 · 方式划分</text>
+  <text x="290" y="191" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">5659万日OD / 311.8万通勤</text>
+</g>
+
+<!-- 5. Block Population -->
+<g filter="url(#shadow)">
+  <rect x="30" y="215" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="30" y="215" width="160" height="18" rx="6" fill="#42A5F5"/>
+  <rect x="30" y="227" width="160" height="6" fill="#42A5F5"/>
+  <text x="110" y="228" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">地块级人口数据</text>
+  <text x="110" y="247" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">百度LBS常住人口分布</text>
+  <text x="110" y="261" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">地块级空间精度</text>
+</g>
+
+<!-- 6. Boundary -->
+<g filter="url(#shadow)">
+  <rect x="210" y="215" width="160" height="56" rx="6" fill="white" stroke="#1565C0" stroke-width="0.8"/>
+  <rect x="210" y="215" width="160" height="18" rx="6" fill="#64B5F6"/>
+  <rect x="210" y="227" width="160" height="6" fill="#64B5F6"/>
+  <text x="290" y="228" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="white" font-weight="bold">行政边界数据</text>
+  <text x="290" y="247" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">亦庄控规界 · 15km缓冲区</text>
+  <text x="290" y="261" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">研究范围 707 km²</text>
+</g>
+
+<!-- DATA PROCESSING BOX -->
+<g filter="url(#shadow)">
+  <rect x="35" y="290" width="340" height="100" rx="8" fill="white" stroke="#0D47A1" stroke-width="1"/>
+  <rect x="35" y="290" width="340" height="22" rx="8" fill="#0D47A1"/>
+  <rect x="35" y="306" width="340" height="6" fill="#0D47A1"/>
+  <text x="205" y="306" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">数据处理流水线 (Steps 0–7)</text>
+  <text x="55" y="330" font-family="sans-serif" font-size="8" fill="#333">• BD-09 → GCJ-02 → WGS84 坐标转换</text>
+  <text x="55" y="344" font-family="sans-serif" font-size="8" fill="#333">• 路网裁剪 → NetworkX有向图 → Dijkstra行程时间</text>
+  <text x="55" y="358" font-family="sans-serif" font-size="8" fill="#333">• 人口空间分配（七普年龄结构 × 地块级人口）</text>
+  <text x="55" y="372" font-family="sans-serif" font-size="8" fill="#333">• 地铁网络拓扑 · OD/通勤数据裁剪 · POI筛选分类</text>
+</g>
+
+<!-- Integration check -->
+<g filter="url(#shadow)">
+  <rect x="35" y="405" width="340" height="48" rx="8" fill="white" stroke="#0D47A1" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="205" y="425" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9" fill="#0D47A1" font-weight="bold">数据整合与一致性检验 (Step 8)</text>
+  <text x="205" y="441" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">空间叠加 · 拓扑检查 · 场景参数输出</text>
+</g>
+
+<!-- ========== PHASE II: SCENARIO ========== -->
+<!-- Gaussian Plume -->
+<g filter="url(#shadow)">
+  <rect x="410" y="75" width="250" height="72" rx="8" fill="white" stroke="#E65100" stroke-width="1"/>
+  <rect x="410" y="75" width="250" height="22" rx="8" fill="#E65100"/>
+  <rect x="410" y="91" width="250" height="6" fill="#E65100"/>
+  <text x="535" y="91" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">高斯烟羽扩散模型</text>
+  <text x="535" y="112" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">Cl₂泄漏 5 kg/min · 风速 3 m/s · D级稳定度</text>
+  <text x="535" y="126" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#666">Pasquill-Gifford扩散参数 · Briggs城市公式</text>
+  <text x="535" y="139" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#666">C(x,y) = Q/(2πuσyσz) · exp(-y²/2σy²) · ...</text>
+</g>
+
+<!-- ERPG Zoning -->
+<g filter="url(#shadow)">
+  <rect x="410" y="160" width="250" height="88" rx="8" fill="white" stroke="#E65100" stroke-width="1"/>
+  <rect x="410" y="160" width="250" height="22" rx="8" fill="#FF6F00"/>
+  <rect x="410" y="176" width="250" height="6" fill="#FF6F00"/>
+  <text x="535" y="176" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">ERPG危险区域三级划分</text>
+  <rect x="425" y="192" width="12" height="12" rx="2" fill="#D32F2F"/>
+  <text x="442" y="202" font-family="sans-serif" font-size="7.5" fill="#333">核心危险区 ERPG-3 (≥20 mg/m³) 立即疏散</text>
+  <rect x="425" y="210" width="12" height="12" rx="2" fill="#FF9800"/>
+  <text x="442" y="220" font-family="sans-serif" font-size="7.5" fill="#333">警 戒 区 ERPG-2 (≥3 mg/m³) 紧急疏散</text>
+  <rect x="425" y="228" width="12" height="12" rx="2" fill="#FFC107"/>
+  <text x="442" y="238" font-family="sans-serif" font-size="7.5" fill="#333">影 响 区 ERPG-1 (≥1 mg/m³) 就地避难</text>
+</g>
+
+<!-- Road closure -->
+<g filter="url(#shadow)">
+  <rect x="410" y="262" width="250" height="68" rx="8" fill="white" stroke="#FF6F00" stroke-width="0.8"/>
+  <rect x="410" y="262" width="250" height="22" rx="8" fill="#FF8F00"/>
+  <rect x="410" y="278" width="250" height="6" fill="#FF8F00"/>
+  <text x="535" y="278" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">道路封闭与拥堵模拟</text>
+  <text x="535" y="298" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">500m道路封闭区 · 1km核心封闭区（96.7 km）</text>
+  <text x="535" y="312" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">3km BPR拥堵区 (α=0.15, β=4.0) · 5km影响区</text>
+  <text x="535" y="325" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#888">封闭率 19.1%（96.7/505.3 km）</text>
+</g>
+
+<!-- Wind sensitivity -->
+<g filter="url(#shadow)">
+  <rect x="410" y="344" width="250" height="55" rx="8" fill="white" stroke="#FFA000" stroke-width="0.8"/>
+  <rect x="410" y="344" width="250" height="22" rx="8" fill="#FFA726"/>
+  <rect x="410" y="360" width="250" height="6" fill="#FFA726"/>
+  <text x="535" y="360" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">风向敏感性分析</text>
+  <text x="535" y="380" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">四种风向：SW(225°)基准 · N(0°) · E(90°)</text>
+  <text x="535" y="393" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">强SW(225°, 8m/s) → 实时气象融合</text>
+</g>
+
+<!-- Population classification -->
+<g filter="url(#shadow)">
+  <rect x="410" y="413" width="250" height="56" rx="8" fill="white" stroke="#FFA000" stroke-width="0.8"/>
+  <rect x="410" y="413" width="250" height="22" rx="8" fill="#FFB74D"/>
+  <rect x="410" y="429" width="250" height="6" fill="#FFB74D"/>
+  <text x="535" y="429" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">受影响人口分类 (Step 9)</text>
+  <text x="535" y="449" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">k=1 重伤(2%) · k=2 脆弱(27%) · k=3 一般(71%)</text>
+  <text x="535" y="462" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#333">3km区域总影响人口 ≈ 23.5万人</text>
+</g>
+
+
+<!-- ========== PHASE III: OPTIMIZATION ========== -->
+<!-- SUPPLY OPTIMIZATION (top track) -->
+<g filter="url(#shadow)">
+  <rect x="700" y="75" width="570" height="195" rx="10" fill="white" stroke="#2E7D32" stroke-width="1.2"/>
+  <rect x="700" y="75" width="570" height="26" rx="10" fill="#2E7D32"/>
+  <rect x="700" y="95" width="570" height="6" fill="#2E7D32"/>
+  <text x="985" y="94" text-anchor="middle" font-family="SimHei, sans-serif" font-size="11" fill="white" font-weight="bold">应急物资配送优化 (Step 10) — 向心流</text>
+
+  <!-- Sub-boxes inside -->
+  <!-- Logistics network -->
+  <rect x="715" y="112" width="172" height="65" rx="5" fill="#E8F5E9" stroke="#43A047" stroke-width="0.5"/>
+  <text x="801" y="126" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#1B5E20" font-weight="bold">三层物流网络</text>
+  <text x="801" y="140" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">供应点(H): 8消防站+2仓库</text>
+  <text x="801" y="152" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">中转站(I): 5大容量设施</text>
+  <text x="801" y="164" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">需求点(J): 15个位置</text>
+
+  <!-- Priority categories -->
+  <rect x="897" y="112" width="172" height="65" rx="5" fill="#E8F5E9" stroke="#43A047" stroke-width="0.5"/>
+  <text x="983" y="126" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#1B5E20" font-weight="bold">四级优先级时间窗</text>
+  <rect x="910" y="132" width="8" height="8" rx="1" fill="#B71C1C"/>
+  <text x="922" y="139" font-family="sans-serif" font-size="6.5" fill="#333">生命救援 30min(硬)</text>
+  <rect x="910" y="144" width="8" height="8" rx="1" fill="#E53935"/>
+  <text x="922" y="151" font-family="sans-serif" font-size="6.5" fill="#333">医疗支援 60min(硬)</text>
+  <rect x="910" y="156" width="8" height="8" rx="1" fill="#FF9800"/>
+  <text x="922" y="163" font-family="sans-serif" font-size="6.5" fill="#333">防护设备 120min(软)</text>
+  <rect x="910" y="168" width="8" height="8" rx="1" fill="#FFC107"/>
+  <text x="922" y="175" font-family="sans-serif" font-size="6.5" fill="#333">基础保障 240min(软)</text>
+
+  <!-- Truck-drone -->
+  <rect x="1079" y="112" width="178" height="65" rx="5" fill="#E8F5E9" stroke="#43A047" stroke-width="0.5"/>
+  <text x="1168" y="126" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#1B5E20" font-weight="bold">货车—无人机协同</text>
+  <text x="1168" y="140" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">直送: 货车→需求点 (20辆)</text>
+  <text x="1168" y="152" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">接力: 货车→中转站→无人机 (10架)</text>
+  <text x="1168" y="164" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">无人机: 60km/h · ≤25kg · ≤15km</text>
+
+  <!-- Algorithm -->
+  <rect x="715" y="185" width="265" height="38" rx="5" fill="#C8E6C9" stroke="#388E3C" stroke-width="0.5"/>
+  <text x="847" y="200" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#1B5E20" font-weight="bold">求解方法</text>
+  <text x="847" y="214" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">优先级贪心构造 + 2-opt局部搜索 · Dijkstra路网行程时间</text>
+
+  <!-- Objective -->
+  <rect x="990" y="185" width="265" height="38" rx="5" fill="#C8E6C9" stroke="#388E3C" stroke-width="0.5"/>
+  <text x="1122" y="200" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#1B5E20" font-weight="bold">目标函数</text>
+  <text x="1122" y="214" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">min Z = w₁·Makespan + w₂·Σpenalty + w₃·Σunmet</text>
+
+  <!-- Results banner -->
+  <rect x="715" y="232" width="540" height="28" rx="5" fill="#1B5E20" opacity="0.9"/>
+  <text x="985" y="250" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="white">结果: Makespan 44.8→37.5 min (↓16.3%) · 40/40任务完成 · 零惩罚 · 生命救援100%准时</text>
+</g>
+
+<!-- EVACUATION OPTIMIZATION (bottom track) -->
+<g filter="url(#shadow)">
+  <rect x="700" y="285" width="570" height="195" rx="10" fill="white" stroke="#4527A0" stroke-width="1.2"/>
+  <rect x="700" y="285" width="570" height="26" rx="10" fill="#4527A0"/>
+  <rect x="700" y="305" width="570" height="6" fill="#4527A0"/>
+  <text x="985" y="304" text-anchor="middle" font-family="SimHei, sans-serif" font-size="11" fill="white" font-weight="bold">多类型人员救援疏散优化 (Step 11) — 离心流</text>
+
+  <!-- Transport modes -->
+  <rect x="715" y="322" width="172" height="70" rx="5" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="0.5"/>
+  <text x="801" y="336" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#4A148C" font-weight="bold">五种交通方式</text>
+  <text x="801" y="349" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#333">救护车 15辆(3人) · 直升机 3架(6人)</text>
+  <text x="801" y="361" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#333">公交车 20辆(50人) · 私家车 100辆(4人)</text>
+  <text x="801" y="373" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#333">地铁 5列(500人/列) ← 疏散主力</text>
+  <text x="801" y="385" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#888">贡献69%疏散运力</text>
+
+  <!-- Population priority -->
+  <rect x="897" y="322" width="172" height="70" rx="5" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="0.5"/>
+  <text x="983" y="336" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#4A148C" font-weight="bold">三类脆弱性分级</text>
+  <rect x="910" y="344" width="8" height="8" rx="1" fill="#B71C1C"/>
+  <text x="922" y="351" font-family="sans-serif" font-size="6.5" fill="#333">k=1 重伤中毒(ω=10) →医院</text>
+  <rect x="910" y="356" width="8" height="8" rx="1" fill="#FF6F00"/>
+  <text x="922" y="363" font-family="sans-serif" font-size="6.5" fill="#333">k=2 老人儿童(ω=5) →医院/庇护所</text>
+  <rect x="910" y="368" width="8" height="8" rx="1" fill="#1976D2"/>
+  <text x="922" y="375" font-family="sans-serif" font-size="6.5" fill="#333">k=3 一般人员(ω=1) →任意庇护所</text>
+  <text x="983" y="389" text-anchor="middle" font-family="sans-serif" font-size="6.5" fill="#888">加权优先级保护脆弱群体</text>
+
+  <!-- Dispatch model -->
+  <rect x="1079" y="322" width="178" height="70" rx="5" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="0.5"/>
+  <text x="1168" y="336" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#4A148C" font-weight="bold">风险感知调度模型</text>
+  <text x="1168" y="349" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">时间步进式 (Δt=5min, T=180min)</text>
+  <text x="1168" y="361" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">高斯浓度场动态风险暴露</text>
+  <text x="1168" y="373" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">Dijkstra受损路网最短路径</text>
+  <text x="1168" y="385" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">车辆循环调度（含返回时间）</text>
+
+  <!-- Algorithm & Objective -->
+  <rect x="715" y="400" width="265" height="34" rx="5" fill="#E1BEE7" stroke="#6A1B9A" stroke-width="0.5"/>
+  <text x="847" y="414" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="#4A148C" font-weight="bold">目标函数</text>
+  <text x="847" y="427" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#333">min Z₁(加权疏散时间) + Z₂(动态风险暴露) + Z₃(未服务惩罚)</text>
+
+  <!-- Results banner -->
+  <rect x="990" y="400" width="265" height="34" rx="5" fill="#311B92" opacity="0.9"/>
+  <text x="1122" y="414" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8" fill="white">结果: 疏散率 9.1% (21,312/234,502人)</text>
+  <text x="1122" y="427" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#E0E0E0">无地铁→2.8% · 加倍救护车→9.2% · 风险↓4.8%</text>
+
+  <!-- Results banner 2 -->
+  <rect x="715" y="442" width="540" height="28" rx="5" fill="#4A148C" opacity="0.85"/>
+  <text x="985" y="460" text-anchor="middle" font-family="SimHei, sans-serif" font-size="8.5" fill="white">发现: 地铁贡献69%运力(关键) · 运力严重不足 · 建议分层疏散(1km强制+1-3km就地避难)</text>
+</g>
+
+<!-- Coupling box between supply and evacuation -->
+<g filter="url(#shadow)">
+  <rect x="700" y="485" width="570" height="55" rx="8" fill="#FAFAFA" stroke="#455A64" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="985" y="505" text-anchor="middle" font-family="SimHei, sans-serif" font-size="9.5" fill="#37474F" font-weight="bold">物资配送—人员疏散 三重耦合关系</text>
+  <text x="985" y="522" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#555">① 资源竞争: 共享受损路网与交通走廊  ② 时间耦合: 物资先行保障→疏散同步展开  ③ 空间交互: 向心(配送)与离心(疏散)流向互锁</text>
+</g>
+
+
+<!-- ========== PHASE IV: RESILIENCE ========== -->
+<g filter="url(#shadow)">
+  <rect x="1310" y="75" width="240" height="80" rx="8" fill="white" stroke="#C62828" stroke-width="1"/>
+  <rect x="1310" y="75" width="240" height="22" rx="8" fill="#C62828"/>
+  <rect x="1310" y="91" width="240" height="6" fill="#C62828"/>
+  <text x="1430" y="91" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">结构韧性</text>
+  <text x="1430" y="115" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">道路封闭率 19.1% (96.7/505.3 km)</text>
+  <text x="1430" y="130" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#666">路网整体连通性保留</text>
+  <text x="1430" y="143" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#666">地面配送仍可行</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1310" y="170" width="240" height="95" rx="8" fill="white" stroke="#D32F2F" stroke-width="1"/>
+  <rect x="1310" y="170" width="240" height="22" rx="8" fill="#D32F2F"/>
+  <rect x="1310" y="186" width="240" height="6" fill="#D32F2F"/>
+  <text x="1430" y="186" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">功能韧性</text>
+  <text x="1430" y="207" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">物资配送完成率: 100%</text>
+  <text x="1430" y="221" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">生命救援准时率: 100%</text>
+  <text x="1430" y="235" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">人员疏散完成率: 9.1%</text>
+  <text x="1430" y="252" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#C62828" font-weight="bold">⚠ 不对称特征: 物资高韧性 vs 疏散低韧性</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1310" y="280" width="240" height="72" rx="8" fill="white" stroke="#E53935" stroke-width="1"/>
+  <rect x="1310" y="280" width="240" height="22" rx="8" fill="#E53935"/>
+  <rect x="1310" y="296" width="240" height="6" fill="#E53935"/>
+  <text x="1430" y="296" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">适应韧性</text>
+  <text x="1430" y="318" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">无人机协同 Makespan ↓16.3%</text>
+  <text x="1430" y="332" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">地铁应急运营 → 疏散率×3.3</text>
+  <text x="1430" y="346" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#333">多模式协同效益已验证</text>
+</g>
+
+<!-- Scenario comparison -->
+<g filter="url(#shadow)">
+  <rect x="1310" y="367" width="240" height="100" rx="8" fill="white" stroke="#EF5350" stroke-width="0.8"/>
+  <rect x="1310" y="367" width="240" height="22" rx="8" fill="#EF5350"/>
+  <rect x="1310" y="383" width="240" height="6" fill="#EF5350"/>
+  <text x="1430" y="383" text-anchor="middle" font-family="SimHei, sans-serif" font-size="10" fill="white" font-weight="bold">方案对比分析</text>
+  <text x="1325" y="404" font-family="sans-serif" font-size="7" fill="#333">配送: 纯货车 44.8min → 协同 37.5min</text>
+  <text x="1325" y="418" font-family="sans-serif" font-size="7" fill="#333">疏散: 全资源 9.1% · 无地铁 2.8%</text>
+  <text x="1325" y="432" font-family="sans-serif" font-size="7" fill="#333">疏散: 无直升机 9.0% · 加倍救护车 9.2%</text>
+  <text x="1325" y="446" font-family="sans-serif" font-size="7" fill="#333">无人机: 纯无人机不可行(载重限制)</text>
+  <text x="1325" y="460" font-family="sans-serif" font-size="7" fill="#333">加倍无人机: 无额外改善(瓶颈非数量)</text>
+</g>
+
+
+<!-- ========== PHASE V: CONCLUSIONS ========== -->
+<g filter="url(#shadow)">
+  <rect x="1590" y="75" width="240" height="392" rx="10" fill="white" stroke="#4527A0" stroke-width="1.2"/>
+  <rect x="1590" y="75" width="240" height="26" rx="10" fill="#4527A0"/>
+  <rect x="1590" y="95" width="240" height="6" fill="#4527A0"/>
+  <text x="1710" y="94" text-anchor="middle" font-family="SimHei, sans-serif" font-size="11" fill="white" font-weight="bold">政策建议与展望</text>
+
+  <text x="1605" y="120" font-family="SimHei, sans-serif" font-size="8.5" fill="#4527A0" font-weight="bold">政策建议</text>
+  <text x="1610" y="136" font-family="sans-serif" font-size="7" fill="#333">❶ 建立地铁应急运营预案</text>
+  <text x="1618" y="148" font-family="sans-serif" font-size="6.5" fill="#666">(贡献69%疏散能力)</text>
+  <text x="1610" y="164" font-family="sans-serif" font-size="7" fill="#333">❷ 分层疏散策略</text>
+  <text x="1618" y="176" font-family="sans-serif" font-size="6.5" fill="#666">(1km强制疏散 + 1-3km就地避难)</text>
+  <text x="1610" y="192" font-family="sans-serif" font-size="7" fill="#333">❸ 高风险走廊预置直升机</text>
+  <text x="1618" y="204" font-family="sans-serif" font-size="6.5" fill="#666">(重伤人员快速转运)</text>
+  <text x="1610" y="220" font-family="sans-serif" font-size="7" fill="#333">❹ 投资无人机基础设施</text>
+  <text x="1618" y="232" font-family="sans-serif" font-size="6.5" fill="#666">(大范围破坏时优势凸显)</text>
+  <text x="1610" y="248" font-family="sans-serif" font-size="7" fill="#333">❺ 实时风向监测整合</text>
+  <text x="1618" y="260" font-family="sans-serif" font-size="6.5" fill="#666">(动态更新危险区域)</text>
+
+  <line x1="1610" y1="275" x2="1810" y2="275" stroke="#D1C4E9" stroke-width="0.5"/>
+
+  <text x="1605" y="292" font-family="SimHei, sans-serif" font-size="8.5" fill="#4527A0" font-weight="bold">研究局限</text>
+  <text x="1610" y="308" font-family="sans-serif" font-size="7" fill="#333">• 贪心启发式不保证全局最优</text>
+  <text x="1610" y="322" font-family="sans-serif" font-size="7" fill="#333">• 人口年龄结构区县级均匀假设</text>
+  <text x="1610" y="336" font-family="sans-serif" font-size="7" fill="#333">• 静态高斯烟羽(非CFD)</text>
+  <text x="1610" y="350" font-family="sans-serif" font-size="7" fill="#333">• BPR静态拥堵(非动态交通流)</text>
+
+  <line x1="1610" y1="362" x2="1810" y2="362" stroke="#D1C4E9" stroke-width="0.5"/>
+
+  <text x="1605" y="378" font-family="SimHei, sans-serif" font-size="8.5" fill="#4527A0" font-weight="bold">未来方向</text>
+  <text x="1610" y="394" font-family="sans-serif" font-size="7" fill="#333">• MIP精确方法 / ALNS元启发式</text>
+  <text x="1610" y="408" font-family="sans-serif" font-size="7" fill="#333">• CFD耦合扩散模拟</text>
+  <text x="1610" y="422" font-family="sans-serif" font-size="7" fill="#333">• 中微观交通仿真耦合</text>
+  <text x="1610" y="436" font-family="sans-serif" font-size="7" fill="#333">• 建筑级人口模型</text>
+  <text x="1610" y="450" font-family="sans-serif" font-size="7" fill="#333">• 实际应急预案数据标定</text>
+</g>
+
+
+<!-- ========== CONNECTING ARROWS ========== -->
+<!-- Phase I → Phase II -->
+<line x1="385" y1="330" x2="408" y2="330" stroke="#455A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Phase II → Phase III (supply) -->
+<path d="M660 200 L685 200 L685 180 L698 180" stroke="#2E7D32" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- Phase II → Phase III (evacuation) -->
+<path d="M660 400 L685 400 L685 390 L698 390" stroke="#4527A0" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- Phase III → Phase IV -->
+<line x1="1272" y1="200" x2="1308" y2="200" stroke="#C62828" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M1272 400 L1290 400 L1290 350 L1308 350" stroke="#C62828" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+<!-- Phase IV → Phase V -->
+<line x1="1552" y1="300" x2="1588" y2="300" stroke="#4527A0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<!-- Data to processing arrows (vertical) -->
+<line x1="110" y1="131" x2="110" y2="143" stroke="#90CAF9" stroke-width="0.6" marker-end="url(#arrow-gray)"/>
+<line x1="290" y1="131" x2="290" y2="143" stroke="#90CAF9" stroke-width="0.6" marker-end="url(#arrow-gray)"/>
+<line x1="110" y1="201" x2="110" y2="213" stroke="#90CAF9" stroke-width="0.6" marker-end="url(#arrow-gray)"/>
+<line x1="290" y1="201" x2="290" y2="213" stroke="#90CAF9" stroke-width="0.6" marker-end="url(#arrow-gray)"/>
+<line x1="200" y1="271" x2="200" y2="288" stroke="#1565C0" stroke-width="1" marker-end="url(#arrow)"/>
+
+<!-- Processing to integration -->
+<line x1="205" y1="390" x2="205" y2="403" stroke="#0D47A1" stroke-width="1" marker-end="url(#arrow)"/>
+
+
+<!-- ========== BOTTOM: STUDY CONTEXT ========== -->
+<g filter="url(#shadow)">
+  <rect x="30" y="555" width="1810" height="54" rx="8" fill="#ECEFF1" stroke="#78909C" stroke-width="0.5"/>
+  <text x="50" y="576" font-family="SimHei, sans-serif" font-size="9" fill="#37474F" font-weight="bold">研究背景</text>
+  <text x="130" y="576" font-family="sans-serif" font-size="8" fill="#555">城市快速路危险品车辆事故场景下的应急物资配送与多类型人员救援疏散协同优化研究——以北京六环路为例</text>
+  <text x="50" y="596" font-family="sans-serif" font-size="8" fill="#555">事故位置: 六环路太和桥立交 (116.494°E, 39.736°N) · 泄漏气体: 氯气(Cl₂) · 研究范围: 15km缓冲区(707 km²) · 核心区: 亦庄经济技术开发区</text>
+</g>
+
+<!-- Legend -->
+<g>
+  <text x="30" y="635" font-family="SimHei, sans-serif" font-size="8.5" fill="#78909C">图例</text>
+  <rect x="60" y="624" width="30" height="14" rx="3" fill="#1565C0" opacity="0.8"/>
+  <text x="95" y="635" font-family="sans-serif" font-size="7.5" fill="#555">数据层</text>
+  <rect x="130" y="624" width="30" height="14" rx="3" fill="#E65100" opacity="0.8"/>
+  <text x="165" y="635" font-family="sans-serif" font-size="7.5" fill="#555">场景层</text>
+  <rect x="200" y="624" width="30" height="14" rx="3" fill="#2E7D32" opacity="0.8"/>
+  <text x="235" y="635" font-family="sans-serif" font-size="7.5" fill="#555">物资配送</text>
+  <rect x="285" y="624" width="30" height="14" rx="3" fill="#4527A0" opacity="0.8"/>
+  <text x="320" y="635" font-family="sans-serif" font-size="7.5" fill="#555">人员疏散</text>
+  <rect x="370" y="624" width="30" height="14" rx="3" fill="#C62828" opacity="0.8"/>
+  <text x="405" y="635" font-family="sans-serif" font-size="7.5" fill="#555">韧性评估</text>
+  <line x1="460" y1="631" x2="490" y2="631" stroke="#455A64" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="495" y="635" font-family="sans-serif" font-size="7.5" fill="#555">分析流向</text>
+  <line x1="540" y1="631" x2="570" y2="631" stroke="#455A64" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="575" y="635" font-family="sans-serif" font-size="7.5" fill="#555">耦合关系</text>
+</g>
+
+<!-- Key methods tags at bottom -->
+<g>
+  <text x="30" y="665" font-family="SimHei, sans-serif" font-size="8.5" fill="#78909C">核心方法</text>
+  <rect x="90" y="652" width="95" height="18" rx="9" fill="white" stroke="#1565C0" stroke-width="0.6"/>
+  <text x="137" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#1565C0">BD09→WGS84转换</text>
+  <rect x="195" y="652" width="80" height="18" rx="9" fill="white" stroke="#1565C0" stroke-width="0.6"/>
+  <text x="235" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#1565C0">NetworkX图</text>
+  <rect x="285" y="652" width="100" height="18" rx="9" fill="white" stroke="#E65100" stroke-width="0.6"/>
+  <text x="335" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#E65100">Gaussian Plume</text>
+  <rect x="395" y="652" width="90" height="18" rx="9" fill="white" stroke="#E65100" stroke-width="0.6"/>
+  <text x="440" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#E65100">ERPG阈值体系</text>
+  <rect x="495" y="652" width="70" height="18" rx="9" fill="white" stroke="#2E7D32" stroke-width="0.6"/>
+  <text x="530" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#2E7D32">BPR函数</text>
+  <rect x="575" y="652" width="105" height="18" rx="9" fill="white" stroke="#2E7D32" stroke-width="0.6"/>
+  <text x="627" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#2E7D32">Dijkstra最短路径</text>
+  <rect x="690" y="652" width="75" height="18" rx="9" fill="white" stroke="#2E7D32" stroke-width="0.6"/>
+  <text x="727" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#2E7D32">贪心+2-opt</text>
+  <rect x="775" y="652" width="100" height="18" rx="9" fill="white" stroke="#4527A0" stroke-width="0.6"/>
+  <text x="825" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#4527A0">时间步进式调度</text>
+  <rect x="885" y="652" width="95" height="18" rx="9" fill="white" stroke="#C62828" stroke-width="0.6"/>
+  <text x="932" y="664" text-anchor="middle" font-family="sans-serif" font-size="7" fill="#C62828">三维韧性评估</text>
+</g>
+
+</svg>

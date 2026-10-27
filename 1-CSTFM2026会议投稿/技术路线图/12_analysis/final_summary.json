@@ -1,0 +1,54 @@
+{
+  "resilience": {
+    "structural": {
+      "total_affected_road_km": 505.2820900664694,
+      "closed_road_km": 96.733360925511,
+      "road_closure_ratio": 0.19144427009630563
+    },
+    "functional": {
+      "supply_completion_rate": 0.8857142857142857,
+      "supply_makespan_min": 59.864037304205944,
+      "life_rescue_on_time": 1.0,
+      "evac_rate": 0.4100506146059291,
+      "evac_total_risk": 85694.23701835443
+    },
+    "adaptive": {
+      "drone_improvement_pct": -0.2645786889463104,
+      "multimodal_benefit": "yes"
+    }
+  },
+  "key_findings": {
+    "supply": {
+      "drone_coordination_reduces_makespan": true,
+      "life_rescue_30min_achievable": true
+    },
+    "evacuation": {
+      "full_evacuation_achievable": false,
+      "critical_patients_prioritized": true
+    }
+  },
+  "output_files": {
+    "figures": [
+      "paper_fig1_study_area.png",
+      "paper_fig2_supply_opt.png",
+      "paper_fig3_evacuation.png",
+      "paper_fig4_resilience.png",
+      "step9_plume_dispersion.png",
+      "step9_danger_zones.png",
+      "step9_impact_assessment.png",
+      "step9_wind_sensitivity.png",
+      "step10_supply_optimization.png",
+      "step11_evacuation.png"
+    ],
+    "tables": [
+      "table_supply_comparison.csv",
+      "table_evacuation_comparison.csv",
+      "paper_summary_tables.json"
+    ],
+    "data": [
+      "scenario_results.json",
+      "supply_optimization_results.json",
+      "evacuation_results.json"
+    ]
+  }
+}

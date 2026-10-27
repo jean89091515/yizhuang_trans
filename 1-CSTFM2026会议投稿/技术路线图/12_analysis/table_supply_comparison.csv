@@ -1,0 +1,5 @@
+﻿Scenario,Completed Tasks,Makespan (min),Avg Time (min),Penalty Cost,Direct Delivery,Relay Delivery
+纯货车,64,47.3,28.2,0,64,0
+货车-无人机协同,62,59.9,35.9,0,28,34
+纯无人机,0,0.0,0.0,0,0,0
+协同(加倍无人机),62,59.9,35.9,0,28,34

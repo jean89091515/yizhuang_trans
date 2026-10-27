@@ -1,0 +1,95 @@
+{
+  "scenario_params": {
+    "Incident Location": "(116.49401419705991, 39.73559923848592)",
+    "Gas Type": "氯气",
+    "Leak Rate (kg/min)": 5,
+    "Wind Speed (m/s)": 3.0,
+    "Wind Direction (deg)": 225
+  },
+  "supply_comparison": [
+    {
+      "Scenario": "纯货车",
+      "Completed Tasks": 64,
+      "Makespan (min)": "47.3",
+      "Avg Time (min)": "28.2",
+      "Penalty Cost": "0",
+      "Direct Delivery": 64,
+      "Relay Delivery": 0
+    },
+    {
+      "Scenario": "货车-无人机协同",
+      "Completed Tasks": 62,
+      "Makespan (min)": "59.9",
+      "Avg Time (min)": "35.9",
+      "Penalty Cost": "0",
+      "Direct Delivery": 28,
+      "Relay Delivery": 34
+    },
+    {
+      "Scenario": "纯无人机",
+      "Completed Tasks": 0,
+      "Makespan (min)": "0.0",
+      "Avg Time (min)": "0.0",
+      "Penalty Cost": "0",
+      "Direct Delivery": 0,
+      "Relay Delivery": 0
+    },
+    {
+      "Scenario": "协同(加倍无人机)",
+      "Completed Tasks": 62,
+      "Makespan (min)": "59.9",
+      "Avg Time (min)": "35.9",
+      "Penalty Cost": "0",
+      "Direct Delivery": 28,
+      "Relay Delivery": 34
+    }
+  ],
+  "evacuation_comparison": [
+    {
+      "Scenario": "基准（ERPG分区+弹性优先级）",
+      "Evacuated": 5671,
+      "Remaining": 8159,
+      "Evac Rate (%)": "41.0",
+      "Total Risk": "85,694"
+    },
+    {
+      "Scenario": "无地铁",
+      "Evacuated": 5371,
+      "Remaining": 8459,
+      "Evac Rate (%)": "38.8",
+      "Total Risk": "84,845"
+    },
+    {
+      "Scenario": "无直升机",
+      "Evacuated": 5565,
+      "Remaining": 8265,
+      "Evac Rate (%)": "40.2",
+      "Total Risk": "91,153"
+    },
+    {
+      "Scenario": "严格优先级",
+      "Evacuated": 5671,
+      "Remaining": 8159,
+      "Evac Rate (%)": "41.0",
+      "Total Risk": "85,694"
+    }
+  ],
+  "resilience": {
+    "structural": {
+      "total_affected_road_km": 505.2820900664694,
+      "closed_road_km": 96.733360925511,
+      "road_closure_ratio": 0.19144427009630563
+    },
+    "functional": {
+      "supply_completion_rate": 0.8857142857142857,
+      "supply_makespan_min": 59.864037304205944,
+      "life_rescue_on_time": 1.0,
+      "evac_rate": 0.4100506146059291,
+      "evac_total_risk": 85694.23701835443
+    },
+    "adaptive": {
+      "drone_improvement_pct": -0.2645786889463104,
+      "multimodal_benefit": "yes"
+    }
+  }
+}

@@ -1,0 +1,249 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1520" font-family="'Times New Roman', 'SimSun', serif">
+  <defs>
+    <marker id="arrow-cn" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#37474F"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#1565C0"/>
+    </marker>
+    <linearGradient id="phase1-cn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E3F2FD"/>
+      <stop offset="100%" stop-color="#BBDEFB"/>
+    </linearGradient>
+    <linearGradient id="phase2-cn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8F5E9"/>
+      <stop offset="100%" stop-color="#C8E6C9"/>
+    </linearGradient>
+    <linearGradient id="phase3-cn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF3E0"/>
+      <stop offset="100%" stop-color="#FFE0B2"/>
+    </linearGradient>
+    <linearGradient id="phase4-cn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCE4EC"/>
+      <stop offset="100%" stop-color="#F8BBD0"/>
+    </linearGradient>
+    <linearGradient id="phase5-cn" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EDE7F6"/>
+      <stop offset="100%" stop-color="#D1C4E9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="550" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1A237E">城市化工事故应急疏散优化研究技术路线</text>
+  <text x="550" y="62" text-anchor="middle" font-size="13" fill="#546E7A">——以北京亦庄六环太平桥事故为例</text>
+  <line x1="200" y1="72" x2="900" y2="72" stroke="#90CAF9" stroke-width="1.5"/>
+
+  <!-- ==================== PHASE 1 ==================== -->
+  <rect x="30" y="90" width="1040" height="340" rx="8" fill="url(#phase1-cn)" stroke="#1565C0" stroke-width="1.5"/>
+  <rect x="30" y="90" width="1040" height="32" rx="8" fill="#1565C0"/>
+  <text x="550" y="112" text-anchor="middle" font-size="15" font-weight="bold" fill="white">第一阶段：研究范围界定与多源数据预处理</text>
+
+  <!-- Step 0 -->
+  <rect x="420" y="138" width="260" height="52" rx="5" fill="white" stroke="#1565C0" stroke-width="1.2"/>
+  <text x="550" y="158" text-anchor="middle" font-size="12" font-weight="bold" fill="#1565C0">研究范围界定（Step 0）</text>
+  <text x="550" y="176" text-anchor="middle" font-size="10" fill="#37474F">亦庄控规界 → 15km缓冲区 → 事故点标注</text>
+
+  <!-- Arrow down from Step 0 -->
+  <line x1="550" y1="190" x2="550" y2="210" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+
+  <!-- Data preprocessing row -->
+  <!-- Step 2 -->
+  <rect x="50" y="215" width="220" height="70" rx="5" fill="white" stroke="#1565C0" stroke-width="1.2"/>
+  <text x="160" y="236" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565C0">路网数据处理（Step 2）</text>
+  <text x="160" y="252" text-anchor="middle" font-size="9.5" fill="#37474F">• OSM路网裁剪与分级</text>
+  <text x="160" y="265" text-anchor="middle" font-size="9.5" fill="#37474F">• 限速/通行能力赋值</text>
+  <text x="160" y="278" text-anchor="middle" font-size="9.5" fill="#37474F">• NetworkX有向图构建</text>
+
+  <!-- Step 3 -->
+  <rect x="290" y="215" width="220" height="70" rx="5" fill="white" stroke="#1565C0" stroke-width="1.2"/>
+  <text x="400" y="236" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565C0">POI设施筛选（Step 3）</text>
+  <text x="400" y="252" text-anchor="middle" font-size="9.5" fill="#37474F">• 医院 / 消防站</text>
+  <text x="400" y="265" text-anchor="middle" font-size="9.5" fill="#37474F">• 应急避难场所</text>
+  <text x="400" y="278" text-anchor="middle" font-size="9.5" fill="#37474F">• 地铁站点</text>
+
+  <!-- Step 4 -->
+  <rect x="530" y="215" width="220" height="70" rx="5" fill="white" stroke="#1565C0" stroke-width="1.2"/>
+  <text x="640" y="236" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565C0">人口数据处理（Step 4）</text>
+  <text x="640" y="252" text-anchor="middle" font-size="9.5" fill="#37474F">• 地块级人口裁剪</text>
+  <text x="640" y="265" text-anchor="middle" font-size="9.5" fill="#37474F">• 七普年龄结构空间匹配</text>
+  <text x="640" y="278" text-anchor="middle" font-size="9.5" fill="#37474F">• 脆弱人群（儿童/老人）识别</text>
+
+  <!-- Step 5 -->
+  <rect x="770" y="215" width="220" height="70" rx="5" fill="white" stroke="#1565C0" stroke-width="1.2"/>
+  <text x="880" y="236" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565C0">OD与通勤数据（Step 5）</text>
+  <text x="880" y="252" text-anchor="middle" font-size="9.5" fill="#37474F">• BD-09→WGS84坐标转换</text>
+  <text x="880" y="265" text-anchor="middle" font-size="9.5" fill="#37474F">• 粗筛+精筛空间裁剪</text>
+  <text x="880" y="278" text-anchor="middle" font-size="9.5" fill="#37474F">• 出行时空特征统计</text>
+
+  <!-- Horizontal connection line -->
+  <line x1="270" y1="250" x2="290" y2="250" stroke="#90A4AE" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <line x1="510" y1="250" x2="530" y2="250" stroke="#90A4AE" stroke-width="0.8" stroke-dasharray="4,3"/>
+  <line x1="750" y1="250" x2="770" y2="250" stroke="#90A4AE" stroke-width="0.8" stroke-dasharray="4,3"/>
+
+  <!-- Data source labels -->
+  <rect x="60" y="305" width="180" height="22" rx="3" fill="#E8EAF6" stroke="#7986CB" stroke-width="0.8"/>
+  <text x="150" y="320" text-anchor="middle" font-size="9" fill="#3949AB">数据源：OSM路网shapefile</text>
+  <rect x="310" y="305" width="180" height="22" rx="3" fill="#E8EAF6" stroke="#7986CB" stroke-width="0.8"/>
+  <text x="400" y="320" text-anchor="middle" font-size="9" fill="#3949AB">数据源：POI 202206</text>
+  <rect x="550" y="305" width="180" height="22" rx="3" fill="#E8EAF6" stroke="#7986CB" stroke-width="0.8"/>
+  <text x="640" y="320" text-anchor="middle" font-size="9" fill="#3949AB">数据源：七普 + 地块人口</text>
+  <rect x="790" y="305" width="180" height="22" rx="3" fill="#E8EAF6" stroke="#7986CB" stroke-width="0.8"/>
+  <text x="880" y="320" text-anchor="middle" font-size="9" fill="#3949AB">数据源：百度迁徙OD</text>
+
+  <!-- Key methods Phase 1 -->
+  <rect x="60" y="340" width="990" height="26" rx="3" fill="#E3F2FD" stroke="#90CAF9" stroke-width="0.8"/>
+  <text x="550" y="358" text-anchor="middle" font-size="10" fill="#1565C0" font-style="italic">关键方法：GIS空间裁剪 | 坐标转换（BD-09→GCJ-02→WGS84） | 空间连接 | 七普年龄结构分解</text>
+
+  <!-- Phase 1 to Phase 2 arrows -->
+  <line x1="160" y1="385" x2="160" y2="450" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+  <line x1="400" y1="385" x2="400" y2="450" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+  <line x1="640" y1="385" x2="640" y2="450" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+  <line x1="880" y1="385" x2="880" y2="450" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+  <!-- Merge line -->
+  <line x1="160" y1="430" x2="880" y2="430" stroke="#37474F" stroke-width="1.2"/>
+  <line x1="550" y1="430" x2="550" y2="450" stroke="#37474F" stroke-width="1.2" marker-end="url(#arrow-cn)"/>
+
+  <!-- ==================== PHASE 2 ==================== -->
+  <rect x="30" y="455" width="1040" height="250" rx="8" fill="url(#phase2-cn)" stroke="#2E7D32" stroke-width="1.5"/>
+  <rect x="30" y="455" width="1040" height="32" rx="8" fill="#2E7D32"/>
+  <text x="550" y="477" text-anchor="middle" font-size="15" font-weight="bold" fill="white">第二阶段：多模式交通网络构建与行程时间估算</text>
+
+  <!-- Step 6 -->
+  <rect x="60" y="502" width="300" height="80" rx="5" fill="white" stroke="#2E7D32" stroke-width="1.2"/>
+  <text x="210" y="522" text-anchor="middle" font-size="11" font-weight="bold" fill="#2E7D32">行程时间矩阵估算（Step 6）</text>
+  <text x="210" y="540" text-anchor="middle" font-size="9.5" fill="#37474F">• Dijkstra最短路径算法</text>
+  <text x="210" y="554" text-anchor="middle" font-size="9.5" fill="#37474F">• 自由流行程时间矩阵</text>
+  <text x="210" y="568" text-anchor="middle" font-size="9.5" fill="#37474F">• 事故情景：BPR拥堵函数 + 路段封闭</text>
+
+  <!-- Step 7 -->
+  <rect x="400" y="502" width="300" height="80" rx="5" fill="white" stroke="#2E7D32" stroke-width="1.2"/>
+  <text x="550" y="522" text-anchor="middle" font-size="11" font-weight="bold" fill="#2E7D32">地铁网络构建（Step 7）</text>
+  <text x="550" y="540" text-anchor="middle" font-size="9.5" fill="#37474F">• POI匹配 + 知识库拓扑构建</text>
+  <text x="550" y="554" text-anchor="middle" font-size="9.5" fill="#37474F">• 亦庄线/大兴线/5号线/10号线</text>
+  <text x="550" y="568" text-anchor="middle" font-size="9.5" fill="#37474F">• 站间运行时间 + 换乘时间赋值</text>
+
+  <!-- Network Router -->
+  <rect x="740" y="502" width="300" height="80" rx="5" fill="white" stroke="#2E7D32" stroke-width="1.2"/>
+  <text x="890" y="522" text-anchor="middle" font-size="11" font-weight="bold" fill="#2E7D32">路网路由引擎</text>
+  <text x="890" y="540" text-anchor="middle" font-size="9.5" fill="#37474F">• KDTree空间索引加速</text>
+  <text x="890" y="554" text-anchor="middle" font-size="9.5" fill="#37474F">• 行程时间缓存机制</text>
+  <text x="890" y="568" text-anchor="middle" font-size="9.5" fill="#37474F">• 事故/自由流双模式切换</text>
+
+  <!-- Step 8 -->
+  <rect x="250" y="602" width="600" height="52" rx="5" fill="white" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="550" y="622" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E7D32">多源数据融合（Step 8）</text>
+  <text x="550" y="639" text-anchor="middle" font-size="10" fill="#37474F">路网 + 地铁 + 设施 + 人口 + OD → 统一空间数据库</text>
+
+  <!-- Arrows to Step 8 -->
+  <line x1="210" y1="582" x2="210" y2="596" stroke="#37474F" stroke-width="1"/>
+  <line x1="550" y1="582" x2="550" y2="602" stroke="#37474F" stroke-width="1" marker-end="url(#arrow-cn)"/>
+  <line x1="890" y1="582" x2="890" y2="596" stroke="#37474F" stroke-width="1"/>
+  <line x1="210" y1="596" x2="890" y2="596" stroke="#37474F" stroke-width="1"/>
+
+  <!-- Key methods Phase 2 -->
+  <rect x="60" y="666" width="990" height="26" rx="3" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="0.8"/>
+  <text x="550" y="684" text-anchor="middle" font-size="10" fill="#2E7D32" font-style="italic">关键方法：Dijkstra算法 | BPR函数 t=t₀[1+α(v/c)^β] | KDTree最近邻 | 多模式网络融合</text>
+
+  <!-- Phase 2 to Phase 3 -->
+  <line x1="550" y1="705" x2="550" y2="730" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow-cn)"/>
+
+  <!-- ==================== PHASE 3 ==================== -->
+  <rect x="30" y="735" width="1040" height="155" rx="8" fill="url(#phase3-cn)" stroke="#E65100" stroke-width="1.5"/>
+  <rect x="30" y="735" width="1040" height="32" rx="8" fill="#E65100"/>
+  <text x="550" y="757" text-anchor="middle" font-size="15" font-weight="bold" fill="white">第三阶段：事故情景模拟与需求估算</text>
+
+  <!-- Step 9 -->
+  <rect x="60" y="782" width="460" height="80" rx="5" fill="white" stroke="#E65100" stroke-width="1.2"/>
+  <text x="290" y="802" text-anchor="middle" font-size="11" font-weight="bold" fill="#E65100">事故情景构建（Step 9）</text>
+  <text x="290" y="820" text-anchor="middle" font-size="9.5" fill="#37474F">• 六环太平桥化工品泄漏事故设定</text>
+  <text x="290" y="834" text-anchor="middle" font-size="9.5" fill="#37474F">• 1km封闭区 + 3km拥堵影响区</text>
+  <text x="290" y="848" text-anchor="middle" font-size="9.5" fill="#37474F">• 路段封闭与BPR拥堵叠加</text>
+
+  <!-- Demand estimation -->
+  <rect x="560" y="782" width="460" height="80" rx="5" fill="white" stroke="#E65100" stroke-width="1.2"/>
+  <text x="790" y="802" text-anchor="middle" font-size="11" font-weight="bold" fill="#E65100">疏散需求估算</text>
+  <text x="790" y="820" text-anchor="middle" font-size="9.5" fill="#37474F">• 三类人群分级：重伤者(ω₁=10) / 脆弱群体(ω₂=5) / 一般人员(ω₃=1)</text>
+  <text x="790" y="834" text-anchor="middle" font-size="9.5" fill="#37474F">• 基于人口+年龄结构的空间化需求</text>
+  <text x="790" y="848" text-anchor="middle" font-size="9.5" fill="#37474F">• OD出行特征约束</text>
+
+  <!-- Key methods Phase 3 -->
+  <rect x="60" y="872" width="990" height="26" rx="3" fill="#FFF3E0" stroke="#FFCC80" stroke-width="0.8"/>
+  <text x="550" y="890" text-anchor="middle" font-size="10" fill="#E65100" font-style="italic">关键方法：情景分析法 | 人群分级权重模型 | 时变疏散需求估算</text>
+
+  <!-- Phase 3 to Phase 4 -->
+  <line x1="550" y1="905" x2="550" y2="932" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow-cn)"/>
+
+  <!-- ==================== PHASE 4 ==================== -->
+  <rect x="30" y="937" width="1040" height="230" rx="8" fill="url(#phase4-cn)" stroke="#C62828" stroke-width="1.5"/>
+  <rect x="30" y="937" width="1040" height="32" rx="8" fill="#C62828"/>
+  <text x="550" y="959" text-anchor="middle" font-size="15" font-weight="bold" fill="white">第四阶段：应急资源优化与疏散路径规划</text>
+
+  <!-- Step 10 -->
+  <rect x="60" y="984" width="460" height="95" rx="5" fill="white" stroke="#C62828" stroke-width="1.2"/>
+  <text x="290" y="1004" text-anchor="middle" font-size="11" font-weight="bold" fill="#C62828">应急资源供给优化（Step 10）</text>
+  <text x="290" y="1022" text-anchor="middle" font-size="9.5" fill="#37474F">• 目标：最小化加权总响应时间</text>
+  <text x="290" y="1036" text-anchor="middle" font-size="9.5" fill="#37474F">• 约束：设施容量、服务范围、预算</text>
+  <text x="290" y="1050" text-anchor="middle" font-size="9.5" fill="#37474F">• 求解：混合整数线性规划 (MILP)</text>
+  <text x="290" y="1064" text-anchor="middle" font-size="9.5" fill="#37474F">• 灵敏度分析：资源配置方案对比</text>
+
+  <!-- Step 11 -->
+  <rect x="560" y="984" width="460" height="95" rx="5" fill="white" stroke="#C62828" stroke-width="1.2"/>
+  <text x="790" y="1004" text-anchor="middle" font-size="11" font-weight="bold" fill="#C62828">多目标疏散路径优化（Step 11）</text>
+  <text x="790" y="1022" text-anchor="middle" font-size="9.5" fill="#37474F">• 目标1：最小化总疏散时间</text>
+  <text x="790" y="1036" text-anchor="middle" font-size="9.5" fill="#37474F">• 目标2：最大化脆弱人群优先级满足度</text>
+  <text x="790" y="1050" text-anchor="middle" font-size="9.5" fill="#37474F">• 约束：道路容量、避难所容量、公平性</text>
+  <text x="790" y="1064" text-anchor="middle" font-size="9.5" fill="#37474F">• 求解：多目标优化 + Pareto前沿</text>
+
+  <!-- Bidirectional arrow between 10 and 11 -->
+  <line x1="520" y1="1030" x2="560" y2="1030" stroke="#C62828" stroke-width="1.5" marker-end="url(#arrow-cn)"/>
+  <text x="540" y="1022" text-anchor="middle" font-size="8" fill="#C62828">协同</text>
+
+  <!-- Objective function -->
+  <rect x="150" y="1095" width="800" height="42" rx="5" fill="#FFF8E1" stroke="#FFB74D" stroke-width="1"/>
+  <text x="550" y="1112" text-anchor="middle" font-size="11" fill="#E65100" font-weight="bold">核心目标函数</text>
+  <text x="550" y="1128" text-anchor="middle" font-size="10" fill="#37474F">min Z = Σₖ Σᵢ Σⱼ ωₖ · dₖᵢ · tᵢⱼ · xₖᵢⱼ     （加权疏散时间最小化）</text>
+
+  <!-- Key methods Phase 4 -->
+  <rect x="60" y="1145" width="990" height="26" rx="3" fill="#FCE4EC" stroke="#F48FB1" stroke-width="0.8"/>
+  <text x="550" y="1163" text-anchor="middle" font-size="10" fill="#C62828" font-style="italic">关键方法：MILP混合整数规划 | 多目标优化 | Pareto前沿 | 灵敏度分析</text>
+
+  <!-- Phase 4 to Phase 5 -->
+  <line x1="550" y1="1180" x2="550" y2="1207" stroke="#37474F" stroke-width="1.5" marker-end="url(#arrow-cn)"/>
+
+  <!-- ==================== PHASE 5 ==================== -->
+  <rect x="30" y="1212" width="1040" height="165" rx="8" fill="url(#phase5-cn)" stroke="#4527A0" stroke-width="1.5"/>
+  <rect x="30" y="1212" width="1040" height="32" rx="8" fill="#4527A0"/>
+  <text x="550" y="1234" text-anchor="middle" font-size="15" font-weight="bold" fill="white">第五阶段：结果分析与政策建议</text>
+
+  <!-- Step 12 -->
+  <rect x="60" y="1258" width="300" height="65" rx="5" fill="white" stroke="#4527A0" stroke-width="1.2"/>
+  <text x="210" y="1278" text-anchor="middle" font-size="11" font-weight="bold" fill="#4527A0">可视化与空间分析</text>
+  <text x="210" y="1295" text-anchor="middle" font-size="9.5" fill="#37474F">• 疏散路径空间展示</text>
+  <text x="210" y="1309" text-anchor="middle" font-size="9.5" fill="#37474F">• 设施服务覆盖评估</text>
+
+  <rect x="400" y="1258" width="300" height="65" rx="5" fill="white" stroke="#4527A0" stroke-width="1.2"/>
+  <text x="550" y="1278" text-anchor="middle" font-size="11" font-weight="bold" fill="#4527A0">方案对比分析</text>
+  <text x="550" y="1295" text-anchor="middle" font-size="9.5" fill="#37474F">• 自由流 vs 事故情景对比</text>
+  <text x="550" y="1309" text-anchor="middle" font-size="9.5" fill="#37474F">• 不同资源配置方案评估</text>
+
+  <rect x="740" y="1258" width="300" height="65" rx="5" fill="white" stroke="#4527A0" stroke-width="1.2"/>
+  <text x="890" y="1278" text-anchor="middle" font-size="11" font-weight="bold" fill="#4527A0">政策建议</text>
+  <text x="890" y="1295" text-anchor="middle" font-size="9.5" fill="#37474F">• 应急资源布局优化建议</text>
+  <text x="890" y="1309" text-anchor="middle" font-size="9.5" fill="#37474F">• 疏散预案制定依据</text>
+
+  <!-- Key methods Phase 5 -->
+  <rect x="60" y="1338" width="990" height="26" rx="3" fill="#EDE7F6" stroke="#CE93D8" stroke-width="0.8"/>
+  <text x="550" y="1356" text-anchor="middle" font-size="10" fill="#4527A0" font-style="italic">关键方法：GIS空间可视化 | 情景对比分析 | 公平性评价 | 韧性评估</text>
+
+  <!-- Right side: Tool/Tech stack -->
+  <rect x="60" y="1400" width="980" height="52" rx="6" fill="#FAFAFA" stroke="#BDBDBD" stroke-width="1"/>
+  <text x="550" y="1420" text-anchor="middle" font-size="11" font-weight="bold" fill="#37474F">技术工具栈</text>
+  <text x="550" y="1438" text-anchor="middle" font-size="9.5" fill="#616161">Python (GeoPandas, NetworkX, SciPy, NumPy) | GIS (Shapely, Fiona) | 优化求解器 (PuLP/Gurobi) | 可视化 (Matplotlib)</text>
+
+  <!-- Feedback arrow on the right side -->
+  <path d="M1080,700 C1095,700 1095,1030 1080,1030" fill="none" stroke="#1565C0" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+  <text x="1092" y="870" text-anchor="middle" font-size="9" fill="#1565C0" transform="rotate(90, 1092, 870)">反馈迭代优化</text>
+
+  <!-- Copyright -->
+  <text x="550" y="1500" text-anchor="middle" font-size="9" fill="#9E9E9E">图 1  技术路线图</text>
+</svg>

@@ -1,0 +1,1386 @@
+{
+  "erpg_zone_populations": {
+    "erpg3": {
+      "total": 0.0,
+      "children": 0.0,
+      "elderly": 0.0,
+      "working": 0.0
+    },
+    "erpg2": {
+      "total": 19657.0,
+      "children": 2358.8399999999997,
+      "elderly": 2948.5499999999997,
+      "working": 14349.61
+    },
+    "erpg1": {
+      "total": 407115.0,
+      "children": 48853.799999999996,
+      "elderly": 61067.25,
+      "working": 297193.95
+    }
+  },
+  "evac_rules": {
+    "erpg3": {
+      "1": true,
+      "2": true,
+      "3": true
+    },
+    "erpg2": {
+      "1": true,
+      "2": true,
+      "3": false
+    },
+    "erpg1": {
+      "1": true,
+      "2": false,
+      "3": false
+    }
+  },
+  "network": {
+    "origins": [
+      {
+        "name": "ERPG2-北",
+        "lon": 116.49401419705991,
+        "lat": 39.74759923848592,
+        "pop": {
+          "1": 58,
+          "2": 796,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-南",
+        "lon": 116.49401419705991,
+        "lat": 39.72359923848592,
+        "pop": {
+          "1": 58,
+          "2": 796,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-东北",
+        "lon": 116.50401419705992,
+        "lat": 39.74359923848592,
+        "pop": {
+          "1": 47,
+          "2": 636,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-东南",
+        "lon": 116.50401419705992,
+        "lat": 39.727599238485915,
+        "pop": {
+          "1": 47,
+          "2": 636,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-西北",
+        "lon": 116.4840141970599,
+        "lat": 39.74359923848592,
+        "pop": {
+          "1": 47,
+          "2": 636,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-西南",
+        "lon": 116.4840141970599,
+        "lat": 39.727599238485915,
+        "pop": {
+          "1": 47,
+          "2": 636,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-东",
+        "lon": 116.50901419705991,
+        "lat": 39.73559923848592,
+        "pop": {
+          "1": 43,
+          "2": 583,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG2-西",
+        "lon": 116.47901419705991,
+        "lat": 39.73559923848592,
+        "pop": {
+          "1": 43,
+          "2": 583,
+          "3": 0
+        },
+        "erpg_zone": "erpg2"
+      },
+      {
+        "name": "ERPG1-北",
+        "lon": 116.49401419705991,
+        "lat": 39.760599238485916,
+        "pop": {
+          "1": 977,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-南",
+        "lon": 116.49401419705991,
+        "lat": 39.71059923848592,
+        "pop": {
+          "1": 977,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-东北",
+        "lon": 116.51401419705991,
+        "lat": 39.75359923848592,
+        "pop": {
+          "1": 814,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-东南",
+        "lon": 116.51401419705991,
+        "lat": 39.71759923848592,
+        "pop": {
+          "1": 814,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-西北",
+        "lon": 116.47401419705992,
+        "lat": 39.75359923848592,
+        "pop": {
+          "1": 814,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-西南",
+        "lon": 116.47401419705992,
+        "lat": 39.71759923848592,
+        "pop": {
+          "1": 814,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-东",
+        "lon": 116.52401419705991,
+        "lat": 39.73559923848592,
+        "pop": {
+          "1": 732,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-西",
+        "lon": 116.46401419705991,
+        "lat": 39.73559923848592,
+        "pop": {
+          "1": 732,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-正北",
+        "lon": 116.49401419705991,
+        "lat": 39.770599238485914,
+        "pop": {
+          "1": 732,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      },
+      {
+        "name": "ERPG1-正南",
+        "lon": 116.49401419705991,
+        "lat": 39.70059923848592,
+        "pop": {
+          "1": 732,
+          "2": 0,
+          "3": 0
+        },
+        "erpg_zone": "erpg1"
+      }
+    ],
+    "hospitals": 12,
+    "shelters": 15,
+    "subway_stations": 8
+  },
+  "pop_classes": {
+    "1": {
+      "name": "重伤/中毒者",
+      "name_en": "Critical",
+      "weight": 10,
+      "dest": "hospital",
+      "allowed_modes": [
+        "ambulance",
+        "helicopter"
+      ]
+    },
+    "2": {
+      "name": "老人/儿童/残障",
+      "name_en": "Vulnerable",
+      "weight": 5,
+      "dest": "hospital_or_shelter",
+      "allowed_modes": [
+        "ambulance",
+        "helicopter",
+        "bus",
+        "car",
+        "subway"
+      ]
+    },
+    "3": {
+      "name": "一般健康人员",
+      "name_en": "General",
+      "weight": 1,
+      "dest": "shelter",
+      "allowed_modes": [
+        "bus",
+        "car",
+        "subway"
+      ]
+    }
+  },
+  "vehicle_modes": {
+    "ambulance": {
+      "name": "救护车",
+      "capacity": 3,
+      "speed_kmh": 50,
+      "count": 15,
+      "serves": [
+        1,
+        2
+      ]
+    },
+    "helicopter": {
+      "name": "直升机",
+      "capacity": 6,
+      "speed_kmh": 150,
+      "count": 3,
+      "serves": [
+        1,
+        2
+      ]
+    },
+    "bus": {
+      "name": "公交车",
+      "capacity": 50,
+      "speed_kmh": 30,
+      "count": 20,
+      "serves": [
+        2,
+        3
+      ]
+    },
+    "car": {
+      "name": "私家车",
+      "capacity": 4,
+      "speed_kmh": 35,
+      "count": 100,
+      "serves": [
+        2,
+        3
+      ]
+    },
+    "subway": {
+      "name": "地铁",
+      "capacity": 1200,
+      "speed_kmh": 40,
+      "count": 15,
+      "serves": [
+        2,
+        3
+      ]
+    }
+  },
+  "commute_mode_shares": {
+    "car_ratio": 0.12791790286243082,
+    "subway_ratio": 0.38784554818116496,
+    "bus_ratio": 0.30502400705281113,
+    "bike_ratio": 0.12910615707352718,
+    "walk_ratio": 0.05010638483006577
+  },
+  "adjusted_car_count": 42,
+  "shelter_in_place": {
+    "shelter_in_place_population": {
+      "erpg2": {
+        "1": 0,
+        "2": 0,
+        "3": 13952
+      },
+      "erpg1": {
+        "1": 0,
+        "2": 109916,
+        "3": 289048
+      }
+    },
+    "evac_rules": {
+      "erpg3": {
+        "1": true,
+        "2": true,
+        "3": true
+      },
+      "erpg2": {
+        "1": true,
+        "2": true,
+        "3": false
+      },
+      "erpg1": {
+        "1": true,
+        "2": false,
+        "3": false
+      }
+    }
+  },
+  "comparison": {
+    "baseline": {
+      "label": "基准（ERPG分区+弹性优先级）",
+      "evacuated": 5671,
+      "remaining": 8159,
+      "evac_rate": 0.4100506146059291,
+      "by_class": {
+        "1": {
+          "evacuated": 369,
+          "avg_travel_min": 10.077350213988042
+        },
+        "2": {
+          "evacuated": 5302,
+          "avg_travel_min": 6.761136182931978
+        },
+        "3": {
+          "evacuated": 0,
+          "avg_travel_min": 0
+        }
+      },
+      "by_mode": {
+        "ambulance": {
+          "trips": 88,
+          "people_moved": 261
+        },
+        "helicopter": {
+          "trips": 18,
+          "people_moved": 108
+        },
+        "bus": {
+          "trips": 15,
+          "people_moved": 736
+        },
+        "car": {
+          "trips": 42,
+          "people_moved": 168
+        },
+        "subway": {
+          "trips": 8,
+          "people_moved": 4398
+        }
+      },
+      "by_zone": {
+        "erpg3": {
+          "evacuated": 0
+        },
+        "erpg2": {
+          "evacuated": 5302
+        },
+        "erpg1": {
+          "evacuated": 369
+        }
+      },
+      "total_risk": 85694.23701835443
+    },
+    "no_subway": {
+      "label": "无地铁",
+      "evacuated": 5371,
+      "remaining": 8459,
+      "evac_rate": 0.3883586406362979,
+      "by_class": {
+        "1": {
+          "evacuated": 370,
+          "avg_travel_min": 8.87522184853264
+        },
+        "2": {
+          "evacuated": 5001,
+          "avg_travel_min": 8.489882054477421
+        },
+        "3": {
+          "evacuated": 0,
+          "avg_travel_min": 0
+        }
+      },
+      "by_mode": {
+        "ambulance": {
+          "trips": 88,
+          "people_moved": 262
+        },
+        "helicopter": {
+          "trips": 18,
+          "people_moved": 108
+        },
+        "bus": {
+          "trips": 84,
+          "people_moved": 4009
+        },
+        "car": {
+          "trips": 248,
+          "people_moved": 992
+        },
+        "subway": {
+          "trips": 0,
+          "people_moved": 0
+        }
+      },
+      "by_zone": {
+        "erpg3": {
+          "evacuated": 0
+        },
+        "erpg2": {
+          "evacuated": 5001
+        },
+        "erpg1": {
+          "evacuated": 370
+        }
+      },
+      "total_risk": 84844.54932132119
+    },
+    "no_helicopter": {
+      "label": "无直升机",
+      "evacuated": 5565,
+      "remaining": 8265,
+      "evac_rate": 0.40238611713665945,
+      "by_class": {
+        "1": {
+          "evacuated": 263,
+          "avg_travel_min": 9.591008007722124
+        },
+        "2": {
+          "evacuated": 5302,
+          "avg_travel_min": 6.761136182931978
+        },
+        "3": {
+          "evacuated": 0,
+          "avg_travel_min": 0
+        }
+      },
+      "by_mode": {
+        "ambulance": {
+          "trips": 88,
+          "people_moved": 263
+        },
+        "helicopter": {
+          "trips": 0,
+          "people_moved": 0
+        },
+        "bus": {
+          "trips": 15,
+          "people_moved": 736
+        },
+        "car": {
+          "trips": 42,
+          "people_moved": 168
+        },
+        "subway": {
+          "trips": 8,
+          "people_moved": 4398
+        }
+      },
+      "by_zone": {
+        "erpg3": {
+          "evacuated": 0
+        },
+        "erpg2": {
+          "evacuated": 5302
+        },
+        "erpg1": {
+          "evacuated": 263
+        }
+      },
+      "total_risk": 91153.07967570952
+    },
+    "strict_priority": {
+      "label": "严格优先级",
+      "evacuated": 5671,
+      "remaining": 8159,
+      "evac_rate": 0.4100506146059291,
+      "by_class": {
+        "1": {
+          "evacuated": 369,
+          "avg_travel_min": 10.077350213988042
+        },
+        "2": {
+          "evacuated": 5302,
+          "avg_travel_min": 6.573519035092977
+        },
+        "3": {
+          "evacuated": 0,
+          "avg_travel_min": 0
+        }
+      },
+      "by_mode": {
+        "ambulance": {
+          "trips": 88,
+          "people_moved": 261
+        },
+        "helicopter": {
+          "trips": 18,
+          "people_moved": 108
+        },
+        "bus": {
+          "trips": 20,
+          "people_moved": 986
+        },
+        "car": {
+          "trips": 42,
+          "people_moved": 168
+        },
+        "subway": {
+          "trips": 8,
+          "people_moved": 4148
+        }
+      },
+      "by_zone": {
+        "erpg3": {
+          "evacuated": 0
+        },
+        "erpg2": {
+          "evacuated": 5302
+        },
+        "erpg1": {
+          "evacuated": 369
+        }
+      },
+      "total_risk": 85694.23701835443
+    }
+  },
+  "sensitivity_ambulance": [
+    {
+      "n_ambulances": 5,
+      "total_evacuated": 5496,
+      "critical_evac_rate": 0.02274859287054409,
+      "cumulative_risk": 94447.62348213085
+    },
+    {
+      "n_ambulances": 10,
+      "total_evacuated": 5583,
+      "critical_evac_rate": 0.03295028142589118,
+      "cumulative_risk": 90153.76144083387
+    },
+    {
+      "n_ambulances": 15,
+      "total_evacuated": 5671,
+      "critical_evac_rate": 0.04326923076923077,
+      "cumulative_risk": 85694.23701835443
+    },
+    {
+      "n_ambulances": 20,
+      "total_evacuated": 5757,
+      "critical_evac_rate": 0.053353658536585365,
+      "cumulative_risk": 81411.06287261756
+    },
+    {
+      "n_ambulances": 30,
+      "total_evacuated": 5849,
+      "critical_evac_rate": 0.06414165103189494,
+      "cumulative_risk": 73226.80684742001
+    },
+    {
+      "n_ambulances": 40,
+      "total_evacuated": 5976,
+      "critical_evac_rate": 0.07903377110694183,
+      "cumulative_risk": 63445.04379554346
+    },
+    {
+      "n_ambulances": 50,
+      "total_evacuated": 6101,
+      "critical_evac_rate": 0.09369136960600376,
+      "cumulative_risk": 54834.42991881668
+    }
+  ],
+  "timelines": {
+    "baseline": [
+      {
+        "time_min": 0,
+        "remaining": 13830,
+        "risk_exposure": 6877.881605491855
+      },
+      {
+        "time_min": 5,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 10,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 15,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 20,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 25,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 30,
+        "remaining": 8450,
+        "risk_exposure": 2572.151025188209
+      },
+      {
+        "time_min": 35,
+        "remaining": 8432,
+        "risk_exposure": 2524.055495167459
+      },
+      {
+        "time_min": 40,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 45,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 50,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 55,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 60,
+        "remaining": 8394,
+        "risk_exposure": 2422.5204873458756
+      },
+      {
+        "time_min": 65,
+        "remaining": 8376,
+        "risk_exposure": 2374.424957325126
+      },
+      {
+        "time_min": 70,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 75,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 80,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 85,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 90,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 95,
+        "remaining": 8331,
+        "risk_exposure": 2254.1861322732507
+      },
+      {
+        "time_min": 100,
+        "remaining": 8307,
+        "risk_exposure": 2190.0587589122506
+      },
+      {
+        "time_min": 105,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 110,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 115,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 120,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 125,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 130,
+        "remaining": 8268,
+        "risk_exposure": 2085.8517772006257
+      },
+      {
+        "time_min": 135,
+        "remaining": 8244,
+        "risk_exposure": 2021.7244038396257
+      },
+      {
+        "time_min": 140,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 145,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 150,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 155,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 160,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 165,
+        "remaining": 8206,
+        "risk_exposure": 1920.1893960180423
+      },
+      {
+        "time_min": 170,
+        "remaining": 8182,
+        "risk_exposure": 1856.0620226570427
+      },
+      {
+        "time_min": 175,
+        "remaining": 8159,
+        "risk_exposure": 1794.606623186084
+      },
+      {
+        "time_min": 175,
+        "remaining": 8159,
+        "risk_exposure": 0
+      }
+    ],
+    "no_subway": [
+      {
+        "time_min": 0,
+        "remaining": 13830,
+        "risk_exposure": 6877.881605491855
+      },
+      {
+        "time_min": 5,
+        "remaining": 12863,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 10,
+        "remaining": 12863,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 15,
+        "remaining": 12863,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 20,
+        "remaining": 12835,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 25,
+        "remaining": 12695,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 30,
+        "remaining": 12648,
+        "risk_exposure": 2572.151025188209
+      },
+      {
+        "time_min": 35,
+        "remaining": 12578,
+        "risk_exposure": 2524.055495167459
+      },
+      {
+        "time_min": 40,
+        "remaining": 12454,
+        "risk_exposure": 2459.928121806459
+      },
+      {
+        "time_min": 45,
+        "remaining": 12354,
+        "risk_exposure": 2459.928121806459
+      },
+      {
+        "time_min": 50,
+        "remaining": 12152,
+        "risk_exposure": 2459.928121806459
+      },
+      {
+        "time_min": 55,
+        "remaining": 12002,
+        "risk_exposure": 2459.928121806459
+      },
+      {
+        "time_min": 60,
+        "remaining": 11693,
+        "risk_exposure": 2419.848513455834
+      },
+      {
+        "time_min": 65,
+        "remaining": 11572,
+        "risk_exposure": 2371.752983435084
+      },
+      {
+        "time_min": 70,
+        "remaining": 11360,
+        "risk_exposure": 2291.593766733834
+      },
+      {
+        "time_min": 75,
+        "remaining": 11360,
+        "risk_exposure": 2291.593766733834
+      },
+      {
+        "time_min": 80,
+        "remaining": 11260,
+        "risk_exposure": 2291.593766733834
+      },
+      {
+        "time_min": 85,
+        "remaining": 11210,
+        "risk_exposure": 2291.593766733834
+      },
+      {
+        "time_min": 90,
+        "remaining": 10993,
+        "risk_exposure": 2251.514158383209
+      },
+      {
+        "time_min": 95,
+        "remaining": 10976,
+        "risk_exposure": 2206.090602252501
+      },
+      {
+        "time_min": 100,
+        "remaining": 10440,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 105,
+        "remaining": 10408,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 110,
+        "remaining": 10408,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 115,
+        "remaining": 10258,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 120,
+        "remaining": 10244,
+        "risk_exposure": 2088.5237510906672
+      },
+      {
+        "time_min": 125,
+        "remaining": 10054,
+        "risk_exposure": 2040.4282210699175
+      },
+      {
+        "time_min": 130,
+        "remaining": 9590,
+        "risk_exposure": 1960.2690043686675
+      },
+      {
+        "time_min": 135,
+        "remaining": 9458,
+        "risk_exposure": 1960.2690043686675
+      },
+      {
+        "time_min": 140,
+        "remaining": 9458,
+        "risk_exposure": 1960.2690043686675
+      },
+      {
+        "time_min": 145,
+        "remaining": 9340,
+        "risk_exposure": 1960.2690043686675
+      },
+      {
+        "time_min": 150,
+        "remaining": 9325,
+        "risk_exposure": 1920.1893960180423
+      },
+      {
+        "time_min": 155,
+        "remaining": 9172,
+        "risk_exposure": 1912.1734743479174
+      },
+      {
+        "time_min": 160,
+        "remaining": 9157,
+        "risk_exposure": 1872.0938659972926
+      },
+      {
+        "time_min": 165,
+        "remaining": 9127,
+        "risk_exposure": 1791.9346492960426
+      },
+      {
+        "time_min": 170,
+        "remaining": 9075,
+        "risk_exposure": 1791.9346492960426
+      },
+      {
+        "time_min": 175,
+        "remaining": 8557,
+        "risk_exposure": 1791.9346492960426
+      },
+      {
+        "time_min": 175,
+        "remaining": 8459,
+        "risk_exposure": 0
+      }
+    ],
+    "no_helicopter": [
+      {
+        "time_min": 0,
+        "remaining": 13830,
+        "risk_exposure": 6877.881605491855
+      },
+      {
+        "time_min": 5,
+        "remaining": 8483,
+        "risk_exposure": 2660.326163559584
+      },
+      {
+        "time_min": 10,
+        "remaining": 8483,
+        "risk_exposure": 2660.326163559584
+      },
+      {
+        "time_min": 15,
+        "remaining": 8483,
+        "risk_exposure": 2660.326163559584
+      },
+      {
+        "time_min": 20,
+        "remaining": 8483,
+        "risk_exposure": 2660.326163559584
+      },
+      {
+        "time_min": 25,
+        "remaining": 8483,
+        "risk_exposure": 2660.326163559584
+      },
+      {
+        "time_min": 30,
+        "remaining": 8474,
+        "risk_exposure": 2636.2783985492088
+      },
+      {
+        "time_min": 35,
+        "remaining": 8462,
+        "risk_exposure": 2604.214711868709
+      },
+      {
+        "time_min": 40,
+        "remaining": 8444,
+        "risk_exposure": 2556.1191818479588
+      },
+      {
+        "time_min": 45,
+        "remaining": 8444,
+        "risk_exposure": 2556.1191818479588
+      },
+      {
+        "time_min": 50,
+        "remaining": 8444,
+        "risk_exposure": 2556.1191818479588
+      },
+      {
+        "time_min": 55,
+        "remaining": 8444,
+        "risk_exposure": 2556.1191818479588
+      },
+      {
+        "time_min": 60,
+        "remaining": 8435,
+        "risk_exposure": 2532.071416837584
+      },
+      {
+        "time_min": 65,
+        "remaining": 8424,
+        "risk_exposure": 2502.6797040471256
+      },
+      {
+        "time_min": 70,
+        "remaining": 8400,
+        "risk_exposure": 2438.5523306861255
+      },
+      {
+        "time_min": 75,
+        "remaining": 8400,
+        "risk_exposure": 2438.5523306861255
+      },
+      {
+        "time_min": 80,
+        "remaining": 8400,
+        "risk_exposure": 2438.5523306861255
+      },
+      {
+        "time_min": 85,
+        "remaining": 8400,
+        "risk_exposure": 2438.5523306861255
+      },
+      {
+        "time_min": 90,
+        "remaining": 8400,
+        "risk_exposure": 2438.5523306861255
+      },
+      {
+        "time_min": 95,
+        "remaining": 8391,
+        "risk_exposure": 2414.5045656757507
+      },
+      {
+        "time_min": 100,
+        "remaining": 8373,
+        "risk_exposure": 2366.4090356550005
+      },
+      {
+        "time_min": 105,
+        "remaining": 8355,
+        "risk_exposure": 2318.3135056342508
+      },
+      {
+        "time_min": 110,
+        "remaining": 8355,
+        "risk_exposure": 2318.3135056342508
+      },
+      {
+        "time_min": 115,
+        "remaining": 8355,
+        "risk_exposure": 2318.3135056342508
+      },
+      {
+        "time_min": 120,
+        "remaining": 8355,
+        "risk_exposure": 2318.3135056342508
+      },
+      {
+        "time_min": 125,
+        "remaining": 8355,
+        "risk_exposure": 2318.3135056342508
+      },
+      {
+        "time_min": 130,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 135,
+        "remaining": 8328,
+        "risk_exposure": 2246.1702106031257
+      },
+      {
+        "time_min": 140,
+        "remaining": 8310,
+        "risk_exposure": 2198.0746805823755
+      },
+      {
+        "time_min": 145,
+        "remaining": 8310,
+        "risk_exposure": 2198.0746805823755
+      },
+      {
+        "time_min": 150,
+        "remaining": 8310,
+        "risk_exposure": 2198.0746805823755
+      },
+      {
+        "time_min": 155,
+        "remaining": 8310,
+        "risk_exposure": 2198.0746805823755
+      },
+      {
+        "time_min": 160,
+        "remaining": 8310,
+        "risk_exposure": 2198.0746805823755
+      },
+      {
+        "time_min": 165,
+        "remaining": 8301,
+        "risk_exposure": 2174.0269155720007
+      },
+      {
+        "time_min": 170,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 175,
+        "remaining": 8265,
+        "risk_exposure": 2077.835855530501
+      },
+      {
+        "time_min": 175,
+        "remaining": 8265,
+        "risk_exposure": 0
+      }
+    ],
+    "strict_priority": [
+      {
+        "time_min": 0,
+        "remaining": 13830,
+        "risk_exposure": 6877.881605491855
+      },
+      {
+        "time_min": 5,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 10,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 15,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 20,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 25,
+        "remaining": 8465,
+        "risk_exposure": 2612.230633538834
+      },
+      {
+        "time_min": 30,
+        "remaining": 8450,
+        "risk_exposure": 2572.151025188209
+      },
+      {
+        "time_min": 35,
+        "remaining": 8432,
+        "risk_exposure": 2524.055495167459
+      },
+      {
+        "time_min": 40,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 45,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 50,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 55,
+        "remaining": 8409,
+        "risk_exposure": 2462.600095696501
+      },
+      {
+        "time_min": 60,
+        "remaining": 8394,
+        "risk_exposure": 2422.5204873458756
+      },
+      {
+        "time_min": 65,
+        "remaining": 8376,
+        "risk_exposure": 2374.424957325126
+      },
+      {
+        "time_min": 70,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 75,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 80,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 85,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 90,
+        "remaining": 8346,
+        "risk_exposure": 2294.265740623876
+      },
+      {
+        "time_min": 95,
+        "remaining": 8331,
+        "risk_exposure": 2254.1861322732507
+      },
+      {
+        "time_min": 100,
+        "remaining": 8307,
+        "risk_exposure": 2190.0587589122506
+      },
+      {
+        "time_min": 105,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 110,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 115,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 120,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 125,
+        "remaining": 8283,
+        "risk_exposure": 2125.931385551251
+      },
+      {
+        "time_min": 130,
+        "remaining": 8268,
+        "risk_exposure": 2085.8517772006257
+      },
+      {
+        "time_min": 135,
+        "remaining": 8244,
+        "risk_exposure": 2021.7244038396257
+      },
+      {
+        "time_min": 140,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 145,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 150,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 155,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 160,
+        "remaining": 8220,
+        "risk_exposure": 1957.597030478626
+      },
+      {
+        "time_min": 165,
+        "remaining": 8206,
+        "risk_exposure": 1920.1893960180423
+      },
+      {
+        "time_min": 170,
+        "remaining": 8182,
+        "risk_exposure": 1856.0620226570427
+      },
+      {
+        "time_min": 175,
+        "remaining": 8159,
+        "risk_exposure": 1794.606623186084
+      },
+      {
+        "time_min": 175,
+        "remaining": 8159,
+        "risk_exposure": 0
+      }
+    ]
+  },
+  "uses_road_network": true,
+  "flexible_priority": true,
+  "k3_reserved_ratio": 0.25
+}

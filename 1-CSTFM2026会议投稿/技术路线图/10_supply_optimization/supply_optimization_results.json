@@ -1,0 +1,595 @@
+{
+  "logistics_network": {
+    "supply_nodes": [
+      {
+        "name": "大兴区黄村镇孙村消防支队",
+        "lon": 116.39445535606887,
+        "lat": 39.70819418803632
+      },
+      {
+        "name": "孙村消防",
+        "lon": 116.3945763483422,
+        "lat": 39.70823617257891
+      },
+      {
+        "name": "魏善庄消防队",
+        "lon": 116.40550392246465,
+        "lat": 39.673049318545786
+      },
+      {
+        "name": "大兴区魏善庄消防救援站",
+        "lon": 116.40584713628856,
+        "lat": 39.67299347041891
+      },
+      {
+        "name": "西红门镇大生庄村消防安全办公室",
+        "lon": 116.3948961960973,
+        "lat": 39.76472445034239
+      },
+      {
+        "name": "志远庄微型消防站",
+        "lon": 116.40301943931458,
+        "lat": 39.76154071549226
+      },
+      {
+        "name": "旧宫镇南街地区义务消防站",
+        "lon": 116.40252723160108,
+        "lat": 39.785148335389614
+      },
+      {
+        "name": "西红门镇大白楼村消防安全办公室",
+        "lon": 116.38181616133994,
+        "lat": 39.777304699402414
+      },
+      {
+        "name": "假设仓库1-丰台",
+        "lon": 116.3,
+        "lat": 39.85
+      },
+      {
+        "name": "假设仓库2-大兴",
+        "lon": 116.35,
+        "lat": 39.75
+      }
+    ],
+    "relay_nodes": [
+      {
+        "name": "南红门行宫遗址公园",
+        "lon": 116.45096223952332,
+        "lat": 39.73217980713956
+      },
+      {
+        "name": "城南业余球队足球场",
+        "lon": 116.46123240866778,
+        "lat": 39.69804215329172
+      },
+      {
+        "name": "红星集体农庄纪念公园",
+        "lon": 116.4539180909969,
+        "lat": 39.76375613821821
+      },
+      {
+        "name": "安南湿地环保主题公园(暂停开放)",
+        "lon": 116.45520108790888,
+        "lat": 39.73113479787256
+      },
+      {
+        "name": "三太路城市公园",
+        "lon": 116.4562312284316,
+        "lat": 39.75557850167517
+      },
+      {
+        "name": "南海子红树林公园露营区(暂停营业)",
+        "lon": 116.46199813722848,
+        "lat": 39.76868358892777
+      }
+    ],
+    "demand_nodes": [
+      {
+        "name": "事故核心区",
+        "lon": 116.49401419705991,
+        "lat": 39.74059923848592,
+        "type": "demand"
+      },
+      {
+        "name": "东侧隔离点",
+        "lon": 116.50401419705992,
+        "lat": 39.73559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "西侧隔离点",
+        "lon": 116.4840141970599,
+        "lat": 39.73559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "北侧隔离点",
+        "lon": 116.49401419705991,
+        "lat": 39.745599238485916,
+        "type": "demand"
+      },
+      {
+        "name": "南侧隔离点",
+        "lon": 116.49401419705991,
+        "lat": 39.72559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "三间房社区卫生服务站",
+        "lon": 116.41668726264663,
+        "lat": 39.71923185950188,
+        "type": "demand"
+      },
+      {
+        "name": "社区卫生服务站",
+        "lon": 116.43646081757164,
+        "lat": 39.705220163608125,
+        "type": "demand"
+      },
+      {
+        "name": "大兴区瀛海医院",
+        "lon": 116.4414008176768,
+        "lat": 39.759506665194834,
+        "type": "demand"
+      },
+      {
+        "name": "大兴区康复专科医联体核心医院",
+        "lon": 116.44243311482286,
+        "lat": 39.76999863172704,
+        "type": "demand"
+      },
+      {
+        "name": "社区卫生服务站(后查路)",
+        "lon": 116.42600030636436,
+        "lat": 39.6854690585495,
+        "type": "demand"
+      },
+      {
+        "name": "东赵村社区卫生服务站",
+        "lon": 116.42879333116326,
+        "lat": 39.71748630023824,
+        "type": "demand"
+      },
+      {
+        "name": "大兴区德茂社区卫生服务站",
+        "lon": 116.42711749201897,
+        "lat": 39.77904414441051,
+        "type": "demand"
+      },
+      {
+        "name": "大兴王各庄村社区卫生服务站",
+        "lon": 116.44322936592457,
+        "lat": 39.672612839582,
+        "type": "demand"
+      },
+      {
+        "name": "北京市大兴区魏善庄镇赵庄子社区卫生服务站",
+        "lon": 116.45947836855989,
+        "lat": 39.660498755970856,
+        "type": "demand"
+      },
+      {
+        "name": "大兴崔家庄一村社区卫生服务站",
+        "lon": 116.46419590786884,
+        "lat": 39.66063685829708,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG2避难-北",
+        "lon": 116.49401419705991,
+        "lat": 39.745599238485916,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG2避难-南",
+        "lon": 116.49401419705991,
+        "lat": 39.72559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG2避难-东",
+        "lon": 116.50601419705991,
+        "lat": 39.73559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG2避难-西",
+        "lon": 116.48201419705991,
+        "lat": 39.73559923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-北",
+        "lon": 116.49401419705991,
+        "lat": 39.757599238485916,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-南",
+        "lon": 116.49401419705991,
+        "lat": 39.71359923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-东北",
+        "lon": 116.51201419705991,
+        "lat": 39.75059923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-西北",
+        "lon": 116.47601419705991,
+        "lat": 39.75059923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-东南",
+        "lon": 116.51201419705991,
+        "lat": 39.72059923848592,
+        "type": "demand"
+      },
+      {
+        "name": "ERPG1避难-西南",
+        "lon": 116.47601419705991,
+        "lat": 39.72059923848592,
+        "type": "demand"
+      }
+    ]
+  },
+  "supply_categories": {
+    "life_rescue": {
+      "name": "生命救援类",
+      "name_en": "Life Rescue",
+      "items": [
+        "防毒面具",
+        "氧气瓶",
+        "急救药品",
+        "解毒剂"
+      ],
+      "priority": 1,
+      "weight_per_unit_kg": 3.0,
+      "time_window_min": 30,
+      "hard_window": true,
+      "penalty_per_min": 1000
+    },
+    "medical": {
+      "name": "医疗支援类",
+      "name_en": "Medical",
+      "items": [
+        "担架",
+        "医疗设备",
+        "血浆",
+        "输液"
+      ],
+      "priority": 2,
+      "weight_per_unit_kg": 8.0,
+      "time_window_min": 60,
+      "hard_window": true,
+      "penalty_per_min": 500
+    },
+    "protection": {
+      "name": "防护设备类",
+      "name_en": "Protection",
+      "items": [
+        "防护服",
+        "隔离带",
+        "警示设备"
+      ],
+      "priority": 3,
+      "weight_per_unit_kg": 5.0,
+      "time_window_min": 120,
+      "hard_window": false,
+      "penalty_per_min": 100
+    },
+    "basic": {
+      "name": "基础保障类",
+      "name_en": "Basic Supply",
+      "items": [
+        "饮用水",
+        "食品",
+        "帐篷",
+        "照明设备"
+      ],
+      "priority": 4,
+      "weight_per_unit_kg": 15.0,
+      "time_window_min": 240,
+      "hard_window": false,
+      "penalty_per_min": 10
+    }
+  },
+  "objective_weights": {
+    "makespan": 1.0,
+    "penalty": 1.0,
+    "unmet": 10000.0
+  },
+  "scenario_comparison": {
+    "truck_only": {
+      "label": "纯货车",
+      "total_tasks": 70,
+      "completed_tasks": 64,
+      "unmet_tasks": 6,
+      "objective_value": 60047.339116045114,
+      "makespan_min": 47.33911604511276,
+      "avg_delivery_time_min": 28.22022634714304,
+      "total_penalty": 0.0,
+      "by_category": {
+        "life_rescue": {
+          "task_count": 5,
+          "avg_time_min": 21.884097586855404,
+          "max_time_min": 28.873978221642655,
+          "on_time_count": 5,
+          "on_time_rate": 1.0,
+          "deadline_min": 30
+        },
+        "medical": {
+          "task_count": 21,
+          "avg_time_min": 26.987461758013637,
+          "max_time_min": 47.33911604511276,
+          "on_time_count": 21,
+          "on_time_rate": 1.0,
+          "deadline_min": 60
+        },
+        "protection": {
+          "task_count": 13,
+          "avg_time_min": 28.68045733385263,
+          "max_time_min": 43.59029741858327,
+          "on_time_count": 13,
+          "on_time_rate": 1.0,
+          "deadline_min": 120
+        },
+        "basic": {
+          "task_count": 25,
+          "avg_time_min": 30.283654240980287,
+          "max_time_min": 47.05191214924653,
+          "on_time_count": 25,
+          "on_time_rate": 1.0,
+          "deadline_min": 240
+        }
+      },
+      "route_types": {
+        "direct": 64,
+        "relay": 0
+      },
+      "config": {
+        "trucks": 20,
+        "drones": 0,
+        "use_drones": false,
+        "use_relay": false,
+        "label": "纯货车"
+      }
+    },
+    "coordinated": {
+      "label": "货车-无人机协同",
+      "total_tasks": 70,
+      "completed_tasks": 62,
+      "unmet_tasks": 8,
+      "objective_value": 80059.8640373042,
+      "makespan_min": 59.864037304205944,
+      "avg_delivery_time_min": 35.93248334111537,
+      "total_penalty": 0.0,
+      "by_category": {
+        "life_rescue": {
+          "task_count": 5,
+          "avg_time_min": 21.465476998199463,
+          "max_time_min": 26.966347194303275,
+          "on_time_count": 5,
+          "on_time_rate": 1.0,
+          "deadline_min": 30
+        },
+        "medical": {
+          "task_count": 20,
+          "avg_time_min": 31.673314115359638,
+          "max_time_min": 52.360027490988195,
+          "on_time_count": 20,
+          "on_time_rate": 1.0,
+          "deadline_min": 60
+        },
+        "protection": {
+          "task_count": 12,
+          "avg_time_min": 51.23378977336727,
+          "max_time_min": 59.864037304205944,
+          "on_time_count": 12,
+          "on_time_rate": 1.0,
+          "deadline_min": 120
+        },
+        "basic": {
+          "task_count": 25,
+          "avg_time_min": 34.888592902822246,
+          "max_time_min": 59.864037304205944,
+          "on_time_count": 25,
+          "on_time_rate": 1.0,
+          "deadline_min": 240
+        }
+      },
+      "route_types": {
+        "direct": 28,
+        "relay": 34
+      },
+      "config": {
+        "trucks": 20,
+        "drones": 10,
+        "use_drones": true,
+        "use_relay": true,
+        "label": "货车-无人机协同"
+      }
+    },
+    "drone_only": {
+      "label": "纯无人机",
+      "total_tasks": 70,
+      "completed_tasks": 0,
+      "unmet_tasks": 70,
+      "objective_value": Infinity,
+      "makespan_min": 0.0,
+      "avg_delivery_time_min": 0.0,
+      "total_penalty": 0.0,
+      "by_category": {
+        "life_rescue": {
+          "task_count": 0,
+          "avg_time_min": 0,
+          "max_time_min": 0,
+          "on_time_count": 0,
+          "on_time_rate": 0.0,
+          "deadline_min": 30
+        },
+        "medical": {
+          "task_count": 0,
+          "avg_time_min": 0,
+          "max_time_min": 0,
+          "on_time_count": 0,
+          "on_time_rate": 0.0,
+          "deadline_min": 60
+        },
+        "protection": {
+          "task_count": 0,
+          "avg_time_min": 0,
+          "max_time_min": 0,
+          "on_time_count": 0,
+          "on_time_rate": 0.0,
+          "deadline_min": 120
+        },
+        "basic": {
+          "task_count": 0,
+          "avg_time_min": 0,
+          "max_time_min": 0,
+          "on_time_count": 0,
+          "on_time_rate": 0.0,
+          "deadline_min": 240
+        }
+      },
+      "route_types": {
+        "direct": 0,
+        "relay": 0
+      },
+      "config": {
+        "trucks": 0,
+        "drones": 10,
+        "use_drones": true,
+        "use_relay": false,
+        "label": "纯无人机"
+      }
+    },
+    "coord_more_drones": {
+      "label": "协同(加倍无人机)",
+      "total_tasks": 70,
+      "completed_tasks": 62,
+      "unmet_tasks": 8,
+      "objective_value": 80059.8640373042,
+      "makespan_min": 59.864037304205944,
+      "avg_delivery_time_min": 35.93248334111537,
+      "total_penalty": 0.0,
+      "by_category": {
+        "life_rescue": {
+          "task_count": 5,
+          "avg_time_min": 21.465476998199463,
+          "max_time_min": 26.966347194303275,
+          "on_time_count": 5,
+          "on_time_rate": 1.0,
+          "deadline_min": 30
+        },
+        "medical": {
+          "task_count": 20,
+          "avg_time_min": 31.673314115359638,
+          "max_time_min": 52.360027490988195,
+          "on_time_count": 20,
+          "on_time_rate": 1.0,
+          "deadline_min": 60
+        },
+        "protection": {
+          "task_count": 12,
+          "avg_time_min": 51.23378977336727,
+          "max_time_min": 59.864037304205944,
+          "on_time_count": 12,
+          "on_time_rate": 1.0,
+          "deadline_min": 120
+        },
+        "basic": {
+          "task_count": 25,
+          "avg_time_min": 34.888592902822246,
+          "max_time_min": 59.864037304205944,
+          "on_time_count": 25,
+          "on_time_rate": 1.0,
+          "deadline_min": 240
+        }
+      },
+      "route_types": {
+        "direct": 28,
+        "relay": 34
+      },
+      "config": {
+        "trucks": 20,
+        "drones": 20,
+        "use_drones": true,
+        "use_relay": true,
+        "label": "协同(加倍无人机)"
+      }
+    }
+  },
+  "sensitivity_drone_count": [
+    {
+      "n_drones": 0,
+      "makespan": 167.95275866294318,
+      "avg_time": 69.75439819170421,
+      "penalty": 18056.075227571124,
+      "objective": 78224.02798623407,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 64
+    },
+    {
+      "n_drones": 5,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    },
+    {
+      "n_drones": 10,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    },
+    {
+      "n_drones": 15,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    },
+    {
+      "n_drones": 20,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    },
+    {
+      "n_drones": 30,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    },
+    {
+      "n_drones": 40,
+      "makespan": 135.53606764052427,
+      "avg_time": 58.372454213704586,
+      "penalty": 9446.321050321074,
+      "objective": 89581.8571179616,
+      "life_rescue_on_time_rate": 1.0,
+      "completed": 62
+    }
+  ],
+  "uses_road_network": true,
+  "includes_shelter_demands": true
+}
