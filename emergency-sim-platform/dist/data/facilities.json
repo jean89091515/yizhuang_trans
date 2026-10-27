@@ -1,0 +1,382 @@
+{
+ "meta": {
+  "source": "Step10/Step11 输出 (supply_optimization_results.json / evacuation_results.json)",
+  "crs": "WGS84 (EPSG:4326)",
+  "notes": [
+   "消防站/仓库/避难所/医院坐标取自论文 Step10 物流网络节点，为原始 POI 坐标。",
+   "地铁站坐标为近似值（仓库内无 subway_stations.shp），标记 approx=true，请用导出脚本替换。",
+   "避难所容量、医院床位按论文代码默认/下限取值。"
+  ]
+ },
+ "fire_stations": [
+  {
+   "id": "S01",
+   "name": "大兴区黄村镇孙村消防支队",
+   "lon": 116.39445535606887,
+   "lat": 39.70819418803632,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S02",
+   "name": "孙村消防",
+   "lon": 116.3945763483422,
+   "lat": 39.70823617257891,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S03",
+   "name": "魏善庄消防队",
+   "lon": 116.40550392246465,
+   "lat": 39.673049318545786,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S04",
+   "name": "大兴区魏善庄消防救援站",
+   "lon": 116.40584713628856,
+   "lat": 39.67299347041891,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S05",
+   "name": "西红门镇大生庄村消防安全办公室",
+   "lon": 116.3948961960973,
+   "lat": 39.76472445034239,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S06",
+   "name": "志远庄微型消防站",
+   "lon": 116.40301943931458,
+   "lat": 39.76154071549226,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S07",
+   "name": "旧宫镇南街地区义务消防站",
+   "lon": 116.40252723160108,
+   "lat": 39.785148335389614,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  },
+  {
+   "id": "S08",
+   "name": "西红门镇大白楼村消防安全办公室",
+   "lon": 116.38181616133994,
+   "lat": 39.777304699402414,
+   "type": "fire_station",
+   "stock": {
+    "life_rescue": 50,
+    "medical": 30,
+    "protection": 100,
+    "basic": 200
+   }
+  }
+ ],
+ "warehouses": [
+  {
+   "id": "S09",
+   "name": "假设仓库1-丰台",
+   "lon": 116.3,
+   "lat": 39.85,
+   "type": "warehouse",
+   "assumed": true,
+   "stock": {
+    "life_rescue": 200,
+    "medical": 100,
+    "protection": 500,
+    "basic": 1000
+   }
+  },
+  {
+   "id": "S10",
+   "name": "假设仓库2-大兴",
+   "lon": 116.35,
+   "lat": 39.75,
+   "type": "warehouse",
+   "assumed": true,
+   "stock": {
+    "life_rescue": 200,
+    "medical": 100,
+    "protection": 500,
+    "basic": 1000
+   }
+  }
+ ],
+ "shelters": [
+  {
+   "id": "R01",
+   "name": "南红门行宫遗址公园",
+   "lon": 116.45096223952332,
+   "lat": 39.73217980713956,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  },
+  {
+   "id": "R02",
+   "name": "城南业余球队足球场",
+   "lon": 116.46123240866778,
+   "lat": 39.69804215329172,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  },
+  {
+   "id": "R03",
+   "name": "红星集体农庄纪念公园",
+   "lon": 116.4539180909969,
+   "lat": 39.76375613821821,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  },
+  {
+   "id": "R04",
+   "name": "安南湿地环保主题公园(暂停开放)",
+   "lon": 116.45520108790888,
+   "lat": 39.73113479787256,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  },
+  {
+   "id": "R05",
+   "name": "三太路城市公园",
+   "lon": 116.4562312284316,
+   "lat": 39.75557850167517,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  },
+  {
+   "id": "R06",
+   "name": "南海子红树林公园露营区(暂停营业)",
+   "lon": 116.46199813722848,
+   "lat": 39.76868358892777,
+   "type": "shelter",
+   "capacity": 2000,
+   "relay_candidate": true,
+   "capacity_note": "Step10 以 >2000 人筛选为中转站，取下限 2000"
+  }
+ ],
+ "hospitals": [
+  {
+   "id": "H01",
+   "name": "三间房社区卫生服务站",
+   "lon": 116.41668726264663,
+   "lat": 39.71923185950188,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H02",
+   "name": "社区卫生服务站",
+   "lon": 116.43646081757164,
+   "lat": 39.705220163608125,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H03",
+   "name": "大兴区瀛海医院",
+   "lon": 116.4414008176768,
+   "lat": 39.759506665194834,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H04",
+   "name": "大兴区康复专科医联体核心医院",
+   "lon": 116.44243311482286,
+   "lat": 39.76999863172704,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H05",
+   "name": "社区卫生服务站(后查路)",
+   "lon": 116.42600030636436,
+   "lat": 39.6854690585495,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H06",
+   "name": "东赵村社区卫生服务站",
+   "lon": 116.42879333116326,
+   "lat": 39.71748630023824,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H07",
+   "name": "大兴区德茂社区卫生服务站",
+   "lon": 116.42711749201897,
+   "lat": 39.77904414441051,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H08",
+   "name": "大兴王各庄村社区卫生服务站",
+   "lon": 116.44322936592457,
+   "lat": 39.672612839582,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H09",
+   "name": "北京市大兴区魏善庄镇赵庄子社区卫生服务站",
+   "lon": 116.45947836855989,
+   "lat": 39.660498755970856,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  },
+  {
+   "id": "H10",
+   "name": "大兴崔家庄一村社区卫生服务站",
+   "lon": 116.46419590786884,
+   "lat": 39.66063685829708,
+   "type": "hospital",
+   "beds": 200,
+   "beds_note": "原 POI 无床位字段，按 Step11 默认 200"
+  }
+ ],
+ "subway_stations": [
+  {
+   "id": "M01",
+   "name": "亦庄桥站",
+   "lon": 116.4868,
+   "lat": 39.8031,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M02",
+   "name": "万源街站",
+   "lon": 116.5035,
+   "lat": 39.8007,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M03",
+   "name": "荣京东街站",
+   "lon": 116.5129,
+   "lat": 39.7934,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M04",
+   "name": "荣昌东街站",
+   "lon": 116.522,
+   "lat": 39.7846,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M05",
+   "name": "同济南路站",
+   "lon": 116.5398,
+   "lat": 39.7759,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M06",
+   "name": "经海路站",
+   "lon": 116.5573,
+   "lat": 39.7834,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M07",
+   "name": "瀛海站",
+   "lon": 116.4405,
+   "lat": 39.7608,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  },
+  {
+   "id": "M08",
+   "name": "德茂站",
+   "lon": 116.4272,
+   "lat": 39.7795,
+   "type": "subway",
+   "capacity": 8000,
+   "approx": true
+  }
+ ],
+ "commute_mode_shares": {
+  "car_ratio": 0.12791790286243082,
+  "subway_ratio": 0.38784554818116496,
+  "bus_ratio": 0.30502400705281113,
+  "bike_ratio": 0.12910615707352718,
+  "walk_ratio": 0.05010638483006577
+ }
+}

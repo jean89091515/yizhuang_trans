@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>iframe 嵌入示例</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #050d1a; color: #cfe6ff; font: 14px 'Microsoft YaHei', sans-serif; }
+    .bar { display: flex; gap: 8px; align-items: center; padding: 8px 12px; background: #0a1a2f; border-bottom: 1px solid #1d3d66; }
+    .bar button { background: #12345e; color: #fff; border: 1px solid #4fd2ff; padding: 4px 10px; cursor: pointer; }
+    #out { margin-left: auto; font-size: 12px; color: #8fb3d9; max-width: 50%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    iframe { display: block; width: 100%; height: calc(100% - 41px); border: 0; }
+  </style>
+</head>
+<body>
+  <!-- 模拟一体化平台“重大突发事件”入口页：用 iframe 嵌入模拟模块，并通过 postMessage 交互 -->
+  <div class="bar">
+    <b>父页面</b>
+    <button onclick="send({ type: 'emergency-sim:set', windPresetId: 'n2' })">切换北风</button>
+    <button onclick="send({ type: 'emergency-sim:run' })">重新计算</button>
+    <button onclick="send({ type: 'emergency-sim:run', params: { leakRateKgMin: 10 } })">泄漏 10 kg/min 并计算</button>
+    <button onclick="send({ type: 'emergency-sim:set', view: 'evac' })">人员疏散视图</button>
+    <span id="out">等待子页面…</span>
+  </div>
+  <iframe id="sim" src="../dist/index.html"></iframe>
+  <script>
+    const frame = document.getElementById('sim')
+    const out = document.getElementById('out')
+    function send(msg) { frame.contentWindow.postMessage(msg, '*') }
+    window.addEventListener('message', (ev) => {
+      const m = ev.data
+      if (!m || typeof m.type !== 'string' || !m.type.startsWith('emergency-sim:')) return
+      if (m.type === 'emergency-sim:ready') out.textContent = '子页面已就绪'
+      if (m.type === 'emergency-sim:result') {
+        const p = m.payload
+        out.textContent = `收到结果：需疏散 ${p.evacDemand} 人，全部资源疏散率 ${(p.evacuation.all.rate * 100).toFixed(1)}%，用时 ${(p.elapsedMs / 1000).toFixed(1)} s`
+        window.__lastResult = p
+      }
+    })
+  </script>
+</body>
+</html>
