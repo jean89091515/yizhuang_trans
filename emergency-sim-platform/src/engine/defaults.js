@@ -109,6 +109,7 @@ export const DEFAULT_PARAMS = {
     circuity: 1.3, // 无路网时：路网绕行系数
     closureAccessKmh: 20, // 无路网时：封闭区内应急通行速度
     vehicleSpeedCap: true, // 有路网时：边速度取 min(道路限速, 车辆速度)；false 复现 network_router.py（仅用道路自由流速度）
+    snapToMainComponent: false, // 有路网时：点位只吸附到封闭后的最大强连通分量并补接入段；false 与论文一致（吸附最近节点）
   },
 
   population: { mode: 'intersect', k1Ratio: 0.02 },

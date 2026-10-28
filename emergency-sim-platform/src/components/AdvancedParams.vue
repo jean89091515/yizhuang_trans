@@ -76,6 +76,7 @@ const groups = [
     { path: 'roads.circuity', label: '路网绕行系数', step: 0.05, tip: '无路网时的几何近似模型参数' },
     { path: 'roads.closureAccessKmh', label: '封闭区应急通行速度', unit: 'km/h', tip: '无路网时的几何近似模型参数' },
     { path: 'roads.vehicleSpeedCap', label: '路网车速上限（取车辆速度）', bool: true, tip: '有 road_network.json 时生效；取消勾选 = 与 network_router.py 一致，仅按道路自由流速度计时' },
+    { path: 'roads.snapToMainComponent', label: '吸附到主连通路网', bool: true, tip: '有 road_network.json 时生效：点位只吸附到封闭后仍连通的主路网并计入接入段；不勾选 = 论文做法（最近节点）' },
   ] },
   { title: '人员疏散', fields: [
     { path: 'evacuation.Tmax', label: '疏散时长 T', unit: 'min', step: 5 },

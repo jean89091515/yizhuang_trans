@@ -42,7 +42,8 @@ emergency-sim-platform/
 ├── tools/
 │   ├── build_default_data.py  由仓库内论文成果生成默认数据（已运行）
 │   ├── export_platform_data.py★ 由论文原始数据输出导出真实数据（替换近似数据）
-│   └── run_cli.js             命令行运行引擎并与论文对照
+│   ├── run_cli.js             命令行运行引擎并与论文对照
+│   └── diagnose.js            路网/疏散诊断（吸附距离、可达性、各方式周转、路网口径对比）
 ├── tests/engine.test.js       引擎测试（11 项，含与论文数值对照）
 ├── examples/
 │   ├── EmergencySimEntry.vue  traffic-screen 路由页面示例（iframe 接入，Vue2/3 通用）
@@ -65,6 +66,7 @@ npm test           # 引擎测试（11 项）
 npm run build      # 构建到 dist/
 npm run server     # 可选：服务端求解 API + 静态前端 http://localhost:8787
 npm run sim        # 命令行跑一次基准场景，输出与论文的对照
+node tools/diagnose.js   # 接入真实路网后诊断：吸附、可达性、各交通方式周转、不同路网口径的结果对比
 ```
 
 Node ≥ 18（推荐 22）。

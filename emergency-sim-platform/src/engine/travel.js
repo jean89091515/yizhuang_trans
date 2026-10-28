@@ -21,6 +21,7 @@ export class TravelModel {
     const { bprAlpha, bprBeta, vc } = roads
     this.bpr = 1 + bprAlpha * Math.pow(vc, bprBeta)
     if (graph) {
+      graph.snapMain = !!roads.snapToMainComponent
       graph.applyIncident(this.local, roads, this.bpr)
       graph.speedCap = roads.vehicleSpeedCap !== false
     }
@@ -44,6 +45,15 @@ export class TravelModel {
     else if (kind === 'rail') t = ((1.2 * d) / 1000 / speedKmh) * 60
     else {
       t = this.graph ? this.graph.timeMin(a, b, speedKmh) : null
+      if (t !== null && Number.isFinite(t) && this.graph.snapMain) {
+        // 吸附到主连通网络时，补上点位 ↔ 路网节点的接入/驶离段（几何模型，封闭区内按应急通行速度）
+        const g = this.graph
+        const s = g.nearest(a.lon, a.lat)
+        const e = g.nearest(b.lon, b.lat)
+        const [sx, sy] = this.local.toXY(g.lon[s], g.lat[s])
+        const [ex, ey] = this.local.toXY(g.lon[e], g.lat[e])
+        t += this.geometricTime(ax, ay, sx, sy, speedKmh) + this.geometricTime(ex, ey, bx, by, speedKmh)
+      }
       if (t === null || !Number.isFinite(t)) t = this.geometricTime(ax, ay, bx, by, speedKmh)
     }
     this.cache.set(key, t)
@@ -257,6 +267,50 @@ export class RoadGraph {
       }
     }
     this.ssspCache.clear()
+    this.nearestCache.clear()
+    this.inMain = this.snapMain ? this.mainComponent().inMain : null
+  }
+
+  /** 封闭后（仅 factor 有限的边）的最大强连通分量；迭代 Tarjan */
+  mainComponent() {
+    const N = this.N
+    const index = new Int32Array(N).fill(-1)
+    const low = new Int32Array(N)
+    const onStack = new Uint8Array(N)
+    const comp = new Int32Array(N).fill(-1)
+    const it = new Int32Array(N)
+    const stack = []
+    const sizes = []
+    let idx = 0
+    for (let s0 = 0; s0 < N; s0++) {
+      if (index[s0] !== -1) continue
+      const call = [s0]
+      index[s0] = low[s0] = idx++; stack.push(s0); onStack[s0] = 1; it[s0] = this.off[s0]
+      while (call.length) {
+        const v = call[call.length - 1]
+        if (it[v] < this.off[v + 1]) {
+          const p = it[v]++
+          if (this.factor[p] === Infinity) continue
+          const w = this.to[p]
+          if (index[w] === -1) {
+            index[w] = low[w] = idx++; stack.push(w); onStack[w] = 1; it[w] = this.off[w]; call.push(w)
+          } else if (onStack[w]) low[v] = Math.min(low[v], index[w])
+        } else {
+          call.pop()
+          if (call.length) { const u = call[call.length - 1]; low[u] = Math.min(low[u], low[v]) }
+          if (low[v] === index[v]) {
+            let w
+            let n = 0
+            do { w = stack.pop(); onStack[w] = 0; comp[w] = sizes.length; n++ } while (w !== v)
+            sizes.push(n)
+          }
+        }
+      }
+    }
+    const big = sizes.indexOf(Math.max(...sizes))
+    const inMain = new Uint8Array(N)
+    for (let i = 0; i < N; i++) inMain[i] = comp[i] === big ? 1 : 0
+    return { inMain, size: sizes[big] || 0, count: sizes.length }
   }
 
   nearest(lon, lat) {
@@ -266,13 +320,15 @@ export class RoadGraph {
     const cy = Math.floor(lat * 100)
     let best = -1
     let bd = Infinity
-    for (let ring = 0; ring < 6 && (best < 0 || ring < 2); ring++) {
+    const only = this.inMain
+    for (let ring = 0; ring < (only ? 15 : 6) && (best < 0 || ring < 2); ring++) {
       for (let dx = -ring; dx <= ring; dx++) {
         for (let dy = -ring; dy <= ring; dy++) {
           if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue
           const arr = this.bucket.get(`${cx + dx},${cy + dy}`)
           if (!arr) continue
           for (const i of arr) {
+            if (only && !only[i]) continue
             const d = (this.lon[i] - lon) ** 2 + (this.lat[i] - lat) ** 2
             if (d < bd) { bd = d; best = i }
           }
