@@ -5,6 +5,21 @@ import { runSimulationService, loadStaticData } from './services/simService.js'
 
 const cfg = () => window.EMERGENCY_SIM_CONFIG || {}
 
+// 地图图层开关（按浏览器记住；读写失败时用默认值）
+const MAP_PREF_KEY = 'emergency-sim:map-layers'
+const MAP_LAYER_DEFAULTS = { basemap: '', roads: true, roadStatus: true, roadLabels: true, subway: true, boundary: true, hazard: true }
+function loadMapPrefs() {
+  try {
+    const v = JSON.parse(localStorage.getItem(MAP_PREF_KEY) || '{}')
+    return Object.fromEntries(Object.entries(MAP_LAYER_DEFAULTS).map(([k, d]) => [k, typeof v[k] === typeof d ? v[k] : d]))
+  } catch {
+    return { ...MAP_LAYER_DEFAULTS }
+  }
+}
+export function saveMapPrefs() {
+  try { localStorage.setItem(MAP_PREF_KEY, JSON.stringify(state.mapLayers)) } catch { /* 隐私模式等 */ }
+}
+
 export const state = reactive({
   params: paramsFromPresets({ siteId: 'taihe', windPresetId: 'sw2' }),
   running: false,
@@ -23,6 +38,10 @@ export const state = reactive({
   detailOpen: false,
   ready: false,
   runCount: 0,
+  mapLayers: loadMapPrefs(),
+  layerPanelOpen: false,
+  tileError: false,
+  mapScale: { label: '', px: 0 },
 })
 
 export const result = shallowRef(null)

@@ -1,17 +1,21 @@
 <template>
-  <div ref="el" class="map" :class="{ 'dark-tiles': mapCfg.darkFilter !== false, 'pick-mode': state.pickMode }"></div>
+  <!-- Leaflet 容器单独一层，避免 Vue 更新 class 时覆盖 Leaflet 自身的 class -->
+  <div class="map" :class="{ 'pick-mode': state.pickMode }"><div ref="el" class="map-inner"></div></div>
 </template>
 
 <script setup>
 /**
  * 地图图层（Leaflet）。数据坐标均为 WGS84，按配置转换为底图坐标系（高德瓦片为 GCJ-02）。
  * 若平台已有统一地图组件（如高德 JS API），可参照本文件的图层划分与样式迁移。
+ * 图层自下而上：底图瓦片 → 控规界 → 道路 → 地铁 → ERPG 分区 → 浓度 → 等值线 → 路网状态 → 道路名称 → 路线/流线 → 设施 → 车辆 → 事故点
  */
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { state, result, staticData, setIncidentFromMap } from '../store.js'
+import { state, result, staticData, setIncidentFromMap, saveMapPrefs } from '../store.js'
 import { wgs84ToGcj02, gcj02ToWgs84, SUPPLY_CATEGORIES, VEHICLE_MODES } from '../engine/index.js'
+import { getBasemaps, ROAD_CLASSES, STATUS_STYLE, roadStatus, labelCandidates, textWidth } from '../utils/basemap.js'
+import { mapApi } from '../utils/mapApi.js'
 
 const mapCfg = (window.EMERGENCY_SIM_CONFIG || {}).map || {}
 const isGcj = (mapCfg.coord || 'gcj02') === 'gcj02'
@@ -21,6 +25,15 @@ const layers = {}
 let vehicleState = null
 let originMarkers = []
 let fitDone = false
+const basemaps = getBasemaps()
+let tileLayers = []
+let tileStat = null
+let roadLayers = [] // [{ c, glow, line }]，按道路等级自低到高
+let roadsShown = ''
+let roadStyleSig = ''
+let statusShown = ''
+let statusLayers = [] // [{ minor, glow, level, line }]
+let labelCands = []
 
 const ll = (lon, lat) => {
   const [x, y] = isGcj ? wgs84ToGcj02(lon, lat) : [lon, lat]
@@ -65,32 +78,248 @@ onMounted(() => {
     minZoom: mapCfg.minZoom ?? 9, maxZoom: mapCfg.maxZoom ?? 18,
     center: ll(clon, clat), zoom: mapCfg.zoom ?? 13, zoomSnap: 0.25,
   })
-  if (mapCfg.tileUrl) {
-    L.tileLayer(mapCfg.tileUrl, { subdomains: mapCfg.subdomains || ['1', '2', '3', '4'], maxZoom: 18, maxNativeZoom: 18 }).addTo(map)
+  const panes = {
+    boundary: 335, roads: 345, subway: 352, zones: 360, plume: 370, contours: 380, roadStatus: 385, labels: 390,
+    routes: 420, flows: 425, nodes: 450, vehicles: 460, incident: 480,
   }
-  const panes = { boundary: 340, zones: 360, plume: 370, contours: 380, routes: 420, flows: 425, nodes: 450, vehicles: 460, incident: 480 }
   for (const [k, z] of Object.entries(panes)) { map.createPane(k); map.getPane(k).style.zIndex = z }
   map.getPane('zones').style.mixBlendMode = 'screen'
   layers.canvasVeh = L.canvas({ pane: 'vehicles', padding: 0.3 })
-  for (const k of ['boundary', 'hazard', 'supply', 'evac', 'vehicles', 'incident']) layers[k] = L.layerGroup().addTo(map)
+  layers.canvasRoads = L.canvas({ pane: 'roads', padding: 0.15 })
+  layers.svgSubway = L.svg({ pane: 'subway', padding: 0.2 })
+  layers.svgStatus = L.svg({ pane: 'roadStatus', padding: 0.2 })
+  for (const k of ['boundary', 'roads', 'subway', 'stationLabels', 'roadStatus', 'roadLabels', 'hazard', 'supply', 'evac', 'vehicles', 'incident']) {
+    layers[k] = L.layerGroup().addTo(map)
+  }
   map.on('click', (e) => {
     if (!state.pickMode) return
     const [lon, lat] = isGcj ? gcj02ToWgs84(e.latlng.lng, e.latlng.lat) : [e.latlng.lng, e.latlng.lat]
     setIncidentFromMap(lon, lat)
   })
+  map.on('zoomend', () => updateVectorZoom(true))
+  map.on('moveend', () => { drawRoadLabels(); updateScale() })
+  mapApi.zoomIn = () => map.zoomIn(1)
+  mapApi.zoomOut = () => map.zoomOut(1)
+  mapApi.fit = () => fitToView(true)
+  setBasemap(state.mapLayers.basemap)
   drawBoundary()
+  drawBasemapVectors()
   drawIncident()
+  applyLayerToggles()
   if (result.value) rebuild()
+  updateScale()
   window.addEventListener('resize', onResize)
 })
-onBeforeUnmount(() => { window.removeEventListener('resize', onResize); map?.remove() })
-function onResize() { map?.invalidateSize() }
+onBeforeUnmount(() => { window.removeEventListener('resize', onResize); clearTimeout(tileStat?.timer); map?.remove() })
+function onResize() { map?.invalidateSize(); updateScale() }
 
 function panelPadding() {
   const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080)
   const lp = state.leftCollapsed ? 80 : 600
   const rp = state.rightCollapsed ? 80 : 600
   return { paddingTopLeft: [lp * s, 170 * s], paddingBottomRight: [rp * s, 140 * s] }
+}
+
+// ---------------- 底图 ----------------
+function setBasemap(id) {
+  if (!map) return
+  const bm = basemaps.find((b) => b.id === id) || basemaps[0]
+  state.mapLayers.basemap = bm.id
+  tileLayers.forEach((t) => map.removeLayer(t))
+  tileLayers = []
+  clearTimeout(tileStat?.timer)
+  state.tileError = false
+  map.getPane('tilePane').style.filter = bm.filter || 'none'
+  map.getContainer().classList.toggle('no-basemap', !bm.url)
+  if (!bm.url) return
+  // 瓦片加载监测：长时间没有一张成功即提示（无外网 / 瓦片服务被拦截）
+  const stat = (tileStat = { ok: 0, err: 0, timer: 0 })
+  const check = () => { if (stat === tileStat && stat.ok === 0) state.tileError = true }
+  stat.timer = setTimeout(check, 8000)
+  for (const url of [bm.url, bm.overlayUrl].filter(Boolean)) {
+    const t = L.tileLayer(url, { subdomains: bm.subdomains, maxZoom: 18, maxNativeZoom: bm.maxNativeZoom })
+    t.on('tileload', () => { stat.ok++; if (stat === tileStat) state.tileError = false })
+    t.on('tileerror', () => { stat.err++; if (stat.err >= 6) check() })
+    t.addTo(map)
+    tileLayers.push(t)
+  }
+  updateVectorZoom()
+}
+
+const zoomWidth = (z) => (z <= 11 ? 0.65 : z <= 12.5 ? 0.85 : z <= 14 ? 1.1 : z <= 15.5 ? 1.5 : 2)
+const hasTiles = () => !!(basemaps.find((b) => b.id === state.mapLayers.basemap) || basemaps[0]).url
+
+/** 道路、地铁（basemap.json，仅显示） */
+function drawBasemapVectors() {
+  if (!map) return
+  for (const k of ['roads', 'subway', 'stationLabels']) layers[k].clearLayers()
+  roadLayers = []
+  roadsShown = ''
+  labelCands = []
+  const bm = staticData.value?.basemap
+  if (!bm) return
+  const byCls = ROAD_CLASSES.map(() => [])
+  for (const r of bm.roads) byCls[r.cls].push(llArr(r.coords))
+  for (let i = ROAD_CLASSES.length - 1; i >= 0; i--) {
+    const c = ROAD_CLASSES[i]
+    if (!byCls[i].length) continue
+    const opts = { renderer: layers.canvasRoads, interactive: false, color: c.color, lineCap: 'round', lineJoin: 'round', smoothFactor: 1.2 }
+    if (c.glow) roadLayers.push({ c, glow: true, line: L.polyline(byCls[i], { ...opts, opacity: 0.16 }) })
+    roadLayers.push({ c, glow: false, line: L.polyline(byCls[i], { ...opts, opacity: 0.9 }) })
+  }
+  for (const s of bm.subway) {
+    const pts = llArr(s.coords)
+    L.polyline(pts, { renderer: layers.svgSubway, color: '#04101f', weight: 6, opacity: 0.85, interactive: false }).addTo(layers.subway)
+    L.polyline(pts, { renderer: layers.svgSubway, color: s.color, weight: 3, opacity: 0.95 })
+      .bindTooltip(`<b>${esc(s.name)}</b>`, { className: 'sim-tip', sticky: true }).addTo(layers.subway)
+  }
+  for (const st of bm.stations) {
+    const transfer = st.lines.length > 1
+    const p = ll(st.lon, st.lat)
+    L.circleMarker(p, { renderer: layers.svgSubway, radius: transfer ? 4.6 : 3.4, color: transfer ? '#e8f4ff' : st.color, weight: 2, fillColor: '#0a1a2f', fillOpacity: 1 })
+      .bindTooltip(`<b>${esc(st.name)}</b><br/>${esc(st.lines.join('、') || '地铁站')}${transfer ? '（换乘站）' : ''}`, { className: 'sim-tip', direction: 'top', offset: [0, -4] })
+      .addTo(layers.subway)
+    L.tooltip({ pane: 'labels', permanent: true, direction: 'right', offset: [5, 0], className: 'map-label station-label', interactive: false })
+      .setLatLng(p).setContent(esc(st.name)).addTo(layers.stationLabels)
+  }
+  labelCands = labelCandidates(bm).map((c) => ({ ...c, ll: ll(...c.mid), la: ll(...c.a), lb: ll(...c.b), w: textWidth(c.name) }))
+  updateVectorZoom()
+}
+
+/** 计算后：封闭 / 拥堵路段着色（与引擎同一封闭半径与 BPR 拥堵系数） */
+function drawRoadStatus(res) {
+  layers.roadStatus.clearLayers()
+  statusLayers = []
+  statusShown = ''
+  const bm = staticData.value?.basemap
+  if (!bm || !res) return
+  const groups = new Map()
+  for (const x of roadStatus(bm, res)) {
+    const minor = ROAD_CLASSES[x.road.cls].tier === 2
+    const key = `${x.level}|${minor ? 1 : 0}`
+    let g = groups.get(key)
+    if (!g) groups.set(key, (g = { level: x.level, minor, lines: [], km: 0, fmin: Infinity, fmax: 0 }))
+    g.lines.push(llArr(x.coords))
+    g.km += x.lenM / 1000
+    g.fmin = Math.min(g.fmin, x.fmin)
+    g.fmax = Math.max(g.fmax, x.fmax)
+  }
+  const R = res.roads.closureRadiusM
+  for (const level of ['light', 'medium', 'heavy', 'closed']) {
+    for (const minor of [true, false]) {
+      const g = groups.get(`${level}|${minor ? 1 : 0}`)
+      if (!g) continue
+      const st = STATUS_STYLE[level]
+      const tipHtml = level === 'closed'
+        ? `<b style="color:${st.color}">封闭路段</b> ${g.km.toFixed(1)} km<br/>事故点 ${R} m 范围内，禁止社会车辆通行`
+        : `<b style="color:${st.color}">${st.name}路段</b> ${g.km.toFixed(1)} km<br/>行程时间 ×${g.fmin.toFixed(2)}–${g.fmax.toFixed(2)}（BPR）`
+      const opts = { renderer: layers.svgStatus, color: st.color, lineCap: 'round', lineJoin: 'round', smoothFactor: 1 }
+      if (st.glow) statusLayers.push({ minor, glow: true, level, line: L.polyline(g.lines, { ...opts, opacity: 0.25, interactive: false }) })
+      statusLayers.push({ minor, glow: false, level, line: L.polyline(g.lines, { ...opts, opacity: 0.95 }).bindTooltip(tipHtml, { className: 'sim-tip', sticky: true }) })
+    }
+  }
+  updateVectorZoom()
+}
+
+/**
+ * 按缩放级别控制道路等级显示与线宽（只在可见集合或线宽档位变化时更新，减少重绘）。
+ * fromZoom：由 zoomend 触发时直接改 options，交给随后 moveend 的整体重绘，避免同一次缩放重绘两遍。
+ */
+function updateVectorZoom(fromZoom = false) {
+  if (!map) return
+  const z = map.getZoom()
+  const k = zoomWidth(z)
+  const ml = state.mapLayers
+  const vis = roadLayers.filter(({ c }) => ml.roads && z >= c.minZoom)
+  const sig = vis.map((x) => x.c.key + x.glow).join(',')
+  if (sig !== roadsShown) { // 重新按等级顺序添加，保证高等级道路绘制在上层
+    layers.roads.clearLayers()
+    vis.forEach(({ line }) => layers.roads.addLayer(line))
+    roadsShown = sig
+    roadStyleSig = ''
+  }
+  const op = hasTiles() ? 0.75 : 0.95
+  if (roadStyleSig !== `${k}|${op}`) {
+    for (const { c, glow, line } of vis) {
+      const st = glow ? { weight: c.w * k * 3.4 } : { weight: c.w * k, opacity: op }
+      fromZoom ? Object.assign(line.options, st) : line.setStyle(st)
+    }
+    roadStyleSig = `${k}|${op}`
+  }
+  const sv = ml.roadStatus ? statusLayers.filter((x) => !(x.minor && z < 13)) : []
+  const ssig = `${sv.length}|${k}`
+  if (ssig !== statusShown) {
+    layers.roadStatus.clearLayers()
+    for (const x of sv) {
+      const w = (x.minor ? 1.4 : 2.4) * Math.max(0.8, k)
+      x.line.setStyle({ weight: x.glow ? w * 3.2 : w })
+      layers.roadStatus.addLayer(x.line)
+    }
+    statusShown = ssig
+  }
+  const showStationLabels = ml.subway && z >= 13
+  if (showStationLabels !== map.hasLayer(layers.stationLabels)) showStationLabels ? layers.stationLabels.addTo(map) : map.removeLayer(layers.stationLabels)
+  if (!fromZoom) drawRoadLabels() // 缩放时名称标注在随后的 moveend 中更新
+}
+
+/** 道路名称：视野内按等级、长度贪心放置，避免重叠与同名重复 */
+function drawRoadLabels() {
+  if (!map) return
+  layers.roadLabels.clearLayers()
+  const z = map.getZoom()
+  if (!state.mapLayers.roadLabels || !labelCands.length || z < 11.5) return
+  const size = map.getSize()
+  const c = map.getCenter()
+  const mpp = (40075016.686 * Math.cos((c.lat * Math.PI) / 180)) / (256 * Math.pow(2, z))
+  const placed = []
+  const byName = new Map()
+  for (const cand of labelCands) {
+    if (z < cand.minZoom || cand.lenM / mpp < cand.w + 24) continue
+    const p = map.latLngToContainerPoint(cand.ll)
+    if (p.x < 40 || p.y < 40 || p.x > size.x - 40 || p.y > size.y - 40) continue
+    const pa = map.latLngToContainerPoint(cand.la)
+    const pb = map.latLngToContainerPoint(cand.lb)
+    let ang = (Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180) / Math.PI
+    if (ang > 90) ang -= 180
+    if (ang < -90) ang += 180
+    const r = (ang * Math.PI) / 180
+    const hw = (Math.abs(Math.cos(r)) * cand.w + Math.abs(Math.sin(r)) * 14) / 2 + 6
+    const hh = (Math.abs(Math.sin(r)) * cand.w + Math.abs(Math.cos(r)) * 14) / 2 + 6
+    if (placed.some((q) => Math.abs(q.x - p.x) < q.hw + hw && Math.abs(q.y - p.y) < q.hh + hh)) continue
+    const same = byName.get(cand.name) || []
+    if (same.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < 320)) continue
+    placed.push({ x: p.x, y: p.y, hw, hh })
+    same.push(p)
+    byName.set(cand.name, same)
+    const major = cand.cls <= 3
+    L.marker(cand.ll, {
+      pane: 'labels', interactive: false, keyboard: false,
+      icon: L.divIcon({ className: 'road-label', iconSize: [0, 0], html: `<span class="${major ? 'major' : ''}" style="transform:translate(-50%,-50%) rotate(${ang.toFixed(1)}deg)">${esc(cand.name)}</span>` }),
+    }).addTo(layers.roadLabels)
+    if (placed.length >= 70) break
+  }
+}
+
+function updateScale() {
+  if (!map) return
+  const z = map.getZoom()
+  const mpp = (40075016.686 * Math.cos((map.getCenter().lat * Math.PI) / 180)) / (256 * Math.pow(2, z))
+  const target = mpp * 90
+  const p10 = Math.pow(10, Math.floor(Math.log10(target)))
+  const nice = [5, 2, 1].map((m) => m * p10).find((v) => v <= target) || p10
+  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080)
+  state.mapScale = { label: nice >= 1000 ? `${nice / 1000} km` : `${nice} m`, px: nice / mpp / s }
+}
+
+/** 图层开关 */
+function applyLayerToggles() {
+  if (!map) return
+  const ml = state.mapLayers
+  const show = (k, on) => (on ? map.hasLayer(layers[k]) || layers[k].addTo(map) : map.removeLayer(layers[k]))
+  show('boundary', ml.boundary)
+  show('subway', ml.subway)
+  show('hazard', ml.hazard)
+  updateVectorZoom()
 }
 
 // ---------------- 静态图层 ----------------
@@ -362,7 +591,7 @@ function applyView() {
   if (!map) return
   const v = state.view
   const show = (k, on) => (on ? map.hasLayer(layers[k]) || layers[k].addTo(map) : map.removeLayer(layers[k]))
-  show('hazard', true)
+  show('hazard', state.mapLayers.hazard)
   show('supply', v === 'overview' || v === 'supply')
   show('evac', v === 'overview' || v === 'evac')
   map.getPane('routes').style.opacity = v === 'overview' ? 0.4 : 1
@@ -399,6 +628,7 @@ function rebuild() {
   if (!res || !map) return
   drawIncident()
   drawHazard(res)
+  drawRoadStatus(res)
   drawSupply(res)
   drawEvac(res)
   buildVehicles(res)
@@ -407,7 +637,10 @@ function rebuild() {
 }
 
 watch(result, rebuild)
-watch(() => staticData.value, drawBoundary)
+watch(() => staticData.value, () => { drawBoundary(); drawBasemapVectors(); if (result.value) drawRoadStatus(result.value) })
+watch(() => state.mapLayers.basemap, (id) => { setBasemap(id); saveMapPrefs() })
+watch(() => [state.mapLayers.roads, state.mapLayers.roadStatus, state.mapLayers.roadLabels, state.mapLayers.subway, state.mapLayers.boundary, state.mapLayers.hazard],
+  () => { applyLayerToggles(); saveMapPrefs() })
 watch(() => [state.params.incident.lon, state.params.incident.lat], () => {
   drawIncident()
   if (state.params.siteId === 'custom') map?.panTo(ll(state.params.incident.lon, state.params.incident.lat))
@@ -420,7 +653,7 @@ watch(() => [state.leftCollapsed, state.rightCollapsed], () => setTimeout(() => 
 </script>
 
 <style>
-.map { position: absolute; inset: 0; }
+.map, .map-inner { position: absolute; inset: 0; }
 .fac-ico, .inc-ico, .wind-arrow { background: none; border: none; }
 .fac-ico svg { filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8)); }
 .inc-wrap { position: relative; width: 32px; height: 44px; }
@@ -435,5 +668,15 @@ watch(() => [state.leftCollapsed, state.rightCollapsed], () => setTimeout(() => 
 @keyframes flow-dash { to { stroke-dashoffset: -36; } }
 .plume-img { image-rendering: auto; }
 .zone-label { font-size: 13px !important; font-weight: 700; }
+/* 叠加图层容器不拦截鼠标，只有可交互要素响应（避免上层 canvas/svg 挡住下层提示框） */
+.leaflet-pane > canvas, .leaflet-pane > svg { pointer-events: none; }
+.leaflet-container.no-basemap { background: radial-gradient(ellipse at 50% 45%, #0d2140 0%, #081629 60%, #050d1a 100%) !important; }
+.road-label { background: none; border: none; }
+.road-label span {
+  position: absolute; left: 0; top: 0; white-space: nowrap; font-size: 12px; letter-spacing: 1px; color: #8dbbe8;
+  text-shadow: 0 0 2px #04101f, 0 0 3px #04101f, 0 0 6px #04101f; pointer-events: none;
+}
+.road-label span.major { color: #b5d8ff; font-weight: 600; }
+.leaflet-tooltip.station-label { font-size: 11px !important; color: #e6f2ff !important; padding: 0 !important; }
 .origin-label { font-size: 11px !important; font-weight: 700; color: #fff !important; }
 </style>

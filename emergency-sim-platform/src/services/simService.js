@@ -4,6 +4,8 @@
  *   remote —— 调用服务端 REST API（server/index.js），NDJSON 流式回传进度
  * 两种方式回调一致：onStage / onLog，最终 resolve(result)。
  */
+import { decodeBasemap } from '../utils/basemap.js'
+
 const cfg = () => window.EMERGENCY_SIM_CONFIG || {}
 
 let worker = null
@@ -73,8 +75,9 @@ export async function loadStaticData() {
     if (!r.ok) throw new Error(`${f}: ${r.status}`)
     return r.json()
   }
-  const [boundary, reference, facilities] = await Promise.all([
+  const [boundary, reference, facilities, basemap] = await Promise.all([
     get('yizhuang_boundary.geojson'), get('paper_reference.json'), get('facilities.json'),
+    get('basemap.json').catch(() => null), // 可选：道路、地铁显示图层（导出脚本生成）
   ])
-  return { boundary, reference, facilities }
+  return { boundary, reference, facilities, basemap: decodeBasemap(basemap) }
 }

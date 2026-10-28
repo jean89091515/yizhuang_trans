@@ -23,6 +23,7 @@ for (const f of must) {
 }
 const pop = JSON.parse(fs.readFileSync(path.join(ROOT, 'dist/data/population.json'), 'utf-8'))
 const hasRoads = fs.existsSync(path.join(ROOT, 'dist/data/road_network.json'))
+const hasBasemap = fs.existsSync(path.join(ROOT, 'dist/data/basemap.json'))
 const d = new Date()
 const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${String(d.getHours()).padStart(2, '0')}${String(d.getMinutes()).padStart(2, '0')}`
 fs.mkdirSync(path.join(ROOT, 'release'), { recursive: true })
@@ -32,5 +33,6 @@ const items = ['dist', 'server', 'src/engine', 'package.json', 'package-lock.jso
 execFileSync('tar', ['-czf', out, ...items], { cwd: ROOT, stdio: 'inherit' })
 const mb = (fs.statSync(path.join(ROOT, out)).size / 1e6).toFixed(1)
 console.log(`已生成 ${out}（${mb} MB）`)
-console.log(`  数据：${pop.meta?.approximate ? '默认近似数据' : '真实数据（来自导出脚本）'}${hasRoads ? '，含路网' : '，无路网（几何近似行程时间）'}`)
+console.log(`  数据：${pop.meta?.approximate ? '默认近似数据' : '真实数据（来自导出脚本）'}${hasRoads ? '，含路网' : '，无路网（几何近似行程时间）'}` +
+  `${hasBasemap ? '，含地图道路/地铁图层' : '，无地图道路/地铁图层（basemap.json）'}`)
 console.log('  部署步骤见 docs/部署指南.md')

@@ -10,6 +10,7 @@
     <RightPanel />
     <ProcessOverlay />
     <MapLegend v-if="result" />
+    <MapTools />
     <PlaybackBar />
     <div v-if="state.error && !state.running" class="toast">{{ state.error }}</div>
     <div v-if="!state.ready" class="loading">数据加载中…</div>
@@ -27,6 +28,7 @@ import LeftPanel from './components/LeftPanel.vue'
 import RightPanel from './components/RightPanel.vue'
 import ProcessOverlay from './components/ProcessOverlay.vue'
 import MapLegend from './components/MapLegend.vue'
+import MapTools from './components/MapTools.vue'
 import PlaybackBar from './components/PlaybackBar.vue'
 import DetailModal from './components/DetailModal.vue'
 import AdvancedParams from './components/AdvancedParams.vue'

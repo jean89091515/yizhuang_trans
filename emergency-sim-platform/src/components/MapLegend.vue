@@ -19,7 +19,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { state, result } from '../store.js'
+import { state, result, staticData } from '../store.js'
 
 const w = computed(() => result.value?.scenario?.wind)
 const plumeDir = computed(() => Math.round(result.value?.plume?.plumeDirDeg ?? 45))
@@ -33,6 +33,12 @@ const items = computed(() => {
     { label: '道路封闭区 / 拥堵区', style: sw('transparent', '2px dashed #ff4d4f') },
     { label: '亦庄控规界', style: sw('rgba(47,111,224,0.45)', '1px solid #4f9dff') },
   ]
+  const bm = staticData.value?.basemap
+  const ml = state.mapLayers
+  const road = bm?.roads.length && ml.roadStatus ? [{ label: '封闭 / 严重拥堵 / 拥堵 / 缓行路段', style: { ...sw('linear-gradient(90deg,#ff3b4f 25%,#ff7a33 25% 50%,#ffae3d 50% 75%,#ffe066 75%)'), height: '4px' } }] : []
+  const metro = bm?.subway.length && ml.subway ? [{ label: '地铁线路 / 站点', style: { ...sw('#E91E63'), height: '3px' } }] : []
+  hazard.splice(3, 0, ...road)
+  if (v === 'hazard') hazard.push(...metro)
   const supply = [
     { label: '消防站 / 应急仓库（供应点）', style: sw('#ff8a3d') },
     { label: '中转站（无人机起降）', style: { ...sw('#7b4dff'), borderRadius: '50%' } },
@@ -47,9 +53,9 @@ const items = computed(() => {
     { label: '医院 / 避难所 / 地铁站', style: sw('linear-gradient(90deg,#fff 33%,#2fbf71 33% 66%,#2f7bff 66%)') },
   ]
   if (v === 'hazard') return hazard
-  if (v === 'supply') return [...hazard.slice(0, 3), ...supply]
-  if (v === 'evac') return [...hazard.slice(0, 3), ...evac]
-  return [...hazard.slice(0, 3), supply[0], supply[2], supply[3], evac[0], evac[2]]
+  if (v === 'supply') return [...hazard.slice(0, 3), ...road, ...supply]
+  if (v === 'evac') return [...hazard.slice(0, 3), ...road, ...evac, ...metro]
+  return [...hazard.slice(0, 3), ...road, supply[0], supply[2], supply[3], evac[0], evac[2]]
 })
 </script>
 

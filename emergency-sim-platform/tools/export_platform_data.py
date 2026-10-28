@@ -19,6 +19,8 @@
   1_road_network/roads_study_area.shp          → road_network.json（默认；按共享顶点拆分道路，路网连通）
   1_road_network/road_network_graph.gpickle    → road_network.json（--roads-source gpickle，复现论文 Step2 图）
   11_evacuation_optimization/evacuation_results.json → 通勤方式构成兜底（仓库 技术路线图/ 内已有）
+  1_road_network/roads_study_area.shp + 7_subway/subway_routes_clipped.shp, subway_stations_network.shp
+                                               → basemap.json（地图显示用：分级道路及名称、地铁线路与站点）
 
 输出格式与 tools/build_default_data.py 完全一致，前端/服务端无需改代码；
 存在 road_network.json 时引擎自动改用 Dijkstra 路网行程时间。
@@ -57,7 +59,49 @@ INPUTS = {
     'commute': ('5_commute/commute_study_area.csv', 'step5_od_clip.py', 'COMMUTE_FILE', False),
     'scenario_params': ('8_integrated/scenario_params.json', 'step8_integration.py', '（前序步骤输出）', False),
     'evac_results': ('11_evacuation_optimization/evacuation_results.json', 'step11_evacuation.py', '（论文结果）', False),
+    'subway_routes': ('7_subway/subway_routes_clipped.shp', 'step7_subway.py', 'METRO_ROUTES_SHP（地图显示，可选）', False),
+    'subway_stations_net': ('7_subway/subway_stations_network.shp', 'step7_subway.py', 'METRO_STOPS_SHP（地图显示，可选）', False),
 }
+
+# 地图显示用道路分级（编码 → fclass），前端按编码设置线宽、颜色与显示级别
+DISPLAY_ROAD_CLASSES = ['motorway', 'motorway_link', 'trunk', 'trunk_link', 'primary', 'primary_link',
+                        'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'residential', 'unclassified']
+# step7_subway.py LINE_COLORS
+LINE_COLORS = {
+    '1号线': '#C23A30', '2号线': '#006098', '4号线': '#008B8D', '5号线': '#9B2793', '6号线': '#D09900', '7号线': '#F2C100',
+    '8号线': '#009B6B', '9号线': '#8FC31F', '10号线': '#009BC0', '13号线': '#F9E500', '14号线': '#D4A76A', '15号线': '#6B3A73',
+    '亦庄线': '#E91E63', '大兴线': '#4CAF50', '房山线': '#E66021', '昌平线': '#DE82B7', '大兴机场线': '#004DA0', 'S1线': '#B5A581',
+    '燕房线': '#C85D16', '首都机场线': '#894E8A', '17号线': '#CBB99C', '19号线': '#C3AED2', '16号线': '#6BA539', '11号线': '#EE7733',
+    '12号线': '#CC4411', '亦庄T1线': '#E40077',
+}
+
+
+def line_color(name):
+    n = str(name)
+    base = n.split('(')[0].split('（')[0].strip()
+    for cand in (n, base, base.replace('北京地铁', '').replace('地铁', '')):
+        if cand in LINE_COLORS:
+            return LINE_COLORS[cand]
+    for k, v in LINE_COLORS.items():
+        if k in n:
+            return v
+    return '#7fb7ff'
+
+
+def encode_line(coords):
+    """坐标 ×1e5 取整后差分编码：[x0, y0, dx1, dy1, ...]，精度约 1 m"""
+    out = []
+    px = py = None
+    for c in coords:  # 兼容带 Z 值的坐标
+        ix, iy = int(round(c[0] * 1e5)), int(round(c[1] * 1e5))
+        if px is None:
+            out += [ix, iy]
+        elif ix != px or iy != py:
+            out += [ix - px, iy - py]
+        else:
+            continue
+        px, py = ix, iy
+    return out
 
 # step8_integration.py 中写死的两个假设应急仓库（未运行 step8 时使用）
 STEP8_WAREHOUSES = [
@@ -416,6 +460,83 @@ def export_population(gpd, inp, out, radius_m, cell_m):
     return True
 
 
+def export_basemap(gpd, inp, out, radius_m, classes=None):
+    """地图显示图层：分级道路（含名称/编号）、地铁线路与站点。几何简化约 4 m，差分编码。
+    classes：显示的道路等级（默认 DISPLAY_ROAD_CLASSES 全部；文件过大时可去掉 residential,unclassified）"""
+    obj = {'meta': {'description': '地图显示用矢量图层（不参与计算）', 'encoding': 'coords ×1e5 取整差分 [x0,y0,dx,dy,...]',
+                    'classes': DISPLAY_ROAD_CLASSES, 'sources': {}},
+           'names': [], 'roads': [], 'subway': [], 'subway_stations': []}
+    kx = 111320 * np.cos(np.radians(INC_LAT))
+    box_ = (INC_LON - radius_m / kx, INC_LAT - radius_m / 110540, INC_LON + radius_m / kx, INC_LAT + radius_m / 110540)
+
+    def prep(path):
+        g = gpd.read_file(path)
+        if g.crs is not None and g.crs.to_epsg() != 4326:
+            g = g.to_crs(4326)
+        if radius_m:
+            g = g.cx[box_[0]:box_[2], box_[1]:box_[3]]
+        g = g[g.geometry.notna()].explode(index_parts=False)
+        return g[g.geometry.geom_type == 'LineString']
+
+    p = inp.get('roads_shp')
+    if p:
+        g = prep(p)
+        fc, nm, rf = col(g, 'fclass'), col(g, 'name'), col(g, 'ref')
+        if fc:
+            g = g[g[fc].isin(classes or DISPLAY_ROAD_CLASSES)]
+        g = g.assign(geometry=g.geometry.simplify(0.00004, preserve_topology=False))
+        name_idx = {}
+        for geom, f_, n_, r_ in zip(g.geometry, g[fc] if fc else ['tertiary'] * len(g),
+                                    g[nm] if nm else [None] * len(g), g[rf] if rf else [None] * len(g)):
+            if geom.is_empty:
+                continue
+            label = next((str(v).strip() for v in (n_, r_) if v is not None and str(v).strip() not in ('', 'None', 'nan')), None)
+            ni = -1
+            if label:
+                ni = name_idx.setdefault(label, len(name_idx))
+            d = encode_line(geom.coords)
+            if len(d) >= 4:
+                obj['roads'].append([DISPLAY_ROAD_CLASSES.index(str(f_)) if str(f_) in DISPLAY_ROAD_CLASSES else 8, ni, d])
+        obj['names'] = list(name_idx)
+        obj['meta']['sources']['roads'] = p
+        log(f'  道路 {len(obj["roads"])} 段，命名道路 {len(obj["names"])} 条')
+
+    p = inp.get('subway_routes')
+    if p:
+        g = prep(p)
+        rc = next((c for c in ['route_cn', 'route_name', 'route_nam', 'name', 'NAME', 'line_name', 'line_nam', 'line', 'LINE', '线路名', '线路']
+                   if c in g.columns), None)
+        g = g.assign(geometry=g.geometry.simplify(0.00003, preserve_topology=False))
+        for geom, n_ in zip(g.geometry, g[rc] if rc else ['地铁'] * len(g)):
+            d = encode_line(geom.coords)
+            if len(d) >= 4:
+                name = str(n_).split('(')[0].split('（')[0].replace('北京地铁', '').replace('地铁', '').strip() or '地铁'
+                obj['subway'].append({'name': name, 'color': line_color(n_), 'd': d})
+        obj['meta']['sources']['subway'] = p
+        log(f'  地铁线路段 {len(obj["subway"])}（{len({x["name"] for x in obj["subway"]})} 条线）')
+
+    p = inp.get('subway_stations_net')
+    if p:
+        g = gpd.read_file(p)
+        if g.crs is not None and g.crs.to_epsg() != 4326:
+            g = g.to_crs(4326)
+        if radius_m:
+            g = g.cx[box_[0]:box_[2], box_[1]:box_[3]]
+        lc = col(g, 'lines')
+        for geom, n_, l_ in zip(g.geometry, g['name'] if 'name' in g.columns else [''] * len(g), g[lc] if lc else [''] * len(g)):
+            lines = [x for x in str(l_ or '').split(',') if x and x != 'None']
+            obj['subway_stations'].append({'name': str(n_), 'lon': round(geom.x, 6), 'lat': round(geom.y, 6),
+                                           'lines': lines, 'color': line_color(lines[0]) if lines else '#7fb7ff'})
+        obj['meta']['sources']['subway_stations'] = p
+        log(f'  地铁站 {len(obj["subway_stations"])}')
+
+    if not (obj['roads'] or obj['subway']):
+        log('  未找到 roads_study_area.shp / 地铁线路 → 不生成 basemap.json（地图仅显示在线底图）')
+        return False
+    dump(obj, out, 'basemap.json')
+    return True
+
+
 def export_roads_from_shp(gpd, inp, out, radius_m, classes):
     """由 roads_study_area.shp 构建路网：在道路共享顶点处拆分（OSM 交叉口），
     按 Geofabrik oneway 约定（B 双向 / F 正向 / T 反向）建有向边，只保留最大弱连通分量。
@@ -566,6 +687,8 @@ def main():
                     help='auto: 优先 roads_study_area.shp（连通路网）；gpickle: 使用 Step2 图（复现论文）')
     ap.add_argument('--road-classes', default=None,
                     help="默认排除 service,living_street；'all' 保留全部；或逗号分隔的 fclass 列表")
+    ap.add_argument('--basemap-classes', default=None,
+                    help='地图显示的道路等级，逗号分隔（默认全部 12 类；basemap.json 过大时可只保留 motorway,trunk,primary,secondary,tertiary 及 *_link）')
     ap.add_argument('--check', action='store_true', help='只检查输入文件，不写入')
     a = ap.parse_args()
     BACKUP_ROOT = os.path.abspath(a.backup_dir)
@@ -597,10 +720,12 @@ def main():
 
     import geopandas as gpd
     done = {}
-    log('\n[1/4] 亦庄控规界'); done['yizhuang_boundary.geojson'] = export_boundary(gpd, inp, a.out)
-    log('[2/4] 应急设施'); done['facilities.json'] = export_facilities(gpd, inp, a.out, radius_m)
-    log('[3/4] 地块人口'); done['population.json'] = export_population(gpd, inp, a.out, radius_m, a.cell_m)
-    log('[4/4] 路网')
+    log('\n[1/5] 亦庄控规界'); done['yizhuang_boundary.geojson'] = export_boundary(gpd, inp, a.out)
+    log('[2/5] 应急设施'); done['facilities.json'] = export_facilities(gpd, inp, a.out, radius_m)
+    log('[3/5] 地块人口'); done['population.json'] = export_population(gpd, inp, a.out, radius_m, a.cell_m)
+    log('[4/5] 地图图层（道路、地铁）'); done['basemap.json'] = export_basemap(
+        gpd, inp, a.out, radius_m, a.basemap_classes.split(',') if a.basemap_classes else None)
+    log('[5/5] 计算路网')
     if a.skip_roads:
         log('  已跳过'); done['road_network.json'] = False
     else:

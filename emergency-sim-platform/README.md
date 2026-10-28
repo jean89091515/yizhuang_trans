@@ -13,7 +13,7 @@
 | **结果详情 · 论文对照** | **高级参数** |
 | ![](docs/images/paper.jpg) | ![](docs/images/adv.jpg) |
 
-> 截图在无外网环境生成，底图瓦片未加载；部署到平台后会显示高德深色化底图（见“运行时配置”）。
+> 截图在无外网环境生成，底图瓦片未加载；部署到平台后会显示高德深色化底图（见“运行时配置”）。导出 `basemap.json` 后地图还会显示分级道路、道路名称、地铁线路与站点，计算后封闭/拥堵路段按等级着色（无外网时这些矢量图层照常显示）。
 
 ---
 
@@ -106,9 +106,10 @@ Node ≥ 18（推荐 22）。
 | 配置项 | 说明 | 默认 |
 |---|---|---|
 | `title` / `subtitle` | 大屏标题、副标题 | 宏中微一体化交通计算示范平台 / 北京亦庄 重大突发事件下交通流传播运行 |
-| `map.tileUrl` `map.subdomains` | 底图瓦片地址 | 高德栅格 `webrd0{s}.is.autonavi.com` |
-| `map.coord` | 底图坐标系：`gcj02`（高德/腾讯）或 `wgs84`（天地图/OSM/内网 WGS84 底图） | `gcj02` |
-| `map.darkFilter` | 浅色瓦片深色化（贴合设计稿深蓝风格）；底图本身为深色时设为 `false` | `true` |
+| `map.basemaps` | 底图列表（地图右下角“图层”按钮切换，第一项为默认）：每项 `{ id, name, url, overlayUrl?, darkFilter?, filter? }`，`url` 为空即“无底图” | 深色街道 / 卫星影像 / 标准街道 / 无底图（高德在线瓦片） |
+| `map.subdomains` | 瓦片子域名 `{s}` | `['1','2','3','4']` |
+| `map.coord` | 底图坐标系：`gcj02`（高德/腾讯）或 `wgs84`（天地图/OSM/内网 WGS84 底图）；所有底图须一致 | `gcj02` |
+| `map.tileUrl` `map.darkFilter` | 旧版单底图写法，未配置 `basemaps` 时仍然有效 | — |
 | `map.center` `map.zoom` | 初始中心（WGS84）与级别 | 太和桥，13 |
 | `dataBase` | 数据目录 | `./data/` |
 | `apiBase` | 服务端求解器地址（同域部署留空） | `''` |
@@ -123,7 +124,8 @@ Node ≥ 18（推荐 22）。
 | `population.json` | 地块人口标签栅格（480×477，约 75 m）+ 2,995 个地块人口 + 年龄结构 | 由 `figures/step4_population.png` 反演（色带逆映射 + 连通域分割），按 Step11 ERPG 分区人口标定 | **近似**：ERPG-2/1 分区人口与论文偏差 −2.7% / −0.5%（表见 `meta.calibration`） |
 | `yizhuang_boundary.geojson` | 亦庄控规界（219.5 km²） | 由 Step4 图中控规界线数字化 | 约 75 m 精度 |
 | `paper_reference.json` | 论文 Step9–12 全部关键结果、危险区 GeoJSON | `技术路线图/9~12_*` | 原值 |
-| `road_network.json`（可选，默认无） | 路网节点/有向边 | 导出脚本由 Step2 的 `roads_study_area.shp` 构建（交叉口拆分、Geofabrik oneway、最大连通分量）；`--roads-source gpickle` 改用 `road_network_graph.gpickle` | 原值 |
+| `road_network.json`（可选，默认无） | 路网节点/有向边（计算用） | 导出脚本由 Step2 的 `roads_study_area.shp` 构建（交叉口拆分、Geofabrik oneway、最大连通分量）；`--roads-source gpickle` 改用 `road_network_graph.gpickle` | 原值 |
+| `basemap.json`（可选，默认无） | 地图显示图层：12 级道路及名称、地铁线路与站点（只显示，不参与计算） | 导出脚本由 Step2 `roads_study_area.shp`、Step7 `7_subway/subway_routes_clipped.shp`、`subway_stations_network.shp` 生成；线路配色同 `step7_subway.py` | 原值（几何简化约 4 m） |
 
 **用真实数据替换（强烈建议）**：原始地块人口、POI 全集、路网在作者本机（`scripts/config.py` 中的路径），未纳入仓库。导出脚本读取的是论文数据处理脚本 step0–step8 的 **输出**（`output/0_study_area`、`1_road_network`、`2_poi`、`3_population`、`5_commute`、`8_integrated`），需要先有这些输出：
 
@@ -132,6 +134,7 @@ Node ≥ 18（推荐 22）。
 cd 1-CSTFM2026会议投稿
 python run_all.py --only 0 2 3 4      # 研究范围、路网、POI、人口（必需）
 python run_all.py --only 5 8          # 通勤方式构成、应急仓库（可选，缺失时沿用默认数据）
+python run_all.py --only 7            # 地铁线路与站点（可选，仅用于地图显示；需 config.py 中的地铁原始数据）
 
 # 第 2 步：检查 → 导出
 cd ../emergency-sim-platform
@@ -150,6 +153,7 @@ npm run build    # 或直接把 public/data/* 覆盖到已部署的 dist/data/
 - 缺少 Step8 输出时，应急仓库取 `step8_integration.py` 内置的两个假设仓库；缺少 Step5 输出时，通勤方式构成取论文 Step11 结果（`技术路线图/11_evacuation_optimization/evacuation_results.json`）。
 - 人口按地块写入七普区县年龄结构（`block_age`），引擎按地块计算老人/儿童比例，而不是用全域平均。
 - 路网默认由 `roads_study_area.shp` 构建：Step2 的 `road_network_graph.gpickle` 只连接每条道路的首尾点（路段中部的交叉口不相连，最大连通分量仅约 20% 节点），且把 Geofabrik 的 `oneway=F`（正向单行）当作双向、`T`（反向单行）当作正向。默认排除 `service`、`living_street`（`--road-classes all` 保留）；`--roads-source gpickle` 可复现论文 Step2 图。
+- 地图显示图层 `basemap.json` 默认包含 12 级道路（高速公路 → 街坊路）；文件过大或低配电脑缩放卡顿时，可用 `--basemap-classes motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary` 只保留主要道路。没有 Step7 输出时只导出道路。
 - 真实地块人口、POI 数据可能涉及数据授权，是否提交到 Git 仓库请自行决定（导出到 `public/data/` 后即被 git 视为修改）。
 
 生成同格式文件后无需改代码；有 `road_network.json` 时引擎自动改用 Dijkstra 路网行程时间（与 `network_router.py` 一致的封闭 + BPR 规则）。路网规模约 4 万节点时，单次计算约 2.5 s（浏览器 Worker）。

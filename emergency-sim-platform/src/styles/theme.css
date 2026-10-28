@@ -120,10 +120,7 @@ button { font-family: inherit; }
 
 /* Leaflet 深色适配 */
 .leaflet-container { background: #0a1a2f !important; font-family: var(--font); }
-.leaflet-container.dark-tiles .leaflet-tile-pane {
-  filter: invert(1) hue-rotate(185deg) brightness(0.62) contrast(1.05) saturate(0.55);
-}
-.leaflet-container.pick-mode { cursor: crosshair !important; }
+.pick-mode .leaflet-container, .pick-mode .leaflet-interactive { cursor: crosshair !important; }
 .leaflet-control-attribution { display: none; }
 .leaflet-tooltip.sim-tip {
   background: rgba(6, 22, 44, 0.92);

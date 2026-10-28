@@ -6,14 +6,22 @@ window.EMERGENCY_SIM_CONFIG = {
   title: '宏中微一体化交通计算示范平台',
   subtitle: '北京亦庄 重大突发事件下交通流传播运行',
 
-  // 底图：默认高德栅格瓦片（GCJ-02 坐标，叠加图层会自动由 WGS84 转换）
-  // 若平台已有统一底图服务，替换 tileUrl / subdomains / coord 即可；
-  // coord 取 'gcj02'（高德/腾讯）或 'wgs84'（天地图/OSM 等）
   map: {
-    tileUrl: 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+    // 底图（地图右下角“图层”按钮切换，第一项为默认）。默认高德在线瓦片；
+    // 若平台已有统一底图服务或服务器无外网，替换 url 即可（内网瓦片同样支持 {s}{x}{y}{z} 模板）。
+    //   url         瓦片地址；overlayUrl 叠加的注记/路网瓦片（可选）
+    //   darkFilter  对浅色瓦片做深色化滤镜，贴合大屏风格；filter 可直接写 CSS filter
+    // 所有底图须与 coord 坐标系一致：'gcj02'（高德/腾讯）或 'wgs84'（天地图/OSM 等），叠加图层自动由 WGS84 转换。
+    // 道路、地铁矢量图层来自 data/basemap.json（导出脚本生成），与底图无关，无外网时也能显示。
+    basemaps: [
+      { id: 'dark', name: '深色街道', url: 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', darkFilter: true },
+      { id: 'satellite', name: '卫星影像', url: 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+        overlayUrl: 'https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', filter: 'brightness(0.62) saturate(0.8)' },
+      { id: 'light', name: '标准街道', url: 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', filter: 'brightness(0.85)' },
+      { id: 'none', name: '无底图', url: '' },
+    ],
     subdomains: ['1', '2', '3', '4'],
     coord: 'gcj02',
-    darkFilter: true, // 对浅色瓦片做深色化滤镜，贴合大屏风格
     center: [116.494, 39.745], // WGS84 [lon, lat]
     zoom: 13,
     minZoom: 9,
