@@ -119,15 +119,29 @@ Node ≥ 18（推荐 22）。
 | `paper_reference.json` | 论文 Step9–12 全部关键结果、危险区 GeoJSON | `技术路线图/9~12_*` | 原值 |
 | `road_network.json`（可选，默认无） | 路网节点/有向边 | 导出脚本由 `road_network_graph.gpickle` 生成 | 原值 |
 
-**用真实数据替换（强烈建议）**：原始地块人口、POI 全集、路网在作者本机（`scripts/config.py` 中的路径），未纳入仓库。在该电脑上运行：
+**用真实数据替换（强烈建议）**：原始地块人口、POI 全集、路网在作者本机（`scripts/config.py` 中的路径），未纳入仓库。导出脚本读取的是论文数据处理脚本 step0–step8 的 **输出**（`output/0_study_area`、`1_road_network`、`2_poi`、`3_population`、`5_commute`、`8_integrated`），需要先有这些输出：
 
 ```bash
+# 第 1 步（若 output/ 下还没有文件）：在仓库的论文目录生成输出，需能访问 config.py 中的原始数据（含外接硬盘）
+cd 1-CSTFM2026会议投稿
+python run_all.py --only 0 2 3 4      # 研究范围、路网、POI、人口（必需）
+python run_all.py --only 5 8          # 通勤方式构成、应急仓库（可选，缺失时沿用默认数据）
+
+# 第 2 步：检查 → 导出
+cd ../emergency-sim-platform
 pip install geopandas networkx
-python tools/export_platform_data.py --research-output "/Users/liangwang/.../1-CSTFM2026会议投稿/output" --out public/data
+python tools/export_platform_data.py --research-output ../1-CSTFM2026会议投稿/output --check
+python tools/export_platform_data.py --research-output ../1-CSTFM2026会议投稿/output
 npm run build    # 或直接把 public/data/* 覆盖到已部署的 dist/data/
 ```
 
-脚本读取 `0_study_area / 1_road_network / 2_poi / 3_population / 5_commute / 8_integrated` 的输出，生成同格式文件；有 `road_network.json` 时引擎自动改用 Dijkstra 路网行程时间（与 `network_router.py` 一致的封闭 + BPR 规则），无需改代码。
+- `--check` 只列出每个输入文件找到/缺失及其由哪个 step 生成，不写入任何文件。
+- `--research-output` 也可以给上级目录（例如当初运行脚本的旧工作目录），脚本会在子目录中自动搜索。
+- 找不到任何核心输入时脚本不写入任何文件并退出；只找到部分输入时按类别更新（例如只有 POI 时仅替换设施，人口/路网保持现状）。
+- 每次覆盖前，原文件备份到 `data_backup/<时间戳>/`（不会被打包进 dist）。
+- 注意：`scripts/config.py` 被导入时会自动创建 `output/` 下的空子目录，因此 `output/` 存在但没有文件，通常说明该位置从未完整运行过 step0–step4。
+
+生成同格式文件后无需改代码；有 `road_network.json` 时引擎自动改用 Dijkstra 路网行程时间（与 `network_router.py` 一致的封闭 + BPR 规则）。
 
 ## 6. 计算内容一览
 

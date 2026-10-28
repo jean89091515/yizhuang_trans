@@ -4,7 +4,11 @@
 默认数据（public/data）中的人口栅格为反演近似、地铁站为近似坐标、且不含路网。
 在拥有原始数据的电脑上运行本脚本，即可用真实数据替换：
 
-  python tools/export_platform_data.py --research-output "/path/to/1-CSTFM2026会议投稿/output" --out public/data
+  python tools/export_platform_data.py --research-output "/path/to/1-CSTFM2026会议投稿/output" --check   # 先检查输入
+  python tools/export_platform_data.py --research-output "/path/to/1-CSTFM2026会议投稿/output"           # 导出
+
+--research-output 也可以给上一级目录，脚本会在其子目录中自动查找下列文件。
+找不到任何核心输入时不写入任何文件；覆盖前会把原文件备份到 data_backup/<时间戳>/（--backup-dir 可改）。
 
 读取（均为 scripts/config.py 中 DIRS 对应的输出）:
   0_study_area/yizhuang_boundary.shp           → yizhuang_boundary.geojson
@@ -23,7 +27,9 @@ import argparse
 import json
 import os
 import pickle
+import shutil
 import sys
+import time
 
 import numpy as np
 import pandas as pd
@@ -35,8 +41,106 @@ def log(*a):
     print(*a, flush=True)
 
 
+# key: (期望相对路径, 生成该文件的论文脚本, 该脚本依赖的原始数据（scripts/config.py）, 是否核心输入)
+INPUTS = {
+    'boundary': ('0_study_area/yizhuang_boundary.shp', 'step0_study_area.py', 'YIZHUANG_BOUNDARY_SHP', True),
+    'roads': ('1_road_network/road_network_graph.gpickle', 'step2_road_network.py', 'OSM_ROAD_SHP', True),
+    'fire_stations': ('2_poi/fire_stations.shp', 'step3_poi_filter.py', 'POI_FILE', True),
+    'hospitals': ('2_poi/hospitals.shp', 'step3_poi_filter.py', 'POI_FILE', True),
+    'shelters': ('2_poi/shelters.shp', 'step3_poi_filter.py', 'POI_FILE', True),
+    'subway_stations': ('2_poi/subway_stations.shp', 'step3_poi_filter.py', 'POI_FILE', True),
+    'population': ('3_population/block_pop_study_area.shp', 'step4_population.py', 'BLOCK_POP_SHP, CENSUS_SHP', True),
+    'commute': ('5_commute/commute_study_area.csv', 'step5_od_clip.py', 'COMMUTE_FILE', False),
+    'scenario_params': ('8_integrated/scenario_params.json', 'step8_integration.py', '（前序步骤输出）', False),
+}
+SKIP_DIRS = {'node_modules', '.git', 'dist', '__pycache__', 'figures', 'tmp', '_backup', 'emergency-sim-platform'}
+
+
+def _valid(path):
+    if not os.path.isfile(path):
+        return False
+    if path.lower().endswith('.shp'):  # Shapefile 需要同名 .dbf/.shx
+        stem = path[:-4]
+        return all(os.path.exists(stem + ext) or os.path.exists(stem + ext.upper()) for ext in ('.dbf', '.shx'))
+    return True
+
+
+def locate_inputs(root, max_depth=6):
+    """先按 output/ 标准结构查找；找不到则在 root（及其上一级，若 root 名为 output）下递归按文件名搜索"""
+    found = {k: os.path.join(root, rel) for k, (rel, *_) in INPUTS.items() if _valid(os.path.join(root, rel))}
+    missing = {k for k in INPUTS if k not in found}
+    if not missing:
+        return found
+    roots = [root]
+    if os.path.basename(os.path.normpath(root)) == 'output':
+        roots.append(os.path.dirname(os.path.normpath(root)))
+    names = {os.path.basename(INPUTS[k][0]): k for k in missing}
+    cands = {k: [] for k in missing}
+    seen = set()
+    for r in roots:
+        base_depth = os.path.normpath(r).count(os.sep)
+        for d, dirs, files in os.walk(r):
+            real = os.path.realpath(d)
+            if real in seen:
+                dirs[:] = []
+                continue
+            seen.add(real)
+            dirs[:] = [x for x in dirs if not x.startswith('.') and x not in SKIP_DIRS]
+            if os.path.normpath(d).count(os.sep) - base_depth >= max_depth:
+                dirs[:] = []
+            for f in files:
+                if f in names and _valid(os.path.join(d, f)):
+                    cands[names[f]].append(os.path.join(d, f))
+    for k, lst in cands.items():
+        if not lst:
+            continue
+        sub = os.path.dirname(INPUTS[k][0])
+        # 优先目录名与标准结构一致者，其次最新修改
+        lst.sort(key=lambda p: (os.path.basename(os.path.dirname(p)) == sub, os.path.getmtime(p)), reverse=True)
+        found[k] = lst[0]
+    return found
+
+
+def describe_dir(root, limit=40):
+    """列出目录下各子目录的文件数，帮助定位问题"""
+    rows = []
+    try:
+        entries = sorted(os.listdir(root))
+    except OSError as e:
+        return [f'    （无法读取：{e}）']
+    for e in entries[:limit]:
+        p = os.path.join(root, e)
+        if os.path.isdir(p):
+            n = sum(len(fs) for _, _, fs in os.walk(p))
+            rows.append(f'    {e}/  （{n} 个文件）')
+        else:
+            rows.append(f'    {e}')
+    if not entries:
+        rows.append('    （空目录）')
+    elif len(entries) > limit:
+        rows.append(f'    … 共 {len(entries)} 项')
+    return rows
+
+
+PLATFORM_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BACKUP_ROOT = os.path.join(PLATFORM_DIR, 'data_backup')  # 不放在 public/ 下，避免被打包进 dist
+BACKUP_DIR = None
+
+
+def backup(out_dir, name):
+    global BACKUP_DIR
+    p = os.path.join(out_dir, name)
+    if not os.path.exists(p):
+        return
+    if BACKUP_DIR is None:
+        BACKUP_DIR = os.path.join(BACKUP_ROOT, time.strftime('%Y%m%d-%H%M%S'))
+        os.makedirs(BACKUP_DIR, exist_ok=True)
+    shutil.copy2(p, os.path.join(BACKUP_DIR, name))
+
+
 def dump(obj, out_dir, name, indent=None):
     os.makedirs(out_dir, exist_ok=True)
+    backup(out_dir, name)
     p = os.path.join(out_dir, name)
     with open(p, 'w', encoding='utf-8') as f:
         json.dump(obj, f, ensure_ascii=False, indent=indent, separators=None if indent else (',', ':'))
@@ -48,8 +152,7 @@ def deg_dist_m(lon, lat):
 
 
 def read_points(gpd, path, radius_m):
-    if not os.path.exists(path):
-        log(f'  ⚠️ 缺少 {path}')
+    if not path:
         return None
     g = gpd.read_file(path)
     if g.crs is not None and g.crs.to_epsg() != 4326:
@@ -81,11 +184,11 @@ def num(v, default):
 
 
 # ---------------------------------------------------------------------
-def export_boundary(gpd, root, out):
-    p = os.path.join(root, '0_study_area', 'yizhuang_boundary.shp')
-    if not os.path.exists(p):
-        log('  ⚠️ 未找到亦庄控规界，保留现有 yizhuang_boundary.geojson')
-        return
+def export_boundary(gpd, inp, out):
+    p = inp.get('boundary')
+    if not p:
+        log('  未找到 yizhuang_boundary.shp → 保留现有 yizhuang_boundary.geojson')
+        return False
     g = gpd.read_file(p).to_crs(4326)
     g['geometry'] = g.geometry.simplify(0.00005, preserve_topology=True)
     gj = json.loads(g[['geometry']].to_json())
@@ -93,65 +196,95 @@ def export_boundary(gpd, root, out):
     for i, f in enumerate(gj['features']):
         f['properties'] = {'name': '亦庄控规界' if i == 0 else f'亦庄控规界-{i}'}
     dump(gj, out, 'yizhuang_boundary.geojson')
+    return True
 
 
-def export_facilities(gpd, root, out, radius_m):
-    poi = os.path.join(root, '2_poi')
-    fac = {'meta': {'source': poi, 'crs': 'WGS84 (EPSG:4326)', 'radius_m': radius_m,
-                    'notes': ['由 Step3 POI 筛选结果导出，保持原文件顺序（论文按顺序取前 N 个）']}}
+def export_facilities(gpd, inp, out, radius_m):
+    """按类别合并：找到源文件的类别用真实数据替换，其余类别保留现有 facilities.json 中的内容"""
+    cur_path = os.path.join(out, 'facilities.json')
+    fac = {}
+    if os.path.exists(cur_path):
+        with open(cur_path, encoding='utf-8') as f:
+            fac = json.load(f)
+    meta = fac.get('meta', {})
+    sources = dict(meta.get('sources', {}))
+    changed = []
 
-    fs = read_points(gpd, os.path.join(poi, 'fire_stations.shp'), radius_m)
-    fac['fire_stations'] = [] if fs is None else [
+    def put(key, rows, src):
+        if rows is None:
+            return
+        if not rows:
+            log(f'  ⚠️ {os.path.basename(src)} 在 {radius_m / 1000:.0f} km 范围内没有要素 → 保留现有 {key}')
+            return
+        fac[key] = rows
+        sources[key] = src
+        changed.append(key)
+
+    fs = read_points(gpd, inp.get('fire_stations'), radius_m)
+    put('fire_stations', None if fs is None else [
         {'id': f'F{i:04d}', 'name': str(r.get('name', f'消防站{i}')), 'lon': r.lon, 'lat': r.lat, 'type': 'fire_station',
          'stock': {'life_rescue': 50, 'medical': 30, 'protection': 100, 'basic': 200}}
-        for i, (_, r) in enumerate(fs.iterrows())]
+        for i, (_, r) in enumerate(fs.iterrows())], inp.get('fire_stations'))
 
-    hs = read_points(gpd, os.path.join(poi, 'hospitals.shp'), radius_m)
-    fac['hospitals'] = [] if hs is None else [
+    hs = read_points(gpd, inp.get('hospitals'), radius_m)
+    put('hospitals', None if hs is None else [
         {'id': f'H{i:04d}', 'name': str(r.get('name', f'医院{i}')), 'lon': r.lon, 'lat': r.lat, 'type': 'hospital',
          'beds': int(num(r.get(col(hs, 'bed_count') or '_'), 200)), 'level': str(r.get(col(hs, 'hospital_level') or '_', '') or '')}
-        for i, (_, r) in enumerate(hs.iterrows())]
+        for i, (_, r) in enumerate(hs.iterrows())], inp.get('hospitals'))
 
-    sh = read_points(gpd, os.path.join(poi, 'shelters.shp'), radius_m)
-    fac['shelters'] = [] if sh is None else [
+    sh = read_points(gpd, inp.get('shelters'), radius_m)
+    put('shelters', None if sh is None else [
         {'id': f'R{i:04d}', 'name': str(r.get('name', f'避难所{i}')), 'lon': r.lon, 'lat': r.lat, 'type': 'shelter',
          'capacity': int(num(r.get(col(sh, 'capacity') or '_'), 2000))}
-        for i, (_, r) in enumerate(sh.iterrows())]
+        for i, (_, r) in enumerate(sh.iterrows())], inp.get('shelters'))
 
-    sw = read_points(gpd, os.path.join(poi, 'subway_stations.shp'), radius_m)
-    fac['subway_stations'] = [] if sw is None else [
+    sw = read_points(gpd, inp.get('subway_stations'), radius_m)
+    put('subway_stations', None if sw is None else [
         {'id': f'M{i:04d}', 'name': str(r.get(col(sw, 'station_name') or '_') or r.get('name') or f'地铁站{i}'), 'lon': r.lon, 'lat': r.lat,
          'type': 'subway', 'capacity': 8000}
-        for i, (_, r) in enumerate(sw.iterrows())]
+        for i, (_, r) in enumerate(sw.iterrows())], inp.get('subway_stations'))
 
-    sp = os.path.join(root, '8_integrated', 'scenario_params.json')
-    whs = []
-    if os.path.exists(sp):
+    sp = inp.get('scenario_params')
+    if sp:
         with open(sp, encoding='utf-8') as f:
             whs = json.load(f).get('resources', {}).get('emergency_warehouses', [])
-    fac['warehouses'] = [
-        {'id': f'W{i:02d}', 'name': w['name'], 'lon': w['lon'], 'lat': w['lat'], 'type': 'warehouse',
-         'assumed': '假设' in w['name'], 'stock': {'life_rescue': 200, 'medical': 100, 'protection': 500, 'basic': 1000}}
-        for i, w in enumerate(whs)]
+        put('warehouses', [
+            {'id': f'W{i:02d}', 'name': w['name'], 'lon': w['lon'], 'lat': w['lat'], 'type': 'warehouse',
+             'assumed': '假设' in w['name'], 'stock': {'life_rescue': 200, 'medical': 100, 'protection': 500, 'basic': 1000}}
+            for i, w in enumerate(whs)], sp)
 
-    shares = {'car_ratio': 0.30, 'subway_ratio': 0.25, 'bus_ratio': 0.20}
-    cp = os.path.join(root, '5_commute', 'commute_study_area.csv')
-    if os.path.exists(cp):
+    cp = inp.get('commute')
+    if cp:
         df = pd.read_csv(cp, nrows=10000)
         cols = {'驾车比例': 'car_ratio', '地铁比例': 'subway_ratio', '公交比例': 'bus_ratio', '骑行比例': 'bike_ratio', '步行比例': 'walk_ratio'}
-        shares = {en: float(pd.to_numeric(df[cn], errors='coerce').mean()) for cn, en in cols.items() if cn in df.columns} or shares
-    fac['commute_mode_shares'] = shares
+        shares = {en: float(pd.to_numeric(df[cn], errors='coerce').mean()) for cn, en in cols.items() if cn in df.columns}
+        if shares.get('car_ratio') is not None:
+            fac['commute_mode_shares'] = shares
+            sources['commute_mode_shares'] = cp
+            changed.append('commute_mode_shares')
+
+    if not changed:
+        log('  未找到任何设施源文件 → 保留现有 facilities.json')
+        return False
+    for key in ('fire_stations', 'warehouses', 'shelters', 'hospitals', 'subway_stations'):
+        fac.setdefault(key, [])
+    fac['meta'] = {**meta, 'crs': 'WGS84 (EPSG:4326)', 'radius_m': radius_m, 'sources': sources,
+                   'notes': ['真实数据类别由 Step3 POI 筛选结果导出，保持原文件顺序（论文按顺序取前 N 个）；'
+                             '未在 sources 中列出的类别沿用默认数据']}
+    kept = [k for k in ('fire_stations', 'hospitals', 'shelters', 'subway_stations', 'warehouses', 'commute_mode_shares') if k not in changed]
     log(f'  消防站 {len(fac["fire_stations"])}，医院 {len(fac["hospitals"])}，避难所 {len(fac["shelters"])}，'
         f'地铁站 {len(fac["subway_stations"])}，仓库 {len(fac["warehouses"])}')
-    dump(fac, out, 'facilities.json')
+    log(f'  已更新：{", ".join(changed)}' + (f'；沿用默认：{", ".join(kept)}' if kept else ''))
+    dump(fac, out, 'facilities.json', indent=1)
+    return True
 
 
-def export_population(gpd, root, out, radius_m, cell_m):
+def export_population(gpd, inp, out, radius_m, cell_m):
     from shapely import contains_xy
-    p = os.path.join(root, '3_population', 'block_pop_study_area.shp')
-    if not os.path.exists(p):
-        log('  ⚠️ 未找到 block_pop_study_area.shp，保留现有 population.json')
-        return
+    p = inp.get('population')
+    if not p:
+        log('  未找到 block_pop_study_area.shp → 保留现有 population.json')
+        return False
     g = gpd.read_file(p)
     if g.crs is not None and g.crs.to_epsg() != 4326:
         g = g.to_crs(4326)
@@ -228,14 +361,18 @@ def export_population(gpd, root, out, radius_m, cell_m):
         'cells_rle': [int(v) for v in rle],
     }
     log(f'  栅格 {nx}×{ny}（{cell_m} m），入栅地块 {len(pops) - 1}，人口 {sum(pops):,.0f}')
+    if len(pops) <= 1:
+        log('  ⚠️ 裁剪范围内没有地块 → 保留现有 population.json')
+        return False
     dump(out_obj, out, 'population.json')
+    return True
 
 
-def export_roads(root, out, radius_m):
-    p = os.path.join(root, '1_road_network', 'road_network_graph.gpickle')
-    if not os.path.exists(p):
-        log('  ⚠️ 未找到 road_network_graph.gpickle，跳过路网（引擎使用几何近似行程时间）')
-        return
+def export_roads(inp, out, radius_m):
+    p = inp.get('roads')
+    if not p:
+        log('  未找到 road_network_graph.gpickle → 不生成路网（引擎使用几何近似行程时间）')
+        return False
     import networkx  # noqa: F401  反序列化需要
     with open(p, 'rb') as f:
         G = pickle.load(f)
@@ -257,27 +394,77 @@ def export_roads(root, out, radius_m):
     obj = {'meta': {'source': p, 'radius_m': radius_m, 'format': 'nodes=[lon,lat,...]; edges=[u,v,length_m,speed_kmh,...]（有向）'},
            'nodes': nodes, 'edges': edges}
     log(f'  路网节点 {len(idx)}，有向边 {len(edges) // 4}')
+    if not edges:
+        log('  ⚠️ 裁剪范围内没有路段 → 不生成 road_network.json')
+        return False
     dump(obj, out, 'road_network.json')
+    return True
+
+
+HELP_REGENERATE = """
+  这些文件由论文数据处理脚本生成（scripts/config.py 中的原始数据路径须可访问，含外接硬盘 /Volumes/WLSSD990）：
+    cd "<仓库>/1-CSTFM2026会议投稿"
+    python run_all.py --only 0 2 3 4        # 研究范围、路网、POI、人口（必需）
+    python run_all.py --only 5 8            # 通勤方式构成、应急仓库（可选）
+  生成后重新运行本脚本即可。注意：scripts/config.py 被导入时会自动创建 output/ 下的空子目录，
+  因此 output/ 存在但没有文件，通常说明该位置从未完整运行过上述步骤。
+  如果当初是在另一个目录运行的，请把 --research-output 指向那里（也可以给上一级目录，脚本会自动搜索）。"""
 
 
 def main():
+    global BACKUP_ROOT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--research-output', required=True, help='scripts/config.py 中 OUTPUT_DIR（含 0_study_area/、2_poi/ 等子目录）')
-    ap.add_argument('--out', default=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'public', 'data'))
+    ap.add_argument('--research-output', required=True, help='scripts/config.py 中的 OUTPUT_DIR（或其上级目录，自动搜索）')
+    ap.add_argument('--out', default=os.path.join(PLATFORM_DIR, 'public', 'data'))
+    ap.add_argument('--backup-dir', default=BACKUP_ROOT, help='覆盖前备份原文件的目录')
     ap.add_argument('--radius-km', type=float, default=25, help='以太和桥为中心的裁剪半径，0=不裁剪')
     ap.add_argument('--cell-m', type=float, default=75, help='人口栅格分辨率 (m)')
     ap.add_argument('--skip-roads', action='store_true')
+    ap.add_argument('--check', action='store_true', help='只检查输入文件，不写入')
     a = ap.parse_args()
-    import geopandas as gpd
-    root = a.research_output
+    BACKUP_ROOT = os.path.abspath(a.backup_dir)
+    root = os.path.abspath(os.path.expanduser(a.research_output))
     if not os.path.isdir(root):
         sys.exit(f'目录不存在：{root}')
     radius_m = a.radius_km * 1000
-    log('[1/4] 亦庄控规界'); export_boundary(gpd, root, a.out)
-    log('[2/4] 应急设施'); export_facilities(gpd, root, a.out, radius_m)
-    log('[3/4] 地块人口'); export_population(gpd, root, a.out, radius_m, a.cell_m)
-    log('[4/4] 路网'); (log('  已跳过') if a.skip_roads else export_roads(root, a.out, radius_m))
-    log('完成。重新构建或直接刷新页面即可使用新数据（服务端需重启）。')
+
+    log(f'输入目录：{root}')
+    inp = locate_inputs(root)
+    log('输入检查：')
+    for k, (rel, step, raw, core) in INPUTS.items():
+        p = inp.get(k)
+        mark = '✅' if p else ('❌' if core else '–')
+        where = os.path.relpath(p, root) if p and p.startswith(root) else (p or f'未找到（由 {step} 生成，依赖 {raw}）')
+        log(f'  {mark} {rel:44s} {where}')
+
+    core_found = [k for k, v in INPUTS.items() if v[3] and k in inp and not (k == 'roads' and a.skip_roads)]
+    if not core_found:
+        log('\n未找到任何核心输入文件，未写入任何数据（public/data 保持不变）。')
+        log(f'{root} 的内容：')
+        for row in describe_dir(root):
+            log(row)
+        log(HELP_REGENERATE)
+        sys.exit(2)
+    if a.check:
+        log('\n--check 模式：不写入。去掉 --check 即可导出。')
+        return
+
+    import geopandas as gpd
+    done = {}
+    log('\n[1/4] 亦庄控规界'); done['yizhuang_boundary.geojson'] = export_boundary(gpd, inp, a.out)
+    log('[2/4] 应急设施'); done['facilities.json'] = export_facilities(gpd, inp, a.out, radius_m)
+    log('[3/4] 地块人口'); done['population.json'] = export_population(gpd, inp, a.out, radius_m, a.cell_m)
+    log('[4/4] 路网')
+    if a.skip_roads:
+        log('  已跳过'); done['road_network.json'] = False
+    else:
+        done['road_network.json'] = export_roads(inp, a.out, radius_m)
+    log('\n结果：')
+    for f, ok in done.items():
+        log(f'  {"已更新" if ok else "未改动"}  {f}')
+    if BACKUP_DIR:
+        log(f'原文件已备份到 {BACKUP_DIR}')
+    log('重新构建（npm run build）或把 public/data/* 覆盖到已部署的 dist/data/ 即可生效（服务端需重启）。')
 
 
 if __name__ == '__main__':
