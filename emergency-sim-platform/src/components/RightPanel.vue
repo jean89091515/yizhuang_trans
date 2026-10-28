@@ -124,6 +124,7 @@ const radarOption = computed(() => {
       splitNumber: 4,
       indicator: rs.radar.map((d) => ({ name: d.name, max: 100 })),
       axisName: { color: '#e8f4ff', fontSize: 14, formatter: (n) => n },
+      axisNameGap: 22,
       splitArea: { areaStyle: { color: ['rgba(25,211,197,0.04)', 'rgba(25,211,197,0.08)', 'rgba(25,211,197,0.12)', 'rgba(25,211,197,0.18)'] } },
       splitLine: { lineStyle: { color: 'rgba(79,210,255,0.35)' } },
       axisLine: { lineStyle: { color: 'rgba(79,210,255,0.35)' } },

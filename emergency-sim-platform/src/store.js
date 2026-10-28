@@ -1,6 +1,6 @@
 /** 全局状态（轻量 reactive store；大体量结果用 shallowRef 避免深度响应开销） */
 import { reactive, shallowRef, computed } from 'vue'
-import { STAGES, SITES, WIND_PRESETS, paramsFromPresets, assessResilience } from './engine/index.js'
+import { STAGES, SITES, WIND_PRESETS, GAS_THRESHOLDS, paramsFromPresets, assessResilience } from './engine/index.js'
 import { runSimulationService, loadStaticData } from './services/simService.js'
 
 const cfg = () => window.EMERGENCY_SIM_CONFIG || {}
@@ -87,10 +87,47 @@ export function setWind(id) {
   state.params.stability = w.stability
 }
 
+/**
+ * 由 URL 参数设置场景，供平台“重大突发事件”入口跳转/嵌入时传入事故信息（也支持 hash 中的查询串 #/?...）：
+ *   site=taihe | lon=116.49&lat=39.73&name=某事故
+ *   wind=sw2   | windSpeed=3&windDir=225&stability=D
+ *   gas=氯气&leak=5&view=overview|hazard|supply|evac&autorun=0|1
+ */
+export function applyUrlParams(href = window.location.href) {
+  const u = new URL(href)
+  const q = new URLSearchParams(u.search)
+  if (u.hash.includes('?')) for (const [k, v] of new URLSearchParams(u.hash.slice(u.hash.indexOf('?') + 1))) if (!q.has(k)) q.set(k, v)
+  const num = (k, lo, hi) => { const v = parseFloat(q.get(k)); return Number.isFinite(v) && v >= lo && v <= hi ? v : null }
+  if (q.get('site') && SITES.some((x) => x.id === q.get('site'))) setSite(q.get('site'))
+  const lon = num('lon', 73, 136)
+  const lat = num('lat', 3, 54)
+  if (lon !== null && lat !== null) {
+    setIncidentFromMap(lon, lat)
+    if (q.get('name')) state.params.incident.name = q.get('name').slice(0, 40)
+  }
+  if (q.get('wind')) setWind(q.get('wind'))
+  const ws = num('windSpeed', 0.5, 40)
+  const wd = num('windDir', 0, 360)
+  const st = (q.get('stability') || '').toUpperCase()
+  if (ws !== null) state.params.windSpeed = ws
+  if (wd !== null) state.params.windDir = wd % 360
+  if (/^[A-F]$/.test(st)) state.params.stability = st
+  if (ws !== null || wd !== null || /^[A-F]$/.test(st)) {
+    const w = WIND_PRESETS.find((x) => x.speed === state.params.windSpeed && x.dir === state.params.windDir && x.stability === state.params.stability)
+    state.params.windPresetId = w ? w.id : 'custom'
+  }
+  if (q.get('gas') && GAS_THRESHOLDS[q.get('gas')]) state.params.gas = q.get('gas')
+  const leak = num('leak', 0.01, 1000)
+  if (leak !== null) state.params.leakRateKgMin = leak
+  if (['overview', 'hazard', 'supply', 'evac'].includes(q.get('view'))) state.view = q.get('view')
+  return { autorun: q.has('autorun') ? q.get('autorun') !== '0' : null }
+}
+
 export async function init() {
+  const url = applyUrlParams()
   staticData.value = await loadStaticData()
   state.ready = true
-  if (cfg().autoRun !== false) run()
+  if (url.autorun ?? cfg().autoRun !== false) run()
 }
 
 export async function run() {

@@ -66,12 +66,16 @@ npm test           # 引擎测试（11 项）
 npm run build      # 构建到 dist/
 npm run server     # 可选：服务端求解 API + 静态前端 http://localhost:8787
 npm run sim        # 命令行跑一次基准场景，输出与论文的对照
+npm run package    # 生成交付部署的发布包 release/emergency-sim-<日期>.tar.gz（先 npm run build）
 node tools/diagnose.js   # 接入真实路网后诊断：吸附、可达性、各交通方式周转、不同路网口径的结果对比
 ```
 
 Node ≥ 18（推荐 22）。
 
 ## 3. 接入一体化平台（三选一）
+
+> 给部署同事的完整步骤（nginx 配置、入口接入、URL 参数、服务端求解、验收清单、常见问题）见 **`docs/部署指南.md`**。
+> 研究人员在本机 `npm run build && npm run package` 生成发布包 `release/emergency-sim-<日期>.tar.gz` 交给同事即可。
 
 ### 方式 A：iframe 嵌入（推荐，零耦合）
 

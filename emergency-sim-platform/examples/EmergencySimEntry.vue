@@ -27,6 +27,10 @@ export default {
     this._onMsg = (ev) => {
       const m = ev.data
       if (!m || typeof m.type !== 'string' || !m.type.startsWith('emergency-sim:')) return
+      if (m.type === 'emergency-sim:back') { // 模块内“返回首页”按钮（config.js 中设置 homeUrl 时显示）
+        this.$router ? this.$router.back() : history.back()
+        return
+      }
       if (m.type === 'emergency-sim:result') {
         this.lastResult = m.payload // 计算结果摘要，可写入平台其他模块
         this.$emit('result', m.payload)

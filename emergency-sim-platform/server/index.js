@@ -23,7 +23,10 @@ import {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PORT = +(process.env.PORT || 8787)
-const DATA_DIR = path.resolve(process.env.DATA_DIR || path.join(ROOT, 'public', 'data'))
+// 数据目录：DATA_DIR > public/data > dist/data（发布包中只有 dist/data）
+const DATA_DIR = path.resolve(process.env.DATA_DIR ||
+  [path.join(ROOT, 'public', 'data'), path.join(ROOT, 'dist', 'data')].find((d) => fs.existsSync(path.join(d, 'facilities.json'))) ||
+  path.join(ROOT, 'public', 'data'))
 const STATIC_DIR = process.env.STATIC_DIR ? path.resolve(process.env.STATIC_DIR) : (fs.existsSync(path.join(ROOT, 'dist')) ? path.join(ROOT, 'dist') : null)
 const CORS = process.env.CORS_ORIGIN || '*'
 const MAX_BODY = 1 << 20

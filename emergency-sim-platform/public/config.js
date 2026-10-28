@@ -29,6 +29,10 @@ window.EMERGENCY_SIM_CONFIG = {
   // 计算过程展示：每个阶段最短展示时长（ms），便于观察计算流程；0 表示不延时
   stageDelayMs: 450,
 
-  // 打开页面后自动运行一次基准场景
+  // 打开页面后自动运行一次基准场景（URL 参数 autorun=0/1 可覆盖）
   autoRun: true,
+
+  // “返回首页”按钮地址；留空则不显示。独立页面部署时可设为 '/traffic-screen/#/home'；
+  // iframe 嵌入时点击会向父页面发送 { type: 'emergency-sim:back' }
+  homeUrl: '',
 }

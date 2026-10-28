@@ -44,6 +44,7 @@
       <svg viewBox="0 0 20 20" class="ico"><path d="M2 8 L10 3 L18 8 Z M4 9 h12 v1 H4z M5 11 h2 v5 H5z M9 11 h2 v5 H9z M13 11 h2 v5 h-2z M3 17 h14 v1.5 H3z" fill="currentColor" /></svg>
       <span>{{ subtitle }}</span>
     </div>
+    <button v-if="homeUrl" class="home-btn" @click="goHome">‹ 返回首页</button>
     <div class="tools">
       <button class="icon-btn" title="重置为论文基准场景并重新计算" @click="$emit('reset')">
         <svg viewBox="0 0 24 24"><path d="M12 5a7 7 0 1 1-6.6 4.7" fill="none" stroke="currentColor" stroke-width="2" /><path d="M4 4v6h6" fill="none" stroke="currentColor" stroke-width="2" /></svg>
@@ -61,6 +62,12 @@ defineEmits(['reset'])
 const cfg = window.EMERGENCY_SIM_CONFIG || {}
 const title = cfg.title || '宏中微一体化交通计算示范平台'
 const subtitle = cfg.subtitle || '北京亦庄 重大突发事件下交通流传播运行'
+const homeUrl = cfg.homeUrl || ''
+// iframe 内由父页面处理返回；独立打开时直接跳转
+function goHome() {
+  if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'emergency-sim:back' }, '*')
+  else window.location.href = homeUrl
+}
 </script>
 
 <style scoped>
@@ -134,4 +141,18 @@ const subtitle = cfg.subtitle || '北京亦庄 重大突发事件下交通流传
 .icon-btn svg { width: 18px; height: 18px; }
 .icon-btn:hover { box-shadow: 0 0 10px var(--cyan); color: var(--cyan); }
 .view-sel { width: 140px; }
+.home-btn {
+  position: absolute;
+  left: 72px;
+  top: 64px;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: var(--text-0);
+  background: rgba(8, 26, 52, 0.85);
+  border: 1px solid rgba(79, 210, 255, 0.6);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.home-btn:hover { box-shadow: 0 0 10px var(--cyan); color: var(--cyan); }
 </style>
