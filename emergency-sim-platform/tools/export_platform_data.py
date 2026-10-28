@@ -16,7 +16,9 @@
   8_integrated/scenario_params.json            → 应急仓库（facilities.json.warehouses）
   5_commute/commute_study_area.csv             → 通勤方式构成（私家车数量调整）
   3_population/block_pop_study_area.shp        → population.json（地块标签栅格）
-  1_road_network/road_network_graph.gpickle    → road_network.json（可选，--skip-roads 跳过）
+  1_road_network/roads_study_area.shp          → road_network.json（默认；按共享顶点拆分道路，路网连通）
+  1_road_network/road_network_graph.gpickle    → road_network.json（--roads-source gpickle，复现论文 Step2 图）
+  11_evacuation_optimization/evacuation_results.json → 通勤方式构成兜底（仓库 技术路线图/ 内已有）
 
 输出格式与 tools/build_default_data.py 完全一致，前端/服务端无需改代码；
 存在 road_network.json 时引擎自动改用 Dijkstra 路网行程时间。
@@ -30,6 +32,7 @@ import pickle
 import shutil
 import sys
 import time
+from collections import Counter
 
 import numpy as np
 import pandas as pd
@@ -44,6 +47,7 @@ def log(*a):
 # key: (期望相对路径, 生成该文件的论文脚本, 该脚本依赖的原始数据（scripts/config.py）, 是否核心输入)
 INPUTS = {
     'boundary': ('0_study_area/yizhuang_boundary.shp', 'step0_study_area.py', 'YIZHUANG_BOUNDARY_SHP', True),
+    'roads_shp': ('1_road_network/roads_study_area.shp', 'step2_road_network.py', 'OSM_ROAD_SHP', True),
     'roads': ('1_road_network/road_network_graph.gpickle', 'step2_road_network.py', 'OSM_ROAD_SHP', True),
     'fire_stations': ('2_poi/fire_stations.shp', 'step3_poi_filter.py', 'POI_FILE', True),
     'hospitals': ('2_poi/hospitals.shp', 'step3_poi_filter.py', 'POI_FILE', True),
@@ -52,7 +56,21 @@ INPUTS = {
     'population': ('3_population/block_pop_study_area.shp', 'step4_population.py', 'BLOCK_POP_SHP, CENSUS_SHP', True),
     'commute': ('5_commute/commute_study_area.csv', 'step5_od_clip.py', 'COMMUTE_FILE', False),
     'scenario_params': ('8_integrated/scenario_params.json', 'step8_integration.py', '（前序步骤输出）', False),
+    'evac_results': ('11_evacuation_optimization/evacuation_results.json', 'step11_evacuation.py', '（论文结果）', False),
 }
+
+# step8_integration.py 中写死的两个假设应急仓库（未运行 step8 时使用）
+STEP8_WAREHOUSES = [
+    {'name': '假设仓库1-丰台', 'lon': 116.30, 'lat': 39.85},
+    {'name': '假设仓库2-大兴', 'lon': 116.35, 'lat': 39.75},
+]
+# config.py SPEED_MAP（路段无限速字段时兜底）
+SPEED_MAP = {
+    'motorway': 100, 'motorway_link': 80, 'trunk': 80, 'trunk_link': 60, 'primary': 60, 'primary_link': 50,
+    'secondary': 50, 'secondary_link': 40, 'tertiary': 40, 'tertiary_link': 30, 'residential': 30,
+    'unclassified': 30, 'service': 20, 'living_street': 20,
+}
+DEFAULT_ROAD_EXCLUDE = {'service', 'living_street'}
 SKIP_DIRS = {'node_modules', '.git', 'dist', '__pycache__', 'figures', 'tmp', '_backup', 'emergency-sim-platform'}
 
 
@@ -245,23 +263,31 @@ def export_facilities(gpd, inp, out, radius_m):
         for i, (_, r) in enumerate(sw.iterrows())], inp.get('subway_stations'))
 
     sp = inp.get('scenario_params')
+    whs, wsrc = STEP8_WAREHOUSES, 'step8_integration.py 内置的假设仓库（未找到 scenario_params.json）'
     if sp:
         with open(sp, encoding='utf-8') as f:
-            whs = json.load(f).get('resources', {}).get('emergency_warehouses', [])
-        put('warehouses', [
-            {'id': f'W{i:02d}', 'name': w['name'], 'lon': w['lon'], 'lat': w['lat'], 'type': 'warehouse',
-             'assumed': '假设' in w['name'], 'stock': {'life_rescue': 200, 'medical': 100, 'protection': 500, 'basic': 1000}}
-            for i, w in enumerate(whs)], sp)
+            whs = json.load(f).get('resources', {}).get('emergency_warehouses', []) or STEP8_WAREHOUSES
+        wsrc = sp
+    put('warehouses', [
+        {'id': f'W{i:02d}', 'name': w['name'], 'lon': w['lon'], 'lat': w['lat'], 'type': 'warehouse',
+         'assumed': '假设' in w['name'], 'stock': {'life_rescue': 200, 'medical': 100, 'protection': 500, 'basic': 1000}}
+        for i, w in enumerate(whs)], wsrc)
 
+    shares, csrc = None, None
     cp = inp.get('commute')
     if cp:
         df = pd.read_csv(cp, nrows=10000)
         cols = {'驾车比例': 'car_ratio', '地铁比例': 'subway_ratio', '公交比例': 'bus_ratio', '骑行比例': 'bike_ratio', '步行比例': 'walk_ratio'}
         shares = {en: float(pd.to_numeric(df[cn], errors='coerce').mean()) for cn, en in cols.items() if cn in df.columns}
-        if shares.get('car_ratio') is not None:
-            fac['commute_mode_shares'] = shares
-            sources['commute_mode_shares'] = cp
-            changed.append('commute_mode_shares')
+        csrc = cp
+    if (not shares or shares.get('car_ratio') is None) and inp.get('evac_results'):
+        with open(inp['evac_results'], encoding='utf-8') as f:
+            shares = json.load(f).get('commute_mode_shares')
+        csrc = inp['evac_results']
+    if shares and shares.get('car_ratio') is not None:
+        fac['commute_mode_shares'] = shares
+        sources['commute_mode_shares'] = csrc
+        changed.append('commute_mode_shares')
 
     if not changed:
         log('  未找到任何设施源文件 → 保留现有 facilities.json')
@@ -320,6 +346,17 @@ def export_population(gpd, inp, out, radius_m, cell_m):
     lon0, lat0 = w, n
     labels = np.zeros((ny, nx), dtype=np.int32)
     pops = [0]
+    kids = [0.0]
+    olds = [0.0]
+
+    def ratios(r):
+        p0 = float(r[pop_col]) or 1.0
+        if cr and er:
+            return num(r[cr], age['children']), num(r[er], age['elderly'])
+        if pc and pe:
+            return num(r[pc], 0) / p0, num(r[pe], 0) / p0
+        return age['children'], age['elderly']
+
     for _, r in g.iterrows():
         geom = r.geometry
         bx0, by0, bx1, by1 = geom.bounds
@@ -340,11 +377,20 @@ def export_population(gpd, inp, out, radius_m, cell_m):
             cc = int((pt.x - lon0) / dlon); rr = int((lat0 - pt.y) / dlat)
             if not (0 <= cc < nx and 0 <= rr < ny):
                 continue
-            if labels[rr, cc] != 0:  # 网格已被占用：并入该地块，避免人口丢失
-                pops[labels[rr, cc]] += float(r[pop_col])
+            if labels[rr, cc] != 0:  # 网格已被占用：并入该地块（人口与年龄比例按人口加权），避免人口丢失
+                L = labels[rr, cc]
+                pb = float(r[pop_col]); kb, ob = ratios(r)
+                tot2 = pops[L] + pb
+                if tot2 > 0:
+                    kids[L] = (kids[L] * pops[L] + kb * pb) / tot2
+                    olds[L] = (olds[L] * pops[L] + ob * pb) / tot2
+                pops[L] = tot2
                 continue
             labels[rr, cc] = bid
         pops.append(float(r[pop_col]))
+        kb, ob = ratios(r)
+        kids.append(kb)
+        olds.append(ob)
     flat = labels.ravel()
     change = np.flatnonzero(np.diff(flat)) + 1
     starts = np.concatenate([[0], change])
@@ -356,8 +402,10 @@ def export_population(gpd, inp, out, radius_m, cell_m):
                  'source': p, 'approximate': False, 'pop_field': pop_col, 'cell_m': cell_m, 'crs': 'WGS84 (EPSG:4326)'},
         'grid': {'lon0': lon0, 'lat0': lat0, 'dlon': dlon, 'dlat': dlat, 'nx': nx, 'ny': ny,
                  'order': 'row-major, row 0 = 北边界 lat0, 向南递减', 'encoding': 'rle[label,run]'},
-        'age_structure': {**age, 'source': 'block_pop_study_area.shp 人口加权平均（七普区县比例）'},
+        'age_structure': {**age, 'source': '全域人口加权平均（引擎优先使用 block_age 逐地块比例）'},
         'blocks': [int(round(v)) for v in pops],
+        'block_age': {'children': [round(float(v), 4) for v in kids], 'elderly': [round(float(v), 4) for v in olds],
+                      'source': '七普区县年龄结构（Step4 按地块所属区县赋值）'},
         'cells_rle': [int(v) for v in rle],
     }
     log(f'  栅格 {nx}×{ny}（{cell_m} m），入栅地块 {len(pops) - 1}，人口 {sum(pops):,.0f}')
@@ -365,6 +413,100 @@ def export_population(gpd, inp, out, radius_m, cell_m):
         log('  ⚠️ 裁剪范围内没有地块 → 保留现有 population.json')
         return False
     dump(out_obj, out, 'population.json')
+    return True
+
+
+def export_roads_from_shp(gpd, inp, out, radius_m, classes):
+    """由 roads_study_area.shp 构建路网：在道路共享顶点处拆分（OSM 交叉口），
+    按 Geofabrik oneway 约定（B 双向 / F 正向 / T 反向）建有向边，只保留最大弱连通分量。
+    Step2 的 road_network_graph.gpickle 只连接每条道路的首尾点，路段中部的交叉口不相连，
+    且将 F 当作双向、T 当作正向，因此默认不用它。"""
+    p = inp.get('roads_shp')
+    g = gpd.read_file(p)
+    if g.crs is not None and g.crs.to_epsg() != 4326:
+        g = g.to_crs(4326)
+    fc, spc, owc = col(g, 'fclass'), col(g, 'speed_final'), col(g, 'oneway')
+    if fc and classes != 'all':
+        excl = DEFAULT_ROAD_EXCLUDE if classes is None else set()
+        incl = None if classes is None else set(classes.split(','))
+        g = g[g[fc].isin(incl) if incl else ~g[fc].isin(excl)]
+    if radius_m:
+        kx = 111320 * np.cos(np.radians(INC_LAT))
+        g = g.cx[INC_LON - radius_m / kx:INC_LON + radius_m / kx, INC_LAT - radius_m / 110540:INC_LAT + radius_m / 110540]
+    g = g[g.geometry.notna()].explode(index_parts=False)
+    g = g[g.geometry.geom_type == 'LineString']
+    ow_vals = Counter(str(v).upper() for v in g[owc]) if owc else Counter()
+    log(f'  道路 {len(g)} 条' + (f'；oneway 取值 {dict(ow_vals)}' if ow_vals else '；无 oneway 字段，按双向处理'))
+
+    key = lambda c: (round(c[0], 7), round(c[1], 7))
+    ways = []
+    count = Counter()
+    for geom, f_, sp_, ow_ in zip(g.geometry, g[fc] if fc else [None] * len(g), g[spc] if spc else [None] * len(g),
+                                  g[owc] if owc else [None] * len(g)):
+        cs = [key(c) for c in geom.coords]
+        cs = [c for i, c in enumerate(cs) if i == 0 or c != cs[i - 1]]
+        if len(cs) < 2:
+            continue
+        speed = num(sp_, 0) or SPEED_MAP.get(str(f_), 30)
+        ways.append((cs, speed, str(ow_).upper() if ow_ is not None else 'B'))
+        count.update(set(cs))
+
+    kx = 111320 * np.cos(np.radians(INC_LAT))
+    seg_len = lambda a, b: float(np.hypot((b[0] - a[0]) * kx, (b[1] - a[1]) * 110540))
+    nid = {}
+    edges = []
+    for cs, speed, ow in ways:
+        start, acc = 0, 0.0
+        for i in range(1, len(cs)):
+            acc += seg_len(cs[i - 1], cs[i])
+            if i == len(cs) - 1 or count[cs[i]] > 1:  # 交叉口或道路端点
+                a, b = cs[start], cs[i]
+                if a != b and acc > 0:
+                    u = nid.setdefault(a, len(nid)); v = nid.setdefault(b, len(nid))
+                    if ow in ('F', 'YES', '1', 'TRUE'):
+                        edges.append((u, v, acc, speed))
+                    elif ow in ('T', '-1'):
+                        edges.append((v, u, acc, speed))
+                    else:
+                        edges.append((u, v, acc, speed)); edges.append((v, u, acc, speed))
+                start, acc = i, 0.0
+
+    # 最大弱连通分量（并查集）
+    parent = list(range(len(nid)))
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for u, v, _, _ in edges:
+        ru, rv = find(u), find(v)
+        if ru != rv:
+            parent[ru] = rv
+    sizes = Counter(find(i) for i in range(len(nid)))
+    if not sizes:
+        log('  ⚠️ 裁剪范围内没有路段 → 不生成 road_network.json')
+        return False
+    big, big_n = sizes.most_common(1)[0]
+    keep = {i for i in range(len(nid)) if find(i) == big}
+    coords = {i: c for c, i in nid.items()}
+    remap = {}
+    nodes = []
+    for i in sorted(keep):
+        remap[i] = len(remap)
+        nodes += [round(coords[i][0], 6), round(coords[i][1], 6)]
+    flat = []
+    for u, v, L, sp in edges:
+        if u in keep:
+            flat += [remap[u], remap[v], round(L, 1), round(float(sp), 1)]
+    total_km = sum(L for u, v, L, _ in edges if u in keep) / 1000
+    log(f'  路网节点 {len(remap)}（最大连通分量占 {big_n / max(1, len(nid)):.1%}，共 {len(sizes)} 个分量），'
+        f'有向边 {len(flat) // 4}，有向边总长 {total_km:,.0f} km')
+    obj = {'meta': {'source': p, 'radius_m': radius_m, 'builder': 'roads_study_area.shp 顶点级拆分 + 最大弱连通分量',
+                    'excluded_classes': sorted(DEFAULT_ROAD_EXCLUDE) if classes is None else ([] if classes == 'all' else None),
+                    'oneway_values': dict(ow_vals),
+                    'format': 'nodes=[lon,lat,...]; edges=[u,v,length_m,speed_kmh,...]（有向）'},
+           'nodes': nodes, 'edges': flat}
+    dump(obj, out, 'road_network.json')
     return True
 
 
@@ -420,6 +562,10 @@ def main():
     ap.add_argument('--radius-km', type=float, default=25, help='以太和桥为中心的裁剪半径，0=不裁剪')
     ap.add_argument('--cell-m', type=float, default=75, help='人口栅格分辨率 (m)')
     ap.add_argument('--skip-roads', action='store_true')
+    ap.add_argument('--roads-source', choices=['auto', 'shp', 'gpickle'], default='auto',
+                    help='auto: 优先 roads_study_area.shp（连通路网）；gpickle: 使用 Step2 图（复现论文）')
+    ap.add_argument('--road-classes', default=None,
+                    help="默认排除 service,living_street；'all' 保留全部；或逗号分隔的 fclass 列表")
     ap.add_argument('--check', action='store_true', help='只检查输入文件，不写入')
     a = ap.parse_args()
     BACKUP_ROOT = os.path.abspath(a.backup_dir)
@@ -437,7 +583,7 @@ def main():
         where = os.path.relpath(p, root) if p and p.startswith(root) else (p or f'未找到（由 {step} 生成，依赖 {raw}）')
         log(f'  {mark} {rel:44s} {where}')
 
-    core_found = [k for k, v in INPUTS.items() if v[3] and k in inp and not (k == 'roads' and a.skip_roads)]
+    core_found = [k for k, v in INPUTS.items() if v[3] and k in inp and not (k in ('roads', 'roads_shp') and a.skip_roads)]
     if not core_found:
         log('\n未找到任何核心输入文件，未写入任何数据（public/data 保持不变）。')
         log(f'{root} 的内容：')
@@ -458,7 +604,13 @@ def main():
     if a.skip_roads:
         log('  已跳过'); done['road_network.json'] = False
     else:
-        done['road_network.json'] = export_roads(inp, a.out, radius_m)
+        use_shp = a.roads_source == 'shp' or (a.roads_source == 'auto' and inp.get('roads_shp'))
+        if use_shp and inp.get('roads_shp'):
+            done['road_network.json'] = export_roads_from_shp(gpd, inp, a.out, radius_m, a.road_classes)
+        else:
+            if a.roads_source == 'shp':
+                log('  未找到 roads_study_area.shp，改用 road_network_graph.gpickle')
+            done['road_network.json'] = export_roads(inp, a.out, radius_m)
     log('\n结果：')
     for f, ok in done.items():
         log(f'  {"已更新" if ok else "未改动"}  {f}')

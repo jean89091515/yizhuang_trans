@@ -130,7 +130,12 @@ export function loadPopulation(json) {
   const pops = Float64Array.from(blocks)
   const blockCells = new Int32Array(pops.length)
   for (let i = 0; i < labels.length; i++) blockCells[labels[i]]++
-  return { grid, labels, pops, blockCells, age: json.age_structure, meta: json.meta }
+  // 可选：逐地块年龄结构（导出脚本由七普区县比例写入），缺省时用全局 age_structure
+  const ba = json.block_age
+  const blockAge = ba && ba.children?.length === pops.length && ba.elderly?.length === pops.length
+    ? { children: Float32Array.from(ba.children), elderly: Float32Array.from(ba.elderly) }
+    : null
+  return { grid, labels, pops, blockCells, blockAge, age: json.age_structure, meta: json.meta }
 }
 
 /**
@@ -181,33 +186,41 @@ export function aggregatePopulation(pop, zones, plume, opts) {
   const weight = (b, h) => (mode === 'area' ? h.cells / blockCells[b] : 1)
   const children = pop.age?.children ?? 0.12
   const elderly = pop.age?.elderly ?? 0.15
+  const kidR = (b) => (pop.blockAge ? pop.blockAge.children[b] : children)
+  const oldR = (b) => (pop.blockAge ? pop.blockAge.elderly[b] : elderly)
 
   const zonesOut = {}
   const sectors = []
   for (const z of ZONE_KEYS) {
     let total = 0
-    const sec = Array.from({ length: 8 }, () => ({ pop: 0, sx: 0, sy: 0, sc: 0 }))
+    let kids = 0
+    let old = 0
+    const sec = Array.from({ length: 8 }, () => ({ pop: 0, sx: 0, sy: 0, sc: 0, kids: 0, old: 0 }))
     for (const [b, h] of zoneHits[z]) {
       const p = pops[b] * weight(b, h)
       if (p <= 0) continue
       total += p
+      kids += p * kidR(b)
+      old += p * oldR(b)
       const cx = h.sx / h.cells
       const cy = h.sy / h.cells
       const k = Math.floor(((bearingDeg(cx, cy) + 22.5) % 360) / 45)
       sec[k].pop += p; sec[k].sx += p * cx; sec[k].sy += p * cy; sec[k].sc += p * (h.sc / h.cells)
+      sec[k].kids += p * kidR(b); sec[k].old += p * oldR(b)
     }
     zonesOut[z] = {
       total: Math.round(total),
-      children: total * children,
-      elderly: total * elderly,
-      working: total * (1 - children - elderly),
+      children: kids,
+      elderly: old,
+      working: total - kids - old,
       blocks: zoneHits[z].size,
     }
     sec.forEach((q, k) => {
       if (q.pop <= 0) return
       const [lon, lat] = local.toLL(q.sx / q.pop, q.sy / q.pop)
       // rho：该扇区人口加权平均浓度（各地块落区网格的平均浓度），作为动态风险暴露系数
-      sectors.push({ zone: z, sector: k, sectorName: SECTOR_NAMES[k], pop: q.pop, lon, lat, rho: q.sc / q.pop })
+      // k2Ratio：扇区老人+儿童占比（逐地块年龄结构加权）
+      sectors.push({ zone: z, sector: k, sectorName: SECTOR_NAMES[k], pop: q.pop, lon, lat, rho: q.sc / q.pop, k2Ratio: (q.kids + q.old) / q.pop })
     })
   }
   const circles = {}

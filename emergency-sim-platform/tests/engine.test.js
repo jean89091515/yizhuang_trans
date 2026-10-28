@@ -5,11 +5,12 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { runSimulation, paramsFromPresets, wgs84ToGcj02, gcj02ToWgs84, DEFAULT_PARAMS } from '../src/engine/index.js'
 import { concentration, computePlume } from '../src/engine/plume.js'
-import { distanceTransform } from '../src/engine/zones.js'
+import { distanceTransform, loadPopulation } from '../src/engine/zones.js'
 import { RoadGraph, TravelModel } from '../src/engine/travel.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const rd = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'public', 'data', f), 'utf-8'))
+// 测试固定使用默认数据副本（public/data 可能已被导出脚本替换为真实数据）
+const rd = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, 'tests', 'fixtures', 'default-data', f), 'utf-8'))
 const data = { facilities: rd('facilities.json'), population: rd('population.json') }
 const ref = rd('paper_reference.json')
 
@@ -137,4 +138,25 @@ test('可选路网：Dijkstra 行程时间与封闭', () => {
   // 穿越中心的东西向路段被封闭 → 需绕行，耗时更长
   const t2 = tm.time({ lon: 116.47, lat: 39.73 }, { lon: 116.51, lat: 39.73 }, 60, 'ground')
   assert.ok(t2 > (4 * len) / 1000)
+})
+
+test('逐地块年龄结构：优先于全局比例', async () => {
+  const pop = structuredClone(data.population)
+  const n = pop.blocks.length
+  pop.block_age = { children: Array(n).fill(0.05), elderly: Array(n).fill(0.05) }
+  const d2 = { facilities: data.facilities, population: pop }
+  const r = await runSimulation(paramsFromPresets({}), d2)
+  const o = r.evacuation.origins.find((x) => x.zone === 'erpg2')
+  // ERPG-2 疏散 k=1、k=2：k=2 应按 10% 计，而不是全局 27%
+  assert.ok(Math.abs(o.population[2] / o.sectorPop - 0.10) < 0.01, `k2=${o.population[2] / o.sectorPop}`)
+  const z = r.zones.populations.erpg2
+  assert.ok(Math.abs((z.children + z.elderly) / z.total - 0.10) < 0.01)
+  assert.equal(loadPopulation(data.population).blockAge, null)
+})
+
+test('路网长度统计：双向道路只计一次', () => {
+  // 两节点间一条双向路（1000 m）+ 一条单向路（500 m）
+  const g = new RoadGraph({ nodes: [116.49, 39.73, 116.5017, 39.73, 116.49, 39.7345], edges: [0, 1, 1000, 40, 1, 0, 1000, 40, 0, 2, 500, 40] })
+  const [km] = g.lengthWithin({ toXY: () => [0, 0] }, [10])
+  assert.ok(Math.abs(km - 1.5) < 1e-9, `km=${km}`)
 })

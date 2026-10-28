@@ -117,7 +117,7 @@ Node ≥ 18（推荐 22）。
 | `population.json` | 地块人口标签栅格（480×477，约 75 m）+ 2,995 个地块人口 + 年龄结构 | 由 `figures/step4_population.png` 反演（色带逆映射 + 连通域分割），按 Step11 ERPG 分区人口标定 | **近似**：ERPG-2/1 分区人口与论文偏差 −2.7% / −0.5%（表见 `meta.calibration`） |
 | `yizhuang_boundary.geojson` | 亦庄控规界（219.5 km²） | 由 Step4 图中控规界线数字化 | 约 75 m 精度 |
 | `paper_reference.json` | 论文 Step9–12 全部关键结果、危险区 GeoJSON | `技术路线图/9~12_*` | 原值 |
-| `road_network.json`（可选，默认无） | 路网节点/有向边 | 导出脚本由 `road_network_graph.gpickle` 生成 | 原值 |
+| `road_network.json`（可选，默认无） | 路网节点/有向边 | 导出脚本由 Step2 的 `roads_study_area.shp` 构建（交叉口拆分、Geofabrik oneway、最大连通分量）；`--roads-source gpickle` 改用 `road_network_graph.gpickle` | 原值 |
 
 **用真实数据替换（强烈建议）**：原始地块人口、POI 全集、路网在作者本机（`scripts/config.py` 中的路径），未纳入仓库。导出脚本读取的是论文数据处理脚本 step0–step8 的 **输出**（`output/0_study_area`、`1_road_network`、`2_poi`、`3_population`、`5_commute`、`8_integrated`），需要先有这些输出：
 
@@ -141,7 +141,12 @@ npm run build    # 或直接把 public/data/* 覆盖到已部署的 dist/data/
 - 每次覆盖前，原文件备份到 `data_backup/<时间戳>/`（不会被打包进 dist）。
 - 注意：`scripts/config.py` 被导入时会自动创建 `output/` 下的空子目录，因此 `output/` 存在但没有文件，通常说明该位置从未完整运行过 step0–step4。
 
-生成同格式文件后无需改代码；有 `road_network.json` 时引擎自动改用 Dijkstra 路网行程时间（与 `network_router.py` 一致的封闭 + BPR 规则）。
+- 缺少 Step8 输出时，应急仓库取 `step8_integration.py` 内置的两个假设仓库；缺少 Step5 输出时，通勤方式构成取论文 Step11 结果（`技术路线图/11_evacuation_optimization/evacuation_results.json`）。
+- 人口按地块写入七普区县年龄结构（`block_age`），引擎按地块计算老人/儿童比例，而不是用全域平均。
+- 路网默认由 `roads_study_area.shp` 构建：Step2 的 `road_network_graph.gpickle` 只连接每条道路的首尾点（路段中部的交叉口不相连，最大连通分量仅约 20% 节点），且把 Geofabrik 的 `oneway=F`（正向单行）当作双向、`T`（反向单行）当作正向。默认排除 `service`、`living_street`（`--road-classes all` 保留）；`--roads-source gpickle` 可复现论文 Step2 图。
+- 真实地块人口、POI 数据可能涉及数据授权，是否提交到 Git 仓库请自行决定（导出到 `public/data/` 后即被 git 视为修改）。
+
+生成同格式文件后无需改代码；有 `road_network.json` 时引擎自动改用 Dijkstra 路网行程时间（与 `network_router.py` 一致的封闭 + BPR 规则）。路网规模约 4 万节点时，单次计算约 2.5 s（浏览器 Worker）。
 
 ## 6. 计算内容一览
 

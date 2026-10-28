@@ -225,6 +225,16 @@ export class RoadGraph {
       this.spd[p] = Math.max(5, json.edges[4 * e + 3])
     }
     this.factor = new Float64Array(E).fill(1) // Infinity=封闭
+    // 双向道路只计一次长度（u→v 与 v→u 同时存在时只计 u<v 的一条）
+    const keys = new Set()
+    for (let u = 0; u < N; u++) for (let p = this.off[u]; p < this.off[u + 1]; p++) keys.add(u * N + this.to[p])
+    this.countLen = new Uint8Array(E)
+    for (let u = 0; u < N; u++) {
+      for (let p = this.off[u]; p < this.off[u + 1]; p++) {
+        const v = this.to[p]
+        this.countLen[p] = u < v || !keys.has(v * N + u) ? 1 : 0
+      }
+    }
     this.ssspCache = new Map()
     // 最近节点：0.01° 网格桶
     this.bucket = new Map()
@@ -329,6 +339,7 @@ export class RoadGraph {
     const sums = radii.map(() => 0)
     for (let u = 0; u < this.N; u++) {
       for (let p = this.off[u]; p < this.off[u + 1]; p++) {
+        if (!this.countLen[p]) continue
         const v = this.to[p]
         const [x, y] = local.toXY((this.lon[u] + this.lon[v]) / 2, (this.lat[u] + this.lat[v]) / 2)
         const r = Math.hypot(x, y)

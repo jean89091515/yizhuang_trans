@@ -17,8 +17,7 @@ export function buildOrigins(popAgg, popData, params, thresholds) {
   const inc = params.incident
   const u = Math.max(params.windSpeed, 0.5)
   const age = popData.age || { children: 0.12, elderly: 0.15 }
-  const k2r = age.children + age.elderly
-  const k3r = Math.max(0, 1 - k1r - k2r)
+  const k2Default = age.children + age.elderly
   const origins = []
   const shelterInPlace = {}
   const shelterSectors = []
@@ -28,6 +27,8 @@ export function buildOrigins(popAgg, popData, params, thresholds) {
     const sip = { 1: 0, 2: 0, 3: 0 }
     const secs = popAgg.sectors.filter((s) => s.zone === z).sort((a, b) => a.sector - b.sector)
     for (const s of secs) {
+      const k2r = s.k2Ratio ?? k2Default
+      const k3r = Math.max(0, 1 - k1r - k2r)
       const k = { 1: Math.floor(s.pop * k1r), 2: Math.floor(s.pop * k2r), 3: Math.floor(s.pop * k3r) }
       const evac = { 1: rules[1] ? k[1] : 0, 2: rules[2] ? k[2] : 0, 3: rules[3] ? k[3] : 0 }
       const stay = { 1: rules[1] ? 0 : k[1], 2: rules[2] ? 0 : k[2], 3: rules[3] ? 0 : k[3] }
