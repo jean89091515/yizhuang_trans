@@ -4,3 +4,4 @@ node_modules/
 data_backup/
 release/
 __pycache__/
+dist/

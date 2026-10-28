@@ -21,7 +21,7 @@
 
 ```
 emergency-sim-platform/
-├── dist/                      ★ 已构建好的前端（可直接部署，含 data/ 与 config.js）
+├── dist/                      构建产物（npm run build 生成，不纳入 git；交付用 npm run package 打包）
 ├── public/
 │   ├── config.js              运行时配置（底图、接口地址、标题等，部署后可直接改）
 │   └── data/                  ★ 平台所需数据（见第 5 节）
@@ -62,7 +62,7 @@ emergency-sim-platform/
 cd emergency-sim-platform
 npm install
 npm run dev        # 开发调试 http://localhost:5173
-npm test           # 引擎测试（11 项）
+npm test           # 引擎与地图图层测试（16 项）
 npm run build      # 构建到 dist/
 npm run server     # 可选：服务端求解 API + 静态前端 http://localhost:8787
 npm run sim        # 命令行跑一次基准场景，输出与论文的对照
